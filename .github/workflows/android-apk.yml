@@ -50,6 +50,9 @@ jobs:
           mkdir -p app/src/main/res/drawable
           cp fox_original.png app/src/main/res/drawable/fox_original.png
 
+      - name: Validate all 300 lessons and 30 stories
+        run: python3 scripts/validate_content.py
+
       - name: Compile debug APK
         run: gradle --no-daemon --stacktrace assembleDebug
 
