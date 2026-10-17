@@ -1,0 +1,1462 @@
+[
+  {
+    "id": "a1-subject",
+    "level": "A1",
+    "group": "pronouns",
+    "title": "Кто действует? Личные местоимения",
+    "rule": "I — я, you — ты/вы, he — он, she — она, it — предмет или животное, we — мы, they — они. Местоимение заменяет имя перед глаголом.",
+    "examples": [
+      "I am your friend.",
+      "He is my brother."
+    ],
+    "questions": [
+      {
+        "id": "a1-subject-1",
+        "prompt": "Лиса Мия говорит: «Я твой друг».",
+        "choices": [
+          "I am your friend.",
+          "Me am your friend.",
+          "My am your friend."
+        ],
+        "answer": 0,
+        "speech": "I am your friend.",
+        "explanation": "I — я, you — ты/вы, he — он, she — она, it — предмет или животное, we — мы, they — они. Местоимение заменяет имя перед глаголом."
+      },
+      {
+        "id": "a1-subject-2",
+        "prompt": "Том — мальчик. Замени имя: «Он мой брат».",
+        "choices": [
+          "His is my brother.",
+          "Him is my brother.",
+          "He is my brother."
+        ],
+        "answer": 2,
+        "speech": "He is my brother.",
+        "explanation": "I — я, you — ты/вы, he — он, she — она, it — предмет или животное, we — мы, they — они. Местоимение заменяет имя перед глаголом."
+      },
+      {
+        "id": "a1-subject-3",
+        "prompt": "Лена — девочка. Замени имя: «Она читает».",
+        "choices": [
+          "Hers reads.",
+          "She reads.",
+          "Her reads."
+        ],
+        "answer": 1,
+        "speech": "She reads.",
+        "explanation": "I — я, you — ты/вы, he — он, she — она, it — предмет или животное, we — мы, they — они. Местоимение заменяет имя перед глаголом."
+      },
+      {
+        "id": "a1-subject-4",
+        "prompt": "Ты и я вместе: «Мы готовы».",
+        "choices": [
+          "We are ready.",
+          "Us are ready.",
+          "Our are ready."
+        ],
+        "answer": 0,
+        "speech": "We are ready.",
+        "explanation": "I — я, you — ты/вы, he — он, she — она, it — предмет или животное, we — мы, they — они. Местоимение заменяет имя перед глаголом."
+      },
+      {
+        "id": "a1-subject-5",
+        "prompt": "Две лисы: «Они играют».",
+        "choices": [
+          "Them play.",
+          "Their play.",
+          "They play."
+        ],
+        "answer": 2,
+        "speech": "They play.",
+        "explanation": "I — я, you — ты/вы, he — он, she — она, it — предмет или животное, we — мы, they — они. Местоимение заменяет имя перед глаголом."
+      }
+    ]
+  },
+  {
+    "id": "a1-be",
+    "level": "A1",
+    "group": "verbs",
+    "title": "Глагол-связка be: am, is, are",
+    "rule": "Be связывает человека или предмет с описанием: I am, he/she/it is, you/we/they are. В вопросе be ставится перед подлежащим; в отрицании добавь not.",
+    "examples": [
+      "I am happy.",
+      "My sister is at home."
+    ],
+    "questions": [
+      {
+        "id": "a1-be-1",
+        "prompt": "Выбери: «Я счастлив».",
+        "choices": [
+          "I am happy.",
+          "I is happy.",
+          "I are happy."
+        ],
+        "answer": 0,
+        "speech": "I am happy.",
+        "explanation": "Be связывает человека или предмет с описанием: I am, he/she/it is, you/we/they are. В вопросе be ставится перед подлежащим; в отрицании добавь not."
+      },
+      {
+        "id": "a1-be-2",
+        "prompt": "Выбери: «Моя сестра дома».",
+        "choices": [
+          "My sister are at home.",
+          "My sister am at home.",
+          "My sister is at home."
+        ],
+        "answer": 2,
+        "speech": "My sister is at home.",
+        "explanation": "Be связывает человека или предмет с описанием: I am, he/she/it is, you/we/they are. В вопросе be ставится перед подлежащим; в отрицании добавь not."
+      },
+      {
+        "id": "a1-be-3",
+        "prompt": "Выбери: «Мы не устали».",
+        "choices": [
+          "We am not tired.",
+          "We are not tired.",
+          "We is not tired."
+        ],
+        "answer": 1,
+        "speech": "We are not tired.",
+        "explanation": "Be связывает человека или предмет с описанием: I am, he/she/it is, you/we/they are. В вопросе be ставится перед подлежащим; в отрицании добавь not."
+      },
+      {
+        "id": "a1-be-4",
+        "prompt": "Спроси: «Ты готов?»",
+        "choices": [
+          "Are you ready?",
+          "Is you ready?",
+          "Am you ready?"
+        ],
+        "answer": 0,
+        "speech": "Are you ready?",
+        "explanation": "Be связывает человека или предмет с описанием: I am, he/she/it is, you/we/they are. В вопросе be ставится перед подлежащим; в отрицании добавь not."
+      },
+      {
+        "id": "a1-be-5",
+        "prompt": "Спроси: «Он твой учитель?»",
+        "choices": [
+          "Are he your teacher?",
+          "Am he your teacher?",
+          "Is he your teacher?"
+        ],
+        "answer": 2,
+        "speech": "Is he your teacher?",
+        "explanation": "Be связывает человека или предмет с описанием: I am, he/she/it is, you/we/they are. В вопросе be ставится перед подлежащим; в отрицании добавь not."
+      }
+    ]
+  },
+  {
+    "id": "a1-main-aux",
+    "level": "A1",
+    "group": "verbs",
+    "title": "Смысловые глаголы и помощник do",
+    "rule": "Смысловой глагол называет действие. В Present Simple do/does помогают задать вопрос или построить отрицание. После does/does not основной глагол употребляется без -s.",
+    "examples": [
+      "Do you like music?",
+      "Does she play tennis?"
+    ],
+    "questions": [
+      {
+        "id": "a1-main-aux-1",
+        "prompt": "Спроси: «Ты любишь музыку?»",
+        "choices": [
+          "Do you like music?",
+          "Does you like music?",
+          "Are you like music?"
+        ],
+        "answer": 0,
+        "speech": "Do you like music?",
+        "explanation": "Смысловой глагол называет действие. В Present Simple do/does помогают задать вопрос или построить отрицание. После does/does not основной глагол употребляется без -s."
+      },
+      {
+        "id": "a1-main-aux-2",
+        "prompt": "Спроси: «Она играет в теннис?»",
+        "choices": [
+          "Does she plays tennis?",
+          "Do she play tennis?",
+          "Does she play tennis?"
+        ],
+        "answer": 2,
+        "speech": "Does she play tennis?",
+        "explanation": "Смысловой глагол называет действие. В Present Simple do/does помогают задать вопрос или построить отрицание. После does/does not основной глагол употребляется без -s."
+      },
+      {
+        "id": "a1-main-aux-3",
+        "prompt": "Выбери: «Я не ем мясо».",
+        "choices": [
+          "I am not eat meat.",
+          "I do not eat meat.",
+          "I does not eat meat."
+        ],
+        "answer": 1,
+        "speech": "I do not eat meat.",
+        "explanation": "Смысловой глагол называет действие. В Present Simple do/does помогают задать вопрос или построить отрицание. После does/does not основной глагол употребляется без -s."
+      },
+      {
+        "id": "a1-main-aux-4",
+        "prompt": "Выбери: «Он не смотрит телевизор».",
+        "choices": [
+          "He does not watch TV.",
+          "He does not watches TV.",
+          "He do not watch TV."
+        ],
+        "answer": 0,
+        "speech": "He does not watch TV.",
+        "explanation": "Смысловой глагол называет действие. В Present Simple do/does помогают задать вопрос или построить отрицание. После does/does not основной глагол употребляется без -s."
+      },
+      {
+        "id": "a1-main-aux-5",
+        "prompt": "Выбери: «Мой брат читает каждый день».",
+        "choices": [
+          "My brother read every day.",
+          "My brother reading every day.",
+          "My brother reads every day."
+        ],
+        "answer": 2,
+        "speech": "My brother reads every day.",
+        "explanation": "Смысловой глагол называет действие. В Present Simple do/does помогают задать вопрос или построить отрицание. После does/does not основной глагол употребляется без -s."
+      }
+    ]
+  },
+  {
+    "id": "a1-present",
+    "level": "A1",
+    "group": "tenses",
+    "title": "Present Simple: привычки и факты",
+    "rule": "Present Simple — привычки и общие факты. С he/she/it обычно добавляем -s или -es. С I/you/we/they используем начальную форму.",
+    "examples": [
+      "I go to school every morning.",
+      "She drinks water every day."
+    ],
+    "questions": [
+      {
+        "id": "a1-present-1",
+        "prompt": "Каждое утро я хожу в школу.",
+        "choices": [
+          "I go to school every morning.",
+          "I goes to school every morning.",
+          "I going to school every morning."
+        ],
+        "answer": 0,
+        "speech": "I go to school every morning.",
+        "explanation": "Present Simple — привычки и общие факты. С he/she/it обычно добавляем -s или -es. С I/you/we/they используем начальную форму."
+      },
+      {
+        "id": "a1-present-2",
+        "prompt": "Она каждый день пьёт воду.",
+        "choices": [
+          "She drink water every day.",
+          "She drinking water every day.",
+          "She drinks water every day."
+        ],
+        "answer": 2,
+        "speech": "She drinks water every day.",
+        "explanation": "Present Simple — привычки и общие факты. С he/she/it обычно добавляем -s или -es. С I/you/we/they используем начальную форму."
+      },
+      {
+        "id": "a1-present-3",
+        "prompt": "Мы часто играем в парке.",
+        "choices": [
+          "We often playing in the park.",
+          "We often play in the park.",
+          "We often plays in the park."
+        ],
+        "answer": 1,
+        "speech": "We often play in the park.",
+        "explanation": "Present Simple — привычки и общие факты. С he/she/it обычно добавляем -s или -es. С I/you/we/they используем начальную форму."
+      },
+      {
+        "id": "a1-present-4",
+        "prompt": "Мой папа работает в больнице.",
+        "choices": [
+          "My dad works in a hospital.",
+          "My dad work in a hospital.",
+          "My dad working in a hospital."
+        ],
+        "answer": 0,
+        "speech": "My dad works in a hospital.",
+        "explanation": "Present Simple — привычки и общие факты. С he/she/it обычно добавляем -s или -es. С I/you/we/they используем начальную форму."
+      },
+      {
+        "id": "a1-present-5",
+        "prompt": "Солнце встаёт на востоке.",
+        "choices": [
+          "The sun rise in the east.",
+          "The sun rising in the east.",
+          "The sun rises in the east."
+        ],
+        "answer": 2,
+        "speech": "The sun rises in the east.",
+        "explanation": "Present Simple — привычки и общие факты. С he/she/it обычно добавляем -s или -es. С I/you/we/they используем начальную форму."
+      }
+    ]
+  },
+  {
+    "id": "a1-possessive",
+    "level": "A1",
+    "group": "pronouns",
+    "title": "Мой или твой? Принадлежность",
+    "rule": "Перед существительным ставим my, your, his, her, its, our, their: my book. Когда существительное уже понятно, можно сказать mine, yours, his, hers, ours, theirs: The book is mine.",
+    "examples": [
+      "This is my book.",
+      "This is her bag."
+    ],
+    "questions": [
+      {
+        "id": "a1-possessive-1",
+        "prompt": "Выбери: «Это моя книга».",
+        "choices": [
+          "This is my book.",
+          "This is me book.",
+          "This is mine book."
+        ],
+        "answer": 0,
+        "speech": "This is my book.",
+        "explanation": "Перед существительным ставим my, your, his, her, its, our, their: my book. Когда существительное уже понятно, можно сказать mine, yours, his, hers, ours, theirs: The book is mine."
+      },
+      {
+        "id": "a1-possessive-2",
+        "prompt": "Выбери: «Это её сумка».",
+        "choices": [
+          "This is she bag.",
+          "This is hers bag.",
+          "This is her bag."
+        ],
+        "answer": 2,
+        "speech": "This is her bag.",
+        "explanation": "Перед существительным ставим my, your, his, her, its, our, their: my book. Когда существительное уже понятно, можно сказать mine, yours, his, hers, ours, theirs: The book is mine."
+      },
+      {
+        "id": "a1-possessive-3",
+        "prompt": "Выбери: «Это наш дом».",
+        "choices": [
+          "This is ours house.",
+          "This is our house.",
+          "This is us house."
+        ],
+        "answer": 1,
+        "speech": "This is our house.",
+        "explanation": "Перед существительным ставим my, your, his, her, its, our, their: my book. Когда существительное уже понятно, можно сказать mine, yours, his, hers, ours, theirs: The book is mine."
+      },
+      {
+        "id": "a1-possessive-4",
+        "prompt": "Выбери: «Эта ручка моя».",
+        "choices": [
+          "This pen is mine.",
+          "This pen is my.",
+          "This pen is me."
+        ],
+        "answer": 0,
+        "speech": "This pen is mine.",
+        "explanation": "Перед существительным ставим my, your, his, her, its, our, their: my book. Когда существительное уже понятно, можно сказать mine, yours, his, hers, ours, theirs: The book is mine."
+      },
+      {
+        "id": "a1-possessive-5",
+        "prompt": "Спроси: «Эта куртка твоя?»",
+        "choices": [
+          "Is this jacket your?",
+          "Is this jacket you?",
+          "Is this jacket yours?"
+        ],
+        "answer": 2,
+        "speech": "Is this jacket yours?",
+        "explanation": "Перед существительным ставим my, your, his, her, its, our, their: my book. Когда существительное уже понятно, можно сказать mine, yours, his, hers, ours, theirs: The book is mine."
+      }
+    ]
+  },
+  {
+    "id": "a2-object",
+    "level": "A2",
+    "group": "pronouns",
+    "title": "Кому? Объектные местоимения",
+    "rule": "После глагола и предлога нужны me, you, him, her, it, us, them: help me, with us. Не путай их с I, he, she, we, they перед глаголом.",
+    "examples": [
+      "Please help me.",
+      "I can see him."
+    ],
+    "questions": [
+      {
+        "id": "a2-object-1",
+        "prompt": "Выбери: «Пожалуйста, помоги мне».",
+        "choices": [
+          "Please help me.",
+          "Please help I.",
+          "Please help my."
+        ],
+        "answer": 0,
+        "speech": "Please help me.",
+        "explanation": "После глагола и предлога нужны me, you, him, her, it, us, them: help me, with us. Не путай их с I, he, she, we, they перед глаголом."
+      },
+      {
+        "id": "a2-object-2",
+        "prompt": "Выбери: «Я вижу его».",
+        "choices": [
+          "I can see he.",
+          "I can see his.",
+          "I can see him."
+        ],
+        "answer": 2,
+        "speech": "I can see him.",
+        "explanation": "После глагола и предлога нужны me, you, him, her, it, us, them: help me, with us. Не путай их с I, he, she, we, they перед глаголом."
+      },
+      {
+        "id": "a2-object-3",
+        "prompt": "Выбери: «Пойдём с нами».",
+        "choices": [
+          "Come with our.",
+          "Come with us.",
+          "Come with we."
+        ],
+        "answer": 1,
+        "speech": "Come with us.",
+        "explanation": "После глагола и предлога нужны me, you, him, her, it, us, them: help me, with us. Не путай их с I, he, she, we, they перед глаголом."
+      },
+      {
+        "id": "a2-object-4",
+        "prompt": "Выбери: «Она знает их».",
+        "choices": [
+          "She knows them.",
+          "She knows they.",
+          "She knows their."
+        ],
+        "answer": 0,
+        "speech": "She knows them.",
+        "explanation": "После глагола и предлога нужны me, you, him, her, it, us, them: help me, with us. Не путай их с I, he, she, we, they перед глаголом."
+      },
+      {
+        "id": "a2-object-5",
+        "prompt": "Выбери: «Эта открытка для неё».",
+        "choices": [
+          "This card is for she.",
+          "This card is for hers.",
+          "This card is for her."
+        ],
+        "answer": 2,
+        "speech": "This card is for her.",
+        "explanation": "После глагола и предлога нужны me, you, him, her, it, us, them: help me, with us. Не путай их с I, he, she, we, they перед глаголом."
+      }
+    ]
+  },
+  {
+    "id": "a2-regular-irregular",
+    "level": "A2",
+    "group": "verbs",
+    "title": "Правильные и неправильные глаголы",
+    "rule": "В Past Simple правильные глаголы получают -ed: play → played. Неправильные формы учим в контексте: go → went, eat → ate, see → saw. После did/did not снова нужна начальная форма.",
+    "examples": [
+      "We played football yesterday.",
+      "I went to the park yesterday."
+    ],
+    "questions": [
+      {
+        "id": "a2-regular-irregular-1",
+        "prompt": "Вчера мы играли в футбол.",
+        "choices": [
+          "We played football yesterday.",
+          "We play football yesterday.",
+          "We playing football yesterday."
+        ],
+        "answer": 0,
+        "speech": "We played football yesterday.",
+        "explanation": "В Past Simple правильные глаголы получают -ed: play → played. Неправильные формы учим в контексте: go → went, eat → ate, see → saw. После did/did not снова нужна начальная форма."
+      },
+      {
+        "id": "a2-regular-irregular-2",
+        "prompt": "Вчера я ходил в парк.",
+        "choices": [
+          "I goed to the park yesterday.",
+          "I go to the park yesterday.",
+          "I went to the park yesterday."
+        ],
+        "answer": 2,
+        "speech": "I went to the park yesterday.",
+        "explanation": "В Past Simple правильные глаголы получают -ed: play → played. Неправильные формы учим в контексте: go → went, eat → ate, see → saw. После did/did not снова нужна начальная форма."
+      },
+      {
+        "id": "a2-regular-irregular-3",
+        "prompt": "Она съела яблоко вчера.",
+        "choices": [
+          "She eat an apple yesterday.",
+          "She ate an apple yesterday.",
+          "She eated an apple yesterday."
+        ],
+        "answer": 1,
+        "speech": "She ate an apple yesterday.",
+        "explanation": "В Past Simple правильные глаголы получают -ed: play → played. Неправильные формы учим в контексте: go → went, eat → ate, see → saw. После did/did not снова нужна начальная форма."
+      },
+      {
+        "id": "a2-regular-irregular-4",
+        "prompt": "Ты видел лису вчера?",
+        "choices": [
+          "Did you see a fox yesterday?",
+          "Did you saw a fox yesterday?",
+          "Did you seen a fox yesterday?"
+        ],
+        "answer": 0,
+        "speech": "Did you see a fox yesterday?",
+        "explanation": "В Past Simple правильные глаголы получают -ed: play → played. Неправильные формы учим в контексте: go → went, eat → ate, see → saw. После did/did not снова нужна начальная форма."
+      },
+      {
+        "id": "a2-regular-irregular-5",
+        "prompt": "Мы не смотрели фильм вчера.",
+        "choices": [
+          "We did not watched a film yesterday.",
+          "We did not watching a film yesterday.",
+          "We did not watch a film yesterday."
+        ],
+        "answer": 2,
+        "speech": "We did not watch a film yesterday.",
+        "explanation": "В Past Simple правильные глаголы получают -ed: play → played. Неправильные формы учим в контексте: go → went, eat → ate, see → saw. После did/did not снова нужна начальная форма."
+      }
+    ]
+  },
+  {
+    "id": "a2-modal",
+    "level": "A2",
+    "group": "verbs",
+    "title": "Модальные глаголы: can, must, should",
+    "rule": "Can — умение или возможность, must — сильная необходимость, should — совет. После них ставим глагол без to и без -s. Must not означает запрет, do not have to — отсутствие необходимости.",
+    "examples": [
+      "I can swim.",
+      "You should rest."
+    ],
+    "questions": [
+      {
+        "id": "a2-modal-1",
+        "prompt": "Я умею плавать.",
+        "choices": [
+          "I can swim.",
+          "I can to swim.",
+          "I can swims."
+        ],
+        "answer": 0,
+        "speech": "I can swim.",
+        "explanation": "Can — умение или возможность, must — сильная необходимость, should — совет. После них ставим глагол без to и без -s. Must not означает запрет, do not have to — отсутствие необходимости."
+      },
+      {
+        "id": "a2-modal-2",
+        "prompt": "Тебе следует отдохнуть.",
+        "choices": [
+          "You should to rest.",
+          "You should rests.",
+          "You should rest."
+        ],
+        "answer": 2,
+        "speech": "You should rest.",
+        "explanation": "Can — умение или возможность, must — сильная необходимость, should — совет. После них ставим глагол без to и без -s. Must not означает запрет, do not have to — отсутствие необходимости."
+      },
+      {
+        "id": "a2-modal-3",
+        "prompt": "Он должен надеть шлем.",
+        "choices": [
+          "He must to wear a helmet.",
+          "He must wear a helmet.",
+          "He must wears a helmet."
+        ],
+        "answer": 1,
+        "speech": "He must wear a helmet.",
+        "explanation": "Can — умение или возможность, must — сильная необходимость, should — совет. После них ставим глагол без to и без -s. Must not означает запрет, do not have to — отсутствие необходимости."
+      },
+      {
+        "id": "a2-modal-4",
+        "prompt": "Здесь нельзя бегать.",
+        "choices": [
+          "You must not run here.",
+          "You must not to run here.",
+          "You must not runs here."
+        ],
+        "answer": 0,
+        "speech": "You must not run here.",
+        "explanation": "Can — умение или возможность, must — сильная необходимость, should — совет. После них ставим глагол без to и без -s. Must not означает запрет, do not have to — отсутствие необходимости."
+      },
+      {
+        "id": "a2-modal-5",
+        "prompt": "Завтра тебе не обязательно приходить.",
+        "choices": [
+          "You do not has to come tomorrow.",
+          "You does not have to come tomorrow.",
+          "You do not have to come tomorrow."
+        ],
+        "answer": 2,
+        "speech": "You do not have to come tomorrow.",
+        "explanation": "Can — умение или возможность, must — сильная необходимость, should — совет. После них ставим глагол без to и без -s. Must not означает запрет, do not have to — отсутствие необходимости."
+      }
+    ]
+  },
+  {
+    "id": "a2-now-usual",
+    "level": "A2",
+    "group": "tenses",
+    "title": "Present Continuous: сейчас или обычно?",
+    "rule": "Действие сейчас: am/is/are + глагол-ing. Обычное действие: Present Simple. Подсказки now и every day помогают понять смысл, но сначала прочитай всю ситуацию.",
+    "examples": [
+      "Look! The fox is running.",
+      "I am reading a book now."
+    ],
+    "questions": [
+      {
+        "id": "a2-now-usual-1",
+        "prompt": "Смотри! Лиса сейчас бежит.",
+        "choices": [
+          "Look! The fox is running.",
+          "Look! The fox running.",
+          "Look! The fox are running."
+        ],
+        "answer": 0,
+        "speech": "Look! The fox is running.",
+        "explanation": "Действие сейчас: am/is/are + глагол-ing. Обычное действие: Present Simple. Подсказки now и every day помогают понять смысл, но сначала прочитай всю ситуацию."
+      },
+      {
+        "id": "a2-now-usual-2",
+        "prompt": "Я сейчас читаю книгу.",
+        "choices": [
+          "I reading a book now.",
+          "I is reading a book now.",
+          "I am reading a book now."
+        ],
+        "answer": 2,
+        "speech": "I am reading a book now.",
+        "explanation": "Действие сейчас: am/is/are + глагол-ing. Обычное действие: Present Simple. Подсказки now и every day помогают понять смысл, но сначала прочитай всю ситуацию."
+      },
+      {
+        "id": "a2-now-usual-3",
+        "prompt": "Мы обычно обедаем в час.",
+        "choices": [
+          "We usually having lunch at one.",
+          "We usually have lunch at one.",
+          "We usually has lunch at one."
+        ],
+        "answer": 1,
+        "speech": "We usually have lunch at one.",
+        "explanation": "Действие сейчас: am/is/are + глагол-ing. Обычное действие: Present Simple. Подсказки now и every day помогают понять смысл, но сначала прочитай всю ситуацию."
+      },
+      {
+        "id": "a2-now-usual-4",
+        "prompt": "Они сейчас не спят.",
+        "choices": [
+          "They are not sleeping now.",
+          "They is not sleeping now.",
+          "They not sleeping now."
+        ],
+        "answer": 0,
+        "speech": "They are not sleeping now.",
+        "explanation": "Действие сейчас: am/is/are + глагол-ing. Обычное действие: Present Simple. Подсказки now и every day помогают понять смысл, но сначала прочитай всю ситуацию."
+      },
+      {
+        "id": "a2-now-usual-5",
+        "prompt": "Спроси: «Что она сейчас делает?»",
+        "choices": [
+          "What she is doing now?",
+          "What are she doing now?",
+          "What is she doing now?"
+        ],
+        "answer": 2,
+        "speech": "What is she doing now?",
+        "explanation": "Действие сейчас: am/is/are + глагол-ing. Обычное действие: Present Simple. Подсказки now и every day помогают понять смысл, но сначала прочитай всю ситуацию."
+      }
+    ]
+  },
+  {
+    "id": "a2-future",
+    "level": "A2",
+    "group": "tenses",
+    "title": "Будущее: планы и решения",
+    "rule": "Be going to — заранее задуманный план. Will часто выражает решение в момент речи или обещание. Оба способа могут описывать будущее; форму выбираем по ситуации.",
+    "examples": [
+      "We are going to visit the museum.",
+      "I will carry your bag."
+    ],
+    "questions": [
+      {
+        "id": "a2-future-1",
+        "prompt": "Мы уже запланировали поездку: «Мы собираемся посетить музей».",
+        "choices": [
+          "We are going to visit the museum.",
+          "We is going to visit the museum.",
+          "We going to visit the museum."
+        ],
+        "answer": 0,
+        "speech": "We are going to visit the museum.",
+        "explanation": "Be going to — заранее задуманный план. Will часто выражает решение в момент речи или обещание. Оба способа могут описывать будущее; форму выбираем по ситуации."
+      },
+      {
+        "id": "a2-future-2",
+        "prompt": "Я только что решил помочь: «Я понесу твою сумку».",
+        "choices": [
+          "I will carries your bag.",
+          "I will to carry your bag.",
+          "I will carry your bag."
+        ],
+        "answer": 2,
+        "speech": "I will carry your bag.",
+        "explanation": "Be going to — заранее задуманный план. Will часто выражает решение в момент речи или обещание. Оба способа могут описывать будущее; форму выбираем по ситуации."
+      },
+      {
+        "id": "a2-future-3",
+        "prompt": "Она заранее решила испечь торт.",
+        "choices": [
+          "She going to bake a cake.",
+          "She is going to bake a cake.",
+          "She are going to bake a cake."
+        ],
+        "answer": 1,
+        "speech": "She is going to bake a cake.",
+        "explanation": "Be going to — заранее задуманный план. Will часто выражает решение в момент речи или обещание. Оба способа могут описывать будущее; форму выбираем по ситуации."
+      },
+      {
+        "id": "a2-future-4",
+        "prompt": "Обещаю: «Я тебе позвоню».",
+        "choices": [
+          "I will call you.",
+          "I will calls you.",
+          "I will calling you."
+        ],
+        "answer": 0,
+        "speech": "I will call you.",
+        "explanation": "Be going to — заранее задуманный план. Will часто выражает решение в момент речи или обещание. Оба способа могут описывать будущее; форму выбираем по ситуации."
+      },
+      {
+        "id": "a2-future-5",
+        "prompt": "Спроси о плане: «Вы собираетесь играть?»",
+        "choices": [
+          "Is you going to play?",
+          "You are going to play?",
+          "Are you going to play?"
+        ],
+        "answer": 2,
+        "speech": "Are you going to play?",
+        "explanation": "Be going to — заранее задуманный план. Will часто выражает решение в момент речи или обещание. Оба способа могут описывать будущее; форму выбираем по ситуации."
+      }
+    ]
+  },
+  {
+    "id": "b1-reflexive",
+    "level": "B1",
+    "group": "pronouns",
+    "title": "Возвратные и неопределённые местоимения",
+    "rule": "Myself/yourself/himself/herself/ourselves/themselves указывают, что действие направлено на самого участника. Someone — кто-то, anyone — кто-нибудь, nobody — никто. С nobody не добавляем второе отрицание.",
+    "examples": [
+      "I made this poster myself.",
+      "She looked at herself in the mirror."
+    ],
+    "questions": [
+      {
+        "id": "b1-reflexive-1",
+        "prompt": "Я сделал этот плакат сам.",
+        "choices": [
+          "I made this poster myself.",
+          "I made this poster meself.",
+          "I made this poster myselves."
+        ],
+        "answer": 0,
+        "speech": "I made this poster myself.",
+        "explanation": "Myself/yourself/himself/herself/ourselves/themselves указывают, что действие направлено на самого участника. Someone — кто-то, anyone — кто-нибудь, nobody — никто. С nobody не добавляем второе отрицание."
+      },
+      {
+        "id": "b1-reflexive-2",
+        "prompt": "Она посмотрела на себя в зеркало.",
+        "choices": [
+          "She looked at sheself in the mirror.",
+          "She looked at herselfs in the mirror.",
+          "She looked at herself in the mirror."
+        ],
+        "answer": 2,
+        "speech": "She looked at herself in the mirror.",
+        "explanation": "Myself/yourself/himself/herself/ourselves/themselves указывают, что действие направлено на самого участника. Someone — кто-то, anyone — кто-нибудь, nobody — никто. С nobody не добавляем второе отрицание."
+      },
+      {
+        "id": "b1-reflexive-3",
+        "prompt": "Мы сами приготовили обед.",
+        "choices": [
+          "We cooked lunch usselves.",
+          "We cooked lunch ourselves.",
+          "We cooked lunch ourself."
+        ],
+        "answer": 1,
+        "speech": "We cooked lunch ourselves.",
+        "explanation": "Myself/yourself/himself/herself/ourselves/themselves указывают, что действие направлено на самого участника. Someone — кто-то, anyone — кто-нибудь, nobody — никто. С nobody не добавляем второе отрицание."
+      },
+      {
+        "id": "b1-reflexive-4",
+        "prompt": "В комнате никого не было.",
+        "choices": [
+          "Nobody was in the room.",
+          "Nobody were in the room.",
+          "Nobody weren't in the room."
+        ],
+        "answer": 0,
+        "speech": "Nobody was in the room.",
+        "explanation": "Myself/yourself/himself/herself/ourselves/themselves указывают, что действие направлено на самого участника. Someone — кто-то, anyone — кто-нибудь, nobody — никто. С nobody не добавляем второе отрицание."
+      },
+      {
+        "id": "b1-reflexive-5",
+        "prompt": "Кто-нибудь знает ответ?",
+        "choices": [
+          "Do anyone know the answer?",
+          "Does anyone knows the answer?",
+          "Does anyone know the answer?"
+        ],
+        "answer": 2,
+        "speech": "Does anyone know the answer?",
+        "explanation": "Myself/yourself/himself/herself/ourselves/themselves указывают, что действие направлено на самого участника. Someone — кто-то, anyone — кто-нибудь, nobody — никто. С nobody не добавляем второе отрицание."
+      }
+    ]
+  },
+  {
+    "id": "b1-stative",
+    "level": "B1",
+    "group": "verbs",
+    "title": "Глаголы состояния и действия",
+    "rule": "Know, believe, need, understand обычно описывают состояние и не употребляются в Continuous. У некоторых глаголов форма зависит от значения: I think — считаю, I am thinking — обдумываю.",
+    "examples": [
+      "I know the answer.",
+      "She understands the rule."
+    ],
+    "questions": [
+      {
+        "id": "b1-stative-1",
+        "prompt": "Состояние: «Я знаю ответ».",
+        "choices": [
+          "I know the answer.",
+          "I am knowing the answer.",
+          "I knows the answer."
+        ],
+        "answer": 0,
+        "speech": "I know the answer.",
+        "explanation": "Know, believe, need, understand обычно описывают состояние и не употребляются в Continuous. У некоторых глаголов форма зависит от значения: I think — считаю, I am thinking — обдумываю."
+      },
+      {
+        "id": "b1-stative-2",
+        "prompt": "Состояние: «Она понимает правило».",
+        "choices": [
+          "She is understanding the rule.",
+          "She understand the rule.",
+          "She understands the rule."
+        ],
+        "answer": 2,
+        "speech": "She understands the rule.",
+        "explanation": "Know, believe, need, understand обычно описывают состояние и не употребляются в Continuous. У некоторых глаголов форма зависит от значения: I think — считаю, I am thinking — обдумываю."
+      },
+      {
+        "id": "b1-stative-3",
+        "prompt": "Сейчас мне нужна помощь.",
+        "choices": [
+          "I needs help now.",
+          "I need help now.",
+          "I am needing help now."
+        ],
+        "answer": 1,
+        "speech": "I need help now.",
+        "explanation": "Know, believe, need, understand обычно описывают состояние и не употребляются в Continuous. У некоторых глаголов форма зависит от значения: I think — считаю, I am thinking — обдумываю."
+      },
+      {
+        "id": "b1-stative-4",
+        "prompt": "Мнение: «Я думаю, что это хорошая идея».",
+        "choices": [
+          "I think it is a good idea.",
+          "I thinks it is a good idea.",
+          "I thinking it is a good idea."
+        ],
+        "answer": 0,
+        "speech": "I think it is a good idea.",
+        "explanation": "Know, believe, need, understand обычно описывают состояние и не употребляются в Continuous. У некоторых глаголов форма зависит от значения: I think — считаю, I am thinking — обдумываю."
+      },
+      {
+        "id": "b1-stative-5",
+        "prompt": "Процесс сейчас: «Я обдумываю задачу».",
+        "choices": [
+          "I thinking about the problem.",
+          "I am think about the problem.",
+          "I am thinking about the problem."
+        ],
+        "answer": 2,
+        "speech": "I am thinking about the problem.",
+        "explanation": "Know, believe, need, understand обычно описывают состояние и не употребляются в Continuous. У некоторых глаголов форма зависит от значения: I think — считаю, I am thinking — обдумываю."
+      }
+    ]
+  },
+  {
+    "id": "b1-transitivity",
+    "level": "B1",
+    "group": "verbs",
+    "title": "Переходные глаголы и предлоги",
+    "rule": "Переходный глагол может иметь прямое дополнение: open the door. Непереходному оно не требуется: arrive. Некоторые сочетания требуют предлога: listen to music, wait for a friend. Один глагол может иметь несколько моделей.",
+    "examples": [
+      "Please open the door.",
+      "We listen to music."
+    ],
+    "questions": [
+      {
+        "id": "b1-transitivity-1",
+        "prompt": "Открой дверь, пожалуйста.",
+        "choices": [
+          "Please open the door.",
+          "Please open to the door.",
+          "Please open at the door."
+        ],
+        "answer": 0,
+        "speech": "Please open the door.",
+        "explanation": "Переходный глагол может иметь прямое дополнение: open the door. Непереходному оно не требуется: arrive. Некоторые сочетания требуют предлога: listen to music, wait for a friend. Один глагол может иметь несколько моделей."
+      },
+      {
+        "id": "b1-transitivity-2",
+        "prompt": "Мы слушаем музыку.",
+        "choices": [
+          "We listen music.",
+          "We listen for music.",
+          "We listen to music."
+        ],
+        "answer": 2,
+        "speech": "We listen to music.",
+        "explanation": "Переходный глагол может иметь прямое дополнение: open the door. Непереходному оно не требуется: arrive. Некоторые сочетания требуют предлога: listen to music, wait for a friend. Один глагол может иметь несколько моделей."
+      },
+      {
+        "id": "b1-transitivity-3",
+        "prompt": "Я жду своего друга.",
+        "choices": [
+          "I am waiting to my friend.",
+          "I am waiting for my friend.",
+          "I am waiting my friend."
+        ],
+        "answer": 1,
+        "speech": "I am waiting for my friend.",
+        "explanation": "Переходный глагол может иметь прямое дополнение: open the door. Непереходному оно не требуется: arrive. Некоторые сочетания требуют предлога: listen to music, wait for a friend. Один глагол может иметь несколько моделей."
+      },
+      {
+        "id": "b1-transitivity-4",
+        "prompt": "Она прибыла на станцию.",
+        "choices": [
+          "She arrived at the station.",
+          "She arrived the station.",
+          "She arrived to the station."
+        ],
+        "answer": 0,
+        "speech": "She arrived at the station.",
+        "explanation": "Переходный глагол может иметь прямое дополнение: open the door. Непереходному оно не требуется: arrive. Некоторые сочетания требуют предлога: listen to music, wait for a friend. Один глагол может иметь несколько моделей."
+      },
+      {
+        "id": "b1-transitivity-5",
+        "prompt": "Они обсуждали план.",
+        "choices": [
+          "They discussed about the plan.",
+          "They discussed to the plan.",
+          "They discussed the plan."
+        ],
+        "answer": 2,
+        "speech": "They discussed the plan.",
+        "explanation": "Переходный глагол может иметь прямое дополнение: open the door. Непереходному оно не требуется: arrive. Некоторые сочетания требуют предлога: listen to music, wait for a friend. Один глагол может иметь несколько моделей."
+      }
+    ]
+  },
+  {
+    "id": "b1-perfect",
+    "level": "B1",
+    "group": "tenses",
+    "title": "Present Perfect и Past Simple",
+    "rule": "Present Perfect: have/has + третья форма, связь с настоящим или опыт без законченного времени. Past Simple: законченное прошлое, например yesterday. Been и gone различаются: побывал и вернулся / ушёл и ещё не вернулся.",
+    "examples": [
+      "I have been to London.",
+      "I visited London last year."
+    ],
+    "questions": [
+      {
+        "id": "b1-perfect-1",
+        "prompt": "Опыт без указания времени: «Я побывал в Лондоне».",
+        "choices": [
+          "I have been to London.",
+          "I have went to London.",
+          "I has been to London."
+        ],
+        "answer": 0,
+        "speech": "I have been to London.",
+        "explanation": "Present Perfect: have/has + третья форма, связь с настоящим или опыт без законченного времени. Past Simple: законченное прошлое, например yesterday. Been и gone различаются: побывал и вернулся / ушёл и ещё не вернулся."
+      },
+      {
+        "id": "b1-perfect-2",
+        "prompt": "Законченное время: «Я посетил Лондон в прошлом году».",
+        "choices": [
+          "I have visited London last year.",
+          "I visit London last year.",
+          "I visited London last year."
+        ],
+        "answer": 2,
+        "speech": "I visited London last year.",
+        "explanation": "Present Perfect: have/has + третья форма, связь с настоящим или опыт без законченного времени. Past Simple: законченное прошлое, например yesterday. Been и gone различаются: побывал и вернулся / ушёл и ещё не вернулся."
+      },
+      {
+        "id": "b1-perfect-3",
+        "prompt": "Она уже закончила домашнее задание.",
+        "choices": [
+          "She has already finish her homework.",
+          "She has already finished her homework.",
+          "She have already finished her homework."
+        ],
+        "answer": 1,
+        "speech": "She has already finished her homework.",
+        "explanation": "Present Perfect: have/has + третья форма, связь с настоящим или опыт без законченного времени. Past Simple: законченное прошлое, например yesterday. Been и gone различаются: побывал и вернулся / ушёл и ещё не вернулся."
+      },
+      {
+        "id": "b1-perfect-4",
+        "prompt": "Мы ещё не видели этот фильм.",
+        "choices": [
+          "We have not seen this film yet.",
+          "We have not saw this film yet.",
+          "We has not seen this film yet."
+        ],
+        "answer": 0,
+        "speech": "We have not seen this film yet.",
+        "explanation": "Present Perfect: have/has + третья форма, связь с настоящим или опыт без законченного времени. Past Simple: законченное прошлое, например yesterday. Been и gone различаются: побывал и вернулся / ушёл и ещё не вернулся."
+      },
+      {
+        "id": "b1-perfect-5",
+        "prompt": "Ты когда-нибудь ел суши?",
+        "choices": [
+          "Have you ever ate sushi?",
+          "Has you ever eaten sushi?",
+          "Have you ever eaten sushi?"
+        ],
+        "answer": 2,
+        "speech": "Have you ever eaten sushi?",
+        "explanation": "Present Perfect: have/has + третья форма, связь с настоящим или опыт без законченного времени. Past Simple: законченное прошлое, например yesterday. Been и gone различаются: побывал и вернулся / ушёл и ещё не вернулся."
+      }
+    ]
+  },
+  {
+    "id": "b1-past-continuous",
+    "level": "B1",
+    "group": "tenses",
+    "title": "Past Continuous: фон истории",
+    "rule": "Was/were + глагол-ing — действие в процессе в прошлом. Past Simple — отдельное событие на этом фоне: I was reading when the phone rang.",
+    "examples": [
+      "I was reading at eight yesterday.",
+      "We were playing when it started to rain."
+    ],
+    "questions": [
+      {
+        "id": "b1-past-continuous-1",
+        "prompt": "В восемь вчера я читал.",
+        "choices": [
+          "I was reading at eight yesterday.",
+          "I were reading at eight yesterday.",
+          "I was read at eight yesterday."
+        ],
+        "answer": 0,
+        "speech": "I was reading at eight yesterday.",
+        "explanation": "Was/were + глагол-ing — действие в процессе в прошлом. Past Simple — отдельное событие на этом фоне: I was reading when the phone rang."
+      },
+      {
+        "id": "b1-past-continuous-2",
+        "prompt": "Мы играли, когда начался дождь.",
+        "choices": [
+          "We was playing when it started to rain.",
+          "We were play when it started to rain.",
+          "We were playing when it started to rain."
+        ],
+        "answer": 2,
+        "speech": "We were playing when it started to rain.",
+        "explanation": "Was/were + глагол-ing — действие в процессе в прошлом. Past Simple — отдельное событие на этом фоне: I was reading when the phone rang."
+      },
+      {
+        "id": "b1-past-continuous-3",
+        "prompt": "Она готовила, когда я пришёл.",
+        "choices": [
+          "She was cook when I arrived.",
+          "She was cooking when I arrived.",
+          "She were cooking when I arrived."
+        ],
+        "answer": 1,
+        "speech": "She was cooking when I arrived.",
+        "explanation": "Was/were + глагол-ing — действие в процессе в прошлом. Past Simple — отдельное событие на этом фоне: I was reading when the phone rang."
+      },
+      {
+        "id": "b1-past-continuous-4",
+        "prompt": "Они спали в полночь.",
+        "choices": [
+          "They were sleeping at midnight.",
+          "They was sleeping at midnight.",
+          "They were sleep at midnight."
+        ],
+        "answer": 0,
+        "speech": "They were sleeping at midnight.",
+        "explanation": "Was/were + глагол-ing — действие в процессе в прошлом. Past Simple — отдельное событие на этом фоне: I was reading when the phone rang."
+      },
+      {
+        "id": "b1-past-continuous-5",
+        "prompt": "Что ты делал в шесть вчера?",
+        "choices": [
+          "What was you doing at six yesterday?",
+          "What were you do at six yesterday?",
+          "What were you doing at six yesterday?"
+        ],
+        "answer": 2,
+        "speech": "What were you doing at six yesterday?",
+        "explanation": "Was/were + глагол-ing — действие в процессе в прошлом. Past Simple — отдельное событие на этом фоне: I was reading when the phone rang."
+      }
+    ]
+  },
+  {
+    "id": "b2-relative",
+    "level": "B2",
+    "group": "pronouns",
+    "title": "Относительные местоимения и уточнения",
+    "rule": "Who — о людях, which — о вещах, whose — о принадлежности. В ограничительных придаточных часто возможно that; в этих заданиях выбираем из предложенных who/which/whose. После запятой that не используется.",
+    "examples": [
+      "The girl who won is my sister.",
+      "The book which is on the table is mine."
+    ],
+    "questions": [
+      {
+        "id": "b2-relative-1",
+        "prompt": "Выбери местоимение: «Девочка, которая выиграла, — моя сестра».",
+        "choices": [
+          "The girl who won is my sister.",
+          "The girl which won is my sister.",
+          "The girl whose won is my sister."
+        ],
+        "answer": 0,
+        "speech": "The girl who won is my sister.",
+        "explanation": "Who — о людях, which — о вещах, whose — о принадлежности. В ограничительных придаточных часто возможно that; в этих заданиях выбираем из предложенных who/which/whose. После запятой that не используется."
+      },
+      {
+        "id": "b2-relative-2",
+        "prompt": "Книга, которая лежит на столе, моя.",
+        "choices": [
+          "The book who is on the table is mine.",
+          "The book whose is on the table is mine.",
+          "The book which is on the table is mine."
+        ],
+        "answer": 2,
+        "speech": "The book which is on the table is mine.",
+        "explanation": "Who — о людях, which — о вещах, whose — о принадлежности. В ограничительных придаточных часто возможно that; в этих заданиях выбираем из предложенных who/which/whose. После запятой that не используется."
+      },
+      {
+        "id": "b2-relative-3",
+        "prompt": "Это мальчик, чья собака потерялась.",
+        "choices": [
+          "This is the boy which dog is missing.",
+          "This is the boy whose dog is missing.",
+          "This is the boy who dog is missing."
+        ],
+        "answer": 1,
+        "speech": "This is the boy whose dog is missing.",
+        "explanation": "Who — о людях, which — о вещах, whose — о принадлежности. В ограничительных придаточных часто возможно that; в этих заданиях выбираем из предложенных who/which/whose. После запятой that не используется."
+      },
+      {
+        "id": "b2-relative-4",
+        "prompt": "Моя тётя, которая живёт в Риме, — врач.",
+        "choices": [
+          "My aunt, who lives in Rome, is a doctor.",
+          "My aunt, that lives in Rome, is a doctor.",
+          "My aunt, whose lives in Rome, is a doctor."
+        ],
+        "answer": 0,
+        "speech": "My aunt, who lives in Rome, is a doctor.",
+        "explanation": "Who — о людях, which — о вещах, whose — о принадлежности. В ограничительных придаточных часто возможно that; в этих заданиях выбираем из предложенных who/which/whose. После запятой that не используется."
+      },
+      {
+        "id": "b2-relative-5",
+        "prompt": "Мой велосипед, который новый, красный.",
+        "choices": [
+          "My bike, that is new, is red.",
+          "My bike, who is new, is red.",
+          "My bike, which is new, is red."
+        ],
+        "answer": 2,
+        "speech": "My bike, which is new, is red.",
+        "explanation": "Who — о людях, which — о вещах, whose — о принадлежности. В ограничительных придаточных часто возможно that; в этих заданиях выбираем из предложенных who/which/whose. После запятой that не используется."
+      }
+    ]
+  },
+  {
+    "id": "b2-passive",
+    "level": "B2",
+    "group": "verbs",
+    "title": "Активный и пассивный залог",
+    "rule": "В пассиве важен объект действия: be в нужном времени + третья форма. The team built the bridge → The bridge was built by the team. Не каждый глагол и не каждый контекст допускают такой переход.",
+    "examples": [
+      "This book was written by a young author.",
+      "English is spoken here."
+    ],
+    "questions": [
+      {
+        "id": "b2-passive-1",
+        "prompt": "Пассив: «Эту книгу написал молодой автор».",
+        "choices": [
+          "This book was written by a young author.",
+          "This book was wrote by a young author.",
+          "This book were written by a young author."
+        ],
+        "answer": 0,
+        "speech": "This book was written by a young author.",
+        "explanation": "В пассиве важен объект действия: be в нужном времени + третья форма. The team built the bridge → The bridge was built by the team. Не каждый глагол и не каждый контекст допускают такой переход."
+      },
+      {
+        "id": "b2-passive-2",
+        "prompt": "Пассив: «Здесь говорят по-английски».",
+        "choices": [
+          "English is speak here.",
+          "English are spoken here.",
+          "English is spoken here."
+        ],
+        "answer": 2,
+        "speech": "English is spoken here.",
+        "explanation": "В пассиве важен объект действия: be в нужном времени + третья форма. The team built the bridge → The bridge was built by the team. Не каждый глагол и не каждый контекст допускают такой переход."
+      },
+      {
+        "id": "b2-passive-3",
+        "prompt": "Пассив: «Окна моют каждую неделю».",
+        "choices": [
+          "The windows are clean every week.",
+          "The windows are cleaned every week.",
+          "The windows is cleaned every week."
+        ],
+        "answer": 1,
+        "speech": "The windows are cleaned every week.",
+        "explanation": "В пассиве важен объект действия: be в нужном времени + третья форма. The team built the bridge → The bridge was built by the team. Не каждый глагол и не каждый контекст допускают такой переход."
+      },
+      {
+        "id": "b2-passive-4",
+        "prompt": "Пассив: «Результаты объявят завтра».",
+        "choices": [
+          "The results will be announced tomorrow.",
+          "The results will announced tomorrow.",
+          "The results will be announce tomorrow."
+        ],
+        "answer": 0,
+        "speech": "The results will be announced tomorrow.",
+        "explanation": "В пассиве важен объект действия: be в нужном времени + третья форма. The team built the bridge → The bridge was built by the team. Не каждый глагол и не каждый контекст допускают такой переход."
+      },
+      {
+        "id": "b2-passive-5",
+        "prompt": "Пассив: «Дверь уже отремонтировали».",
+        "choices": [
+          "The door has already be repaired.",
+          "The door have already been repaired.",
+          "The door has already been repaired."
+        ],
+        "answer": 2,
+        "speech": "The door has already been repaired.",
+        "explanation": "В пассиве важен объект действия: be в нужном времени + третья форма. The team built the bridge → The bridge was built by the team. Не каждый глагол и не каждый контекст допускают такой переход."
+      }
+    ]
+  },
+  {
+    "id": "b2-past-perfect",
+    "level": "B2",
+    "group": "tenses",
+    "title": "Past Perfect: что случилось раньше",
+    "rule": "Had + третья форма показывает действие раньше другого момента в прошлом. Сначала автобус уехал, потом мы пришли: The bus had left before we arrived. Контекст важнее механического поиска before/after.",
+    "examples": [
+      "The bus had already left when we arrived.",
+      "I had finished my work before she called."
+    ],
+    "questions": [
+      {
+        "id": "b2-past-perfect-1",
+        "prompt": "Когда мы пришли, автобус уже уехал.",
+        "choices": [
+          "The bus had already left when we arrived.",
+          "The bus had already leave when we arrived.",
+          "The bus has already left when we arrived yesterday."
+        ],
+        "answer": 0,
+        "speech": "The bus had already left when we arrived.",
+        "explanation": "Had + третья форма показывает действие раньше другого момента в прошлом. Сначала автобус уехал, потом мы пришли: The bus had left before we arrived. Контекст важнее механического поиска before/after."
+      },
+      {
+        "id": "b2-past-perfect-2",
+        "prompt": "Я закончил работу до того, как она позвонила.",
+        "choices": [
+          "I had finish my work before she called.",
+          "I have finished my work before she called yesterday.",
+          "I had finished my work before she called."
+        ],
+        "answer": 2,
+        "speech": "I had finished my work before she called.",
+        "explanation": "Had + третья форма показывает действие раньше другого момента в прошлом. Сначала автобус уехал, потом мы пришли: The bus had left before we arrived. Контекст важнее механического поиска before/after."
+      },
+      {
+        "id": "b2-past-perfect-3",
+        "prompt": "Он никогда не видел снег до той поездки.",
+        "choices": [
+          "He had never see snow before that trip.",
+          "He had never seen snow before that trip.",
+          "He had never saw snow before that trip."
+        ],
+        "answer": 1,
+        "speech": "He had never seen snow before that trip.",
+        "explanation": "Had + третья форма показывает действие раньше другого момента в прошлом. Сначала автобус уехал, потом мы пришли: The bus had left before we arrived. Контекст важнее механического поиска before/after."
+      },
+      {
+        "id": "b2-past-perfect-4",
+        "prompt": "Они поели до начала фильма.",
+        "choices": [
+          "They had eaten before the film started.",
+          "They had ate before the film started.",
+          "They had eat before the film started."
+        ],
+        "answer": 0,
+        "speech": "They had eaten before the film started.",
+        "explanation": "Had + третья форма показывает действие раньше другого момента в прошлом. Сначала автобус уехал, потом мы пришли: The bus had left before we arrived. Контекст важнее механического поиска before/after."
+      },
+      {
+        "id": "b2-past-perfect-5",
+        "prompt": "Я понял, что забыл ключи.",
+        "choices": [
+          "I realised that I had forgot my keys.",
+          "I realised that I have forget my keys.",
+          "I realised that I had forgotten my keys."
+        ],
+        "answer": 2,
+        "speech": "I realised that I had forgotten my keys.",
+        "explanation": "Had + третья форма показывает действие раньше другого момента в прошлом. Сначала автобус уехал, потом мы пришли: The bus had left before we arrived. Контекст важнее механического поиска before/after."
+      }
+    ]
+  },
+  {
+    "id": "b2-future-perfect",
+    "level": "B2",
+    "group": "tenses",
+    "title": "Future Continuous и Future Perfect",
+    "rule": "Will be + -ing — процесс в определённый момент будущего. Will have + третья форма — результат к будущему сроку. Сравни: tomorrow at six / by tomorrow evening.",
+    "examples": [
+      "I will be travelling home at six tomorrow.",
+      "We will have finished the project by Friday."
+    ],
+    "questions": [
+      {
+        "id": "b2-future-perfect-1",
+        "prompt": "Завтра в шесть я буду ехать домой.",
+        "choices": [
+          "I will be travelling home at six tomorrow.",
+          "I will travelling home at six tomorrow.",
+          "I will be travel home at six tomorrow."
+        ],
+        "answer": 0,
+        "speech": "I will be travelling home at six tomorrow.",
+        "explanation": "Will be + -ing — процесс в определённый момент будущего. Will have + третья форма — результат к будущему сроку. Сравни: tomorrow at six / by tomorrow evening."
+      },
+      {
+        "id": "b2-future-perfect-2",
+        "prompt": "К пятнице мы закончим проект.",
+        "choices": [
+          "We will have finish the project by Friday.",
+          "We will has finished the project by Friday.",
+          "We will have finished the project by Friday."
+        ],
+        "answer": 2,
+        "speech": "We will have finished the project by Friday.",
+        "explanation": "Will be + -ing — процесс в определённый момент будущего. Will have + третья форма — результат к будущему сроку. Сравни: tomorrow at six / by tomorrow evening."
+      },
+      {
+        "id": "b2-future-perfect-3",
+        "prompt": "В это время завтра она будет лететь в Рим.",
+        "choices": [
+          "She will be fly to Rome this time tomorrow.",
+          "She will be flying to Rome this time tomorrow.",
+          "She will flying to Rome this time tomorrow."
+        ],
+        "answer": 1,
+        "speech": "She will be flying to Rome this time tomorrow.",
+        "explanation": "Will be + -ing — процесс в определённый момент будущего. Will have + третья форма — результат к будущему сроку. Сравни: tomorrow at six / by tomorrow evening."
+      },
+      {
+        "id": "b2-future-perfect-4",
+        "prompt": "К полудню они уже уедут.",
+        "choices": [
+          "They will have left by noon.",
+          "They will have leave by noon.",
+          "They will has left by noon."
+        ],
+        "answer": 0,
+        "speech": "They will have left by noon.",
+        "explanation": "Will be + -ing — процесс в определённый момент будущего. Will have + третья форма — результат к будущему сроку. Сравни: tomorrow at six / by tomorrow evening."
+      },
+      {
+        "id": "b2-future-perfect-5",
+        "prompt": "В восемь завтра мы будем ужинать.",
+        "choices": [
+          "We will having dinner at eight tomorrow.",
+          "We will be have dinner at eight tomorrow.",
+          "We will be having dinner at eight tomorrow."
+        ],
+        "answer": 2,
+        "speech": "We will be having dinner at eight tomorrow.",
+        "explanation": "Will be + -ing — процесс в определённый момент будущего. Will have + третья форма — результат к будущему сроку. Сравни: tomorrow at six / by tomorrow evening."
+      }
+    ]
+  },
+  {
+    "id": "b2-modal-perfect",
+    "level": "B2",
+    "group": "verbs",
+    "title": "Модальные глаголы о прошлом",
+    "rule": "Must have + третья форма — уверенный вывод о прошлом; might have — возможность; should have — совет или сожаление о прошлом. Это не то же самое, что обязанность в прошлом: had to.",
+    "examples": [
+      "He must have forgotten the meeting.",
+      "She might have missed the bus."
+    ],
+    "questions": [
+      {
+        "id": "b2-modal-perfect-1",
+        "prompt": "Вывод: «Он, должно быть, забыл встречу».",
+        "choices": [
+          "He must have forgotten the meeting.",
+          "He must have forgot the meeting.",
+          "He must has forgotten the meeting."
+        ],
+        "answer": 0,
+        "speech": "He must have forgotten the meeting.",
+        "explanation": "Must have + третья форма — уверенный вывод о прошлом; might have — возможность; should have — совет или сожаление о прошлом. Это не то же самое, что обязанность в прошлом: had to."
+      },
+      {
+        "id": "b2-modal-perfect-2",
+        "prompt": "Возможно, она пропустила автобус.",
+        "choices": [
+          "She might has missed the bus.",
+          "She might have miss the bus.",
+          "She might have missed the bus."
+        ],
+        "answer": 2,
+        "speech": "She might have missed the bus.",
+        "explanation": "Must have + третья форма — уверенный вывод о прошлом; might have — возможность; should have — совет или сожаление о прошлом. Это не то же самое, что обязанность в прошлом: had to."
+      },
+      {
+        "id": "b2-modal-perfect-3",
+        "prompt": "Тебе следовало позвонить раньше.",
+        "choices": [
+          "You should have call earlier.",
+          "You should have called earlier.",
+          "You should has called earlier."
+        ],
+        "answer": 1,
+        "speech": "You should have called earlier.",
+        "explanation": "Must have + третья форма — уверенный вывод о прошлом; might have — возможность; should have — совет или сожаление о прошлом. Это не то же самое, что обязанность в прошлом: had to."
+      },
+      {
+        "id": "b2-modal-perfect-4",
+        "prompt": "Она не могла это увидеть: её там не было.",
+        "choices": [
+          "She cannot have seen it; she was not there.",
+          "She cannot have saw it; she was not there.",
+          "She cannot has seen it; she was not there."
+        ],
+        "answer": 0,
+        "speech": "She cannot have seen it; she was not there.",
+        "explanation": "Must have + третья форма — уверенный вывод о прошлом; might have — возможность; should have — совет или сожаление о прошлом. Это не то же самое, что обязанность в прошлом: had to."
+      },
+      {
+        "id": "b2-modal-perfect-5",
+        "prompt": "Вчера мне пришлось уйти рано.",
+        "choices": [
+          "I must to leave early yesterday.",
+          "I had to left early yesterday.",
+          "I had to leave early yesterday."
+        ],
+        "answer": 2,
+        "speech": "I had to leave early yesterday.",
+        "explanation": "Must have + третья форма — уверенный вывод о прошлом; might have — возможность; should have — совет или сожаление о прошлом. Это не то же самое, что обязанность в прошлом: had to."
+      }
+    ]
+  }
+]

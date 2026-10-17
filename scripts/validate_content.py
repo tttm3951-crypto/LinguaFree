@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Structural validation of LinguaFree lessons and original stories."""
 import json
+import hashlib
 from pathlib import Path
 from collections import defaultdict
 
@@ -52,6 +53,9 @@ if duplicates:
 if len(unique) < 900:
     errors.append(f"Vocabulary diversity regression: only {len(unique)} distinct prompt-answer pairs; expected at least 900")
 dictionary = json.loads((root / "dictionary.json").read_text(encoding="utf-8"))
+identity_hash=hashlib.sha256(json.dumps([(x['en'],x['ru']) for x in dictionary],ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
+if identity_hash != '0b0d08b24e22c917ac090ffc1e9936b8e5e971d2d025e8f50822635dae8df12f':
+    errors.append('Dictionary identities/order changed: migrate existing card progress before accepting this change')
 seen_dictionary = set()
 with_examples = 0
 for i, entry in enumerate(dictionary, 1):
@@ -66,8 +70,11 @@ for i, entry in enumerate(dictionary, 1):
         with_examples += 1
 if len(dictionary) < 600:
     errors.append(f"Dictionary too small: {len(dictionary)}")
+if with_examples != len(dictionary):
+    errors.append(f"Missing contextual examples: {len(dictionary)-with_examples}")
 print(f"Offline dictionary: {len(dictionary)} entries; {with_examples} contextual examples")
 if errors:
     print("\n".join("ERROR: " + error for error in errors))
     raise SystemExit(1)
 print("Structural checks passed. This is not a linguistic accuracy certification.")
+

@@ -1,6 +1,9 @@
 name: Build Android APK
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -56,12 +59,23 @@ jobs:
       - name: Check offline features and progress compatibility
         run: python3 scripts/validate_app_contract.py
 
+      - name: Validate word repetition policy and grammar curriculum
+        run: |
+          python3 scripts/validate_curriculum.py
+          python3 -m unittest discover -s scripts -p 'test_curriculum.py'
+
+      - name: Build and validate bundled offline reference
+        run: |
+          python3 scripts/build_offline_library.py
+          python3 scripts/validate_beginner.py
+
       - name: Compile debug APK
         env:
           LINGUAFREE_CLASSROOM_URL: ${{ vars.LINGUAFREE_CLASSROOM_URL }}
-        run: gradle --no-daemon --stacktrace assembleDebug
+        run: gradle --no-daemon --stacktrace testDebugUnitTest assembleDebug
 
       - name: Build persistently signed release when signing secrets exist
+        if: github.event_name != 'pull_request'
         env:
           LINGUAFREE_CLASSROOM_URL: ${{ vars.LINGUAFREE_CLASSROOM_URL }}
           LINGUAFREE_KEYSTORE_B64: ${{ secrets.LINGUAFREE_KEYSTORE_B64 }}
@@ -81,6 +95,7 @@ jobs:
           cp app/build/outputs/apk/release/*-release.apk signed-release/
 
       - name: Upload signed release APK (if configured)
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: LinguaFree-signed-release-apk
@@ -93,3 +108,4 @@ jobs:
           name: LinguaFree-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+

@@ -1,0 +1,1634 @@
+[
+  {
+    "id": "start-01",
+    "title": "Буква и звук",
+    "level": "Pre-A1",
+    "group": "reading",
+    "rule": "Буква — знак, звук — то, что слышим. Имя буквы не всегда совпадает со звуком в слове. Начни с узнавания букв и коротких слов; не заменяй английские звуки русскими буквами.",
+    "examples": [
+      "A is a letter. — A — буква.",
+      "I can read a word. — Я могу прочитать слово."
+    ],
+    "questions": [
+      {
+        "prompt": "Найди строчную букву для A",
+        "choices": [
+          "a",
+          "e",
+          "o"
+        ],
+        "answer": 0,
+        "speech": "A is a letter.",
+        "explanation": "Верный вариант: a. Буква — знак, звук — то, что слышим. Имя буквы не всегда совпадает со звуком в слове. Начни с узнавания букв и коротких слов; не заменяй английские звуки русскими буквами."
+      },
+      {
+        "prompt": "Найди заглавную букву для b",
+        "choices": [
+          "D",
+          "P",
+          "B"
+        ],
+        "answer": 2,
+        "speech": "B is a letter.",
+        "explanation": "Верный вариант: B. Буква — знак, звук — то, что слышим. Имя буквы не всегда совпадает со звуком в слове. Начни с узнавания букв и коротких слов; не заменяй английские звуки русскими буквами."
+      },
+      {
+        "prompt": "В какой паре одна и та же буква?",
+        "choices": [
+          "R n",
+          "M m",
+          "N h"
+        ],
+        "answer": 1,
+        "speech": "This is the letter M.",
+        "explanation": "Верный вариант: M m. Буква — знак, звук — то, что слышим. Имя буквы не всегда совпадает со звуком в слове. Начни с узнавания букв и коротких слов; не заменяй английские звуки русскими буквами."
+      },
+      {
+        "prompt": "Сколько букв в слове map?",
+        "choices": [
+          "3",
+          "2",
+          "4"
+        ],
+        "answer": 0,
+        "speech": "This is a map.",
+        "explanation": "Верный вариант: 3. Буква — знак, звук — то, что слышим. Имя буквы не всегда совпадает со звуком в слове. Начни с узнавания букв и коротких слов; не заменяй английские звуки русскими буквами."
+      },
+      {
+        "prompt": "Что мы произносим, когда читаем слово?",
+        "choices": [
+          "Только имена букв",
+          "Цвета",
+          "Звуки"
+        ],
+        "answer": 2,
+        "speech": "I can read.",
+        "explanation": "Верный вариант: Звуки. Буква — знак, звук — то, что слышим. Имя буквы не всегда совпадает со звуком в слове. Начни с узнавания букв и коротких слов; не заменяй английские звуки русскими буквами."
+      }
+    ]
+  },
+  {
+    "id": "start-02",
+    "title": "Короткие гласные",
+    "level": "Pre-A1",
+    "group": "reading",
+    "rule": "Слушай слово целиком, затем сравнивай гласный звук. В коротких cat, bed, sit, dog, sun гласная не читается как её имя в алфавите. Звуки и написание изучаем вместе, а не по одному правилу без исключений.",
+    "examples": [
+      "The cat is small. — Кошка маленькая.",
+      "The sun is up. — Солнце взошло."
+    ],
+    "questions": [
+      {
+        "prompt": "В каком слове гласная a?",
+        "choices": [
+          "bed",
+          "sit",
+          "cat"
+        ],
+        "answer": 2,
+        "speech": "The cat is small.",
+        "explanation": "Верный вариант: cat. Слушай слово целиком, затем сравнивай гласный звук. В коротких cat, bed, sit, dog, sun гласная не читается как её имя в алфавите. Звуки и написание изучаем вместе, а не по одному правилу без исключений."
+      },
+      {
+        "prompt": "Найди слово с короткой e",
+        "choices": [
+          "dog",
+          "bed",
+          "sun"
+        ],
+        "answer": 1,
+        "speech": "This is my bed.",
+        "explanation": "Верный вариант: bed. Слушай слово целиком, затем сравнивай гласный звук. В коротких cat, bed, sit, dog, sun гласная не читается как её имя в алфавите. Звуки и написание изучаем вместе, а не по одному правилу без исключений."
+      },
+      {
+        "prompt": "Найди слово с короткой i",
+        "choices": [
+          "sit",
+          "cat",
+          "sun"
+        ],
+        "answer": 0,
+        "speech": "Please sit here.",
+        "explanation": "Верный вариант: sit. Слушай слово целиком, затем сравнивай гласный звук. В коротких cat, bed, sit, dog, sun гласная не читается как её имя в алфавите. Звуки и написание изучаем вместе, а не по одному правилу без исключений."
+      },
+      {
+        "prompt": "В каком слове гласная o?",
+        "choices": [
+          "bed",
+          "sit",
+          "dog"
+        ],
+        "answer": 2,
+        "speech": "The dog can run.",
+        "explanation": "Верный вариант: dog. Слушай слово целиком, затем сравнивай гласный звук. В коротких cat, bed, sit, dog, sun гласная не читается как её имя в алфавите. Звуки и написание изучаем вместе, а не по одному правилу без исключений."
+      },
+      {
+        "prompt": "В каком слове гласная u?",
+        "choices": [
+          "dog",
+          "sun",
+          "cat"
+        ],
+        "answer": 1,
+        "speech": "The sun is bright.",
+        "explanation": "Верный вариант: sun. Слушай слово целиком, затем сравнивай гласный звук. В коротких cat, bed, sit, dog, sun гласная не читается как её имя в алфавите. Звуки и написание изучаем вместе, а не по одному правилу без исключений."
+      }
+    ]
+  },
+  {
+    "id": "start-03",
+    "title": "Немая e и чтение",
+    "level": "Pre-A1",
+    "group": "reading",
+    "rule": "В парах cap–cape, kit–kite конечная e обычно не звучит, но меняет чтение предыдущей гласной. Это полезный образец, а не закон для любого английского слова. Сравни звучание готовых слов.",
+    "examples": [
+      "I have a kite. — У меня есть воздушный змей.",
+      "This is a cake. — Это торт."
+    ],
+    "questions": [
+      {
+        "prompt": "Выбери слово с конечной немой e",
+        "choices": [
+          "kid",
+          "kite",
+          "kit"
+        ],
+        "answer": 1,
+        "speech": "I have a kite.",
+        "explanation": "Верный вариант: kite. В парах cap–cape, kit–kite конечная e обычно не звучит, но меняет чтение предыдущей гласной. Это полезный образец, а не закон для любого английского слова. Сравни звучание готовых слов."
+      },
+      {
+        "prompt": "Какое слово значит «торт»?",
+        "choices": [
+          "cake",
+          "cat",
+          "cap"
+        ],
+        "answer": 0,
+        "speech": "This is a cake.",
+        "explanation": "Верный вариант: cake. В парах cap–cape, kit–kite конечная e обычно не звучит, но меняет чтение предыдущей гласной. Это полезный образец, а не закон для любого английского слова. Сравни звучание готовых слов."
+      },
+      {
+        "prompt": "В какой паре добавлена конечная e?",
+        "choices": [
+          "cat — dog",
+          "sun — bed",
+          "cap — cape"
+        ],
+        "answer": 2,
+        "speech": "This is a cape.",
+        "explanation": "Верный вариант: cap — cape. В парах cap–cape, kit–kite конечная e обычно не звучит, но меняет чтение предыдущей гласной. Это полезный образец, а не закон для любого английского слова. Сравни звучание готовых слов."
+      },
+      {
+        "prompt": "Какое слово значит «имя»?",
+        "choices": [
+          "map",
+          "name",
+          "man"
+        ],
+        "answer": 1,
+        "speech": "My name is Mia.",
+        "explanation": "Верный вариант: name. В парах cap–cape, kit–kite конечная e обычно не звучит, но меняет чтение предыдущей гласной. Это полезный образец, а не закон для любого английского слова. Сравни звучание готовых слов."
+      },
+      {
+        "prompt": "Конечная e меняет чтение всегда без исключений?",
+        "choices": [
+          "Нет, есть исключения",
+          "Да, всегда",
+          "В английском нет e"
+        ],
+        "answer": 0,
+        "speech": "There are exceptions.",
+        "explanation": "Верный вариант: Нет, есть исключения. В парах cap–cape, kit–kite конечная e обычно не звучит, но меняет чтение предыдущей гласной. Это полезный образец, а не закон для любого английского слова. Сравни звучание готовых слов."
+      }
+    ]
+  },
+  {
+    "id": "start-04",
+    "title": "Буквосочетания",
+    "level": "Pre-A1",
+    "group": "reading",
+    "rule": "Две буквы могут обозначать один звук: sh, ch, th. В th кончик языка подходит к зубам; не пытайся оценивать акцент по написанию. Слушай и повторяй пары, сначала медленно.",
+    "examples": [
+      "This is a fish. — Это рыба.",
+      "The chair is red. — Стул красный."
+    ],
+    "questions": [
+      {
+        "prompt": "Найди слово с sh",
+        "choices": [
+          "fish",
+          "cat",
+          "pen"
+        ],
+        "answer": 0,
+        "speech": "This is a fish.",
+        "explanation": "Верный вариант: fish. Две буквы могут обозначать один звук: sh, ch, th. В th кончик языка подходит к зубам; не пытайся оценивать акцент по написанию. Слушай и повторяй пары, сначала медленно."
+      },
+      {
+        "prompt": "Найди слово с ch",
+        "choices": [
+          "ship",
+          "sun",
+          "chair"
+        ],
+        "answer": 2,
+        "speech": "The chair is red.",
+        "explanation": "Верный вариант: chair. Две буквы могут обозначать один звук: sh, ch, th. В th кончик языка подходит к зубам; не пытайся оценивать акцент по написанию. Слушай и повторяй пары, сначала медленно."
+      },
+      {
+        "prompt": "Найди слово с th",
+        "choices": [
+          "tea",
+          "three",
+          "tree"
+        ],
+        "answer": 1,
+        "speech": "I have three pens.",
+        "explanation": "Верный вариант: three. Две буквы могут обозначать один звук: sh, ch, th. В th кончик языка подходит к зубам; не пытайся оценивать акцент по написанию. Слушай и повторяй пары, сначала медленно."
+      },
+      {
+        "prompt": "Какие буквы вместе есть в слове shop?",
+        "choices": [
+          "sh",
+          "ch",
+          "ph"
+        ],
+        "answer": 0,
+        "speech": "The shop is open.",
+        "explanation": "Верный вариант: sh. Две буквы могут обозначать один звук: sh, ch, th. В th кончик языка подходит к зубам; не пытайся оценивать акцент по написанию. Слушай и повторяй пары, сначала медленно."
+      },
+      {
+        "prompt": "Сколько букв в сочетании ch?",
+        "choices": [
+          "Одна буква",
+          "Три буквы",
+          "Две буквы"
+        ],
+        "answer": 2,
+        "speech": "This is a chair.",
+        "explanation": "Верный вариант: Две буквы. Две буквы могут обозначать один звук: sh, ch, th. В th кончик языка подходит к зубам; не пытайся оценивать акцент по написанию. Слушай и повторяй пары, сначала медленно."
+      }
+    ]
+  },
+  {
+    "id": "start-05",
+    "title": "Я, ты, он и она",
+    "level": "Pre-A1",
+    "group": "words",
+    "rule": "Местоимение заменяет имя: I — я, you — ты или вы, he — он, she — она, it — предмет или животное без уточнения пола. I всегда пишем с заглавной буквы.",
+    "examples": [
+      "She is my friend. — Она моя подруга.",
+      "We are here. — Мы здесь."
+    ],
+    "questions": [
+      {
+        "prompt": "Выбери «Я здесь»",
+        "choices": [
+          "He is here.",
+          "They are here.",
+          "I am here."
+        ],
+        "answer": 2,
+        "speech": "I am here.",
+        "explanation": "Верный вариант: I am here.. Местоимение заменяет имя: I — я, you — ты или вы, he — он, she — она, it — предмет или животное без уточнения пола. I всегда пишем с заглавной буквы."
+      },
+      {
+        "prompt": "Выбери «Она моя подруга»",
+        "choices": [
+          "It is my friend.",
+          "She is my friend.",
+          "He is my friend."
+        ],
+        "answer": 1,
+        "speech": "She is my friend.",
+        "explanation": "Верный вариант: She is my friend.. Местоимение заменяет имя: I — я, you — ты или вы, he — он, she — она, it — предмет или животное без уточнения пола. I всегда пишем с заглавной буквы."
+      },
+      {
+        "prompt": "Tom — мальчик. Замени имя",
+        "choices": [
+          "He is Tom.",
+          "She is Tom.",
+          "We are Tom."
+        ],
+        "answer": 0,
+        "speech": "He is Tom.",
+        "explanation": "Верный вариант: He is Tom.. Местоимение заменяет имя: I — я, you — ты или вы, he — он, she — она, it — предмет или животное без уточнения пола. I всегда пишем с заглавной буквы."
+      },
+      {
+        "prompt": "Выбери «Мы готовы»",
+        "choices": [
+          "They are ready.",
+          "I am ready.",
+          "We are ready."
+        ],
+        "answer": 2,
+        "speech": "We are ready.",
+        "explanation": "Верный вариант: We are ready.. Местоимение заменяет имя: I — я, you — ты или вы, he — он, she — она, it — предмет или животное без уточнения пола. I всегда пишем с заглавной буквы."
+      },
+      {
+        "prompt": "Как пишется «я» внутри английского предложения?",
+        "choices": [
+          "Только me",
+          "Всегда I",
+          "Всегда i"
+        ],
+        "answer": 1,
+        "speech": "I can help.",
+        "explanation": "Верный вариант: Всегда I. Местоимение заменяет имя: I — я, you — ты или вы, he — он, she — она, it — предмет или животное без уточнения пола. I всегда пишем с заглавной буквы."
+      }
+    ]
+  },
+  {
+    "id": "start-06",
+    "title": "Один и много",
+    "level": "Pre-A1",
+    "group": "words",
+    "rule": "У большинства существительных множественное число образуется с -s: bag–bags. После некоторых окончаний добавляется -es: box–boxes. Есть особые формы: child–children; их узнаём в примерах.",
+    "examples": [
+      "I have two bags. — У меня две сумки.",
+      "The children are here. — Дети здесь."
+    ],
+    "questions": [
+      {
+        "prompt": "Одна книга — book. Две книги?",
+        "choices": [
+          "two bookes",
+          "two books",
+          "two book"
+        ],
+        "answer": 1,
+        "speech": "I have two books.",
+        "explanation": "Верный вариант: two books. У большинства существительных множественное число образуется с -s: bag–bags. После некоторых окончаний добавляется -es: box–boxes. Есть особые формы: child–children; их узнаём в примерах."
+      },
+      {
+        "prompt": "Одна коробка — box. Три коробки?",
+        "choices": [
+          "three boxes",
+          "three boxs",
+          "three box"
+        ],
+        "answer": 0,
+        "speech": "There are three boxes.",
+        "explanation": "Верный вариант: three boxes. У большинства существительных множественное число образуется с -s: bag–bags. После некоторых окончаний добавляется -es: box–boxes. Есть особые формы: child–children; их узнаём в примерах."
+      },
+      {
+        "prompt": "Много детей",
+        "choices": [
+          "The childs are here.",
+          "The child is here.",
+          "The children are here."
+        ],
+        "answer": 2,
+        "speech": "The children are here.",
+        "explanation": "Верный вариант: The children are here.. У большинства существительных множественное число образуется с -s: bag–bags. После некоторых окончаний добавляется -es: box–boxes. Есть особые формы: child–children; их узнаём в примерах."
+      },
+      {
+        "prompt": "Выбери единственное число",
+        "choices": [
+          "three apples",
+          "one apple",
+          "two apples"
+        ],
+        "answer": 1,
+        "speech": "I have one apple.",
+        "explanation": "Верный вариант: one apple. У большинства существительных множественное число образуется с -s: bag–bags. После некоторых окончаний добавляется -es: box–boxes. Есть особые формы: child–children; их узнаём в примерах."
+      },
+      {
+        "prompt": "Выбери множественное число",
+        "choices": [
+          "four pens",
+          "one pen",
+          "a pen"
+        ],
+        "answer": 0,
+        "speech": "I have four pens.",
+        "explanation": "Верный вариант: four pens. У большинства существительных множественное число образуется с -s: bag–bags. После некоторых окончаний добавляется -es: box–boxes. Есть особые формы: child–children; их узнаём в примерах."
+      }
+    ]
+  },
+  {
+    "id": "start-07",
+    "title": "Мой, твой, чей?",
+    "level": "Pre-A1",
+    "group": "words",
+    "rule": "Перед предметом можно поставить my, your, his, her, our, their. Они отвечают на вопрос «чей?». Для имени владельца используем 's: Mia's bag. Не путай my bag и I am Mia.",
+    "examples": [
+      "This is our room. — Это наша комната.",
+      "This is Mia's bag. — Это сумка Мии."
+    ],
+    "questions": [
+      {
+        "prompt": "Выбери «моя ручка»",
+        "choices": [
+          "my pen",
+          "I pen",
+          "me pen"
+        ],
+        "answer": 0,
+        "speech": "This is my pen.",
+        "explanation": "Верный вариант: my pen. Перед предметом можно поставить my, your, his, her, our, their. Они отвечают на вопрос «чей?». Для имени владельца используем 's: Mia's bag. Не путай my bag и I am Mia."
+      },
+      {
+        "prompt": "Выбери «твоя книга»",
+        "choices": [
+          "you book",
+          "yours book",
+          "your book"
+        ],
+        "answer": 2,
+        "speech": "This is your book.",
+        "explanation": "Верный вариант: your book. Перед предметом можно поставить my, your, his, her, our, their. Они отвечают на вопрос «чей?». Для имени владельца используем 's: Mia's bag. Не путай my bag и I am Mia."
+      },
+      {
+        "prompt": "Выбери «её сумка»",
+        "choices": [
+          "hers bag",
+          "her bag",
+          "she bag"
+        ],
+        "answer": 1,
+        "speech": "This is her bag.",
+        "explanation": "Верный вариант: her bag. Перед предметом можно поставить my, your, his, her, our, their. Они отвечают на вопрос «чей?». Для имени владельца используем 's: Mia's bag. Не путай my bag и I am Mia."
+      },
+      {
+        "prompt": "Выбери «наша комната»",
+        "choices": [
+          "our room",
+          "we room",
+          "us room"
+        ],
+        "answer": 0,
+        "speech": "This is our room.",
+        "explanation": "Верный вариант: our room. Перед предметом можно поставить my, your, his, her, our, their. Они отвечают на вопрос «чей?». Для имени владельца используем 's: Mia's bag. Не путай my bag и I am Mia."
+      },
+      {
+        "prompt": "Выбери «сумка Мии»",
+        "choices": [
+          "Mia bag's",
+          "Mias bag's",
+          "Mia's bag"
+        ],
+        "answer": 2,
+        "speech": "This is Mia's bag.",
+        "explanation": "Верный вариант: Mia's bag. Перед предметом можно поставить my, your, his, her, our, their. Они отвечают на вопрос «чей?». Для имени владельца используем 's: Mia's bag. Не путай my bag и I am Mia."
+      }
+    ]
+  },
+  {
+    "id": "start-08",
+    "title": "Числа и порядок",
+    "level": "Pre-A1",
+    "group": "words",
+    "rule": "Числа one, two, three называют количество. First, second, third называют место по порядку. Не смешивай thirteen (13) и thirty (30): слушай ударение и проверяй число в ситуации.",
+    "examples": [
+      "I have three pencils. — У меня три карандаша.",
+      "This is my first lesson. — Это мой первый урок."
+    ],
+    "questions": [
+      {
+        "prompt": "У тебя 3 карандаша",
+        "choices": [
+          "I have thirteen pencils.",
+          "I have thirty pencils.",
+          "I have three pencils."
+        ],
+        "answer": 2,
+        "speech": "I have three pencils.",
+        "explanation": "Верный вариант: I have three pencils.. Числа one, two, three называют количество. First, second, third называют место по порядку. Не смешивай thirteen (13) и thirty (30): слушай ударение и проверяй число в ситуации."
+      },
+      {
+        "prompt": "Какое число — thirteen?",
+        "choices": [
+          "3",
+          "13",
+          "30"
+        ],
+        "answer": 1,
+        "speech": "I am thirteen.",
+        "explanation": "Верный вариант: 13. Числа one, two, three называют количество. First, second, third называют место по порядку. Не смешивай thirteen (13) и thirty (30): слушай ударение и проверяй число в ситуации."
+      },
+      {
+        "prompt": "Какое число — thirty?",
+        "choices": [
+          "30",
+          "13",
+          "3"
+        ],
+        "answer": 0,
+        "speech": "There are thirty pages.",
+        "explanation": "Верный вариант: 30. Числа one, two, three называют количество. First, second, third называют место по порядку. Не смешивай thirteen (13) и thirty (30): слушай ударение и проверяй число в ситуации."
+      },
+      {
+        "prompt": "Выбери «первый урок»",
+        "choices": [
+          "my one lesson",
+          "my third lesson",
+          "my first lesson"
+        ],
+        "answer": 2,
+        "speech": "This is my first lesson.",
+        "explanation": "Верный вариант: my first lesson. Числа one, two, three называют количество. First, second, third называют место по порядку. Не смешивай thirteen (13) и thirty (30): слушай ударение и проверяй число в ситуации."
+      },
+      {
+        "prompt": "Выбери «второй день»",
+        "choices": [
+          "the third day",
+          "the second day",
+          "the two day"
+        ],
+        "answer": 1,
+        "speech": "This is the second day.",
+        "explanation": "Верный вариант: the second day. Числа one, two, three называют количество. First, second, third называют место по порядку. Не смешивай thirteen (13) и thirty (30): слушай ударение и проверяй число в ситуации."
+      }
+    ]
+  },
+  {
+    "id": "start-09",
+    "title": "Приветствие и знакомство",
+    "level": "Pre-A1",
+    "group": "sentences",
+    "rule": "Сначала учимся здороваться, называть себя и задавать короткий вопрос. Good morning — утром, Good evening — вечером, Good night — при прощании перед сном. Вопрос и ответ произносим парой.",
+    "examples": [
+      "Hello! My name is Ben. — Привет! Меня зовут Бен.",
+      "How are you? I am fine. — Как дела? У меня всё хорошо."
+    ],
+    "questions": [
+      {
+        "prompt": "Поздоровайся утром",
+        "choices": [
+          "Goodbye!",
+          "Good morning!",
+          "Good night!"
+        ],
+        "answer": 1,
+        "speech": "Good morning!",
+        "explanation": "Верный вариант: Good morning!. Сначала учимся здороваться, называть себя и задавать короткий вопрос. Good morning — утром, Good evening — вечером, Good night — при прощании перед сном. Вопрос и ответ произносим парой."
+      },
+      {
+        "prompt": "Назови себя: Ben",
+        "choices": [
+          "My name is Ben.",
+          "Your name is Ben.",
+          "His name is Ben."
+        ],
+        "answer": 0,
+        "speech": "My name is Ben.",
+        "explanation": "Верный вариант: My name is Ben.. Сначала учимся здороваться, называть себя и задавать короткий вопрос. Good morning — утром, Good evening — вечером, Good night — при прощании перед сном. Вопрос и ответ произносим парой."
+      },
+      {
+        "prompt": "Спроси «Как дела?»",
+        "choices": [
+          "Where are you?",
+          "Who is she?",
+          "How are you?"
+        ],
+        "answer": 2,
+        "speech": "How are you?",
+        "explanation": "Верный вариант: How are you?. Сначала учимся здороваться, называть себя и задавать короткий вопрос. Good morning — утром, Good evening — вечером, Good night — при прощании перед сном. Вопрос и ответ произносим парой."
+      },
+      {
+        "prompt": "Ответь: всё хорошо",
+        "choices": [
+          "It is under the bed.",
+          "I am fine, thank you.",
+          "I am a pencil."
+        ],
+        "answer": 1,
+        "speech": "I am fine, thank you.",
+        "explanation": "Верный вариант: I am fine, thank you.. Сначала учимся здороваться, называть себя и задавать короткий вопрос. Good morning — утром, Good evening — вечером, Good night — при прощании перед сном. Вопрос и ответ произносим парой."
+      },
+      {
+        "prompt": "Попрощайся перед сном",
+        "choices": [
+          "Good night!",
+          "Good morning!",
+          "Good afternoon!"
+        ],
+        "answer": 0,
+        "speech": "Good night!",
+        "explanation": "Верный вариант: Good night!. Сначала учимся здороваться, называть себя и задавать короткий вопрос. Good morning — утром, Good evening — вечером, Good night — при прощании перед сном. Вопрос и ответ произносим парой."
+      }
+    ]
+  },
+  {
+    "id": "start-10",
+    "title": "A, an и the",
+    "level": "A1",
+    "group": "words",
+    "rule": "A/an вводит один исчисляемый предмет, который ещё не определён для собеседника. An ставим перед гласным звуком, a — перед согласным: an apple, a book. The помогает назвать уже понятный или конкретный предмет. Ориентируемся на звук, а не только на букву.",
+    "examples": [
+      "I have an orange. — У меня есть апельсин.",
+      "The orange is sweet. — Этот апельсин сладкий."
+    ],
+    "questions": [
+      {
+        "prompt": "Один ещё не известный собеседнику предмет: ___ apple",
+        "choices": [
+          "an apple",
+          "a apple",
+          "apple an"
+        ],
+        "answer": 0,
+        "speech": "I have an apple.",
+        "explanation": "Верный вариант: an apple. A/an вводит один исчисляемый предмет, который ещё не определён для собеседника. An ставим перед гласным звуком, a — перед согласным: an apple, a book. The помогает назвать уже понятный или конкретный предмет. Ориентируемся на звук, а не только на букву."
+      },
+      {
+        "prompt": "Одна книга: ___ book",
+        "choices": [
+          "an book",
+          "book a",
+          "a book"
+        ],
+        "answer": 2,
+        "speech": "I have a book.",
+        "explanation": "Верный вариант: a book. A/an вводит один исчисляемый предмет, который ещё не определён для собеседника. An ставим перед гласным звуком, a — перед согласным: an apple, a book. The помогает назвать уже понятный или конкретный предмет. Ориентируемся на звук, а не только на букву."
+      },
+      {
+        "prompt": "Книгу уже назвали. Она синяя",
+        "choices": [
+          "Book the is blue.",
+          "The book is blue.",
+          "An book is blue."
+        ],
+        "answer": 1,
+        "speech": "The book is blue.",
+        "explanation": "Верный вариант: The book is blue.. A/an вводит один исчисляемый предмет, который ещё не определён для собеседника. An ставим перед гласным звуком, a — перед согласным: an apple, a book. The помогает назвать уже понятный или конкретный предмет. Ориентируемся на звук, а не только на букву."
+      },
+      {
+        "prompt": "В hour начальная h не звучит. Выбери",
+        "choices": [
+          "an hour",
+          "a hour",
+          "hour an"
+        ],
+        "answer": 0,
+        "speech": "I need an hour.",
+        "explanation": "Верный вариант: an hour. A/an вводит один исчисляемый предмет, который ещё не определён для собеседника. An ставим перед гласным звуком, a — перед согласным: an apple, a book. The помогает назвать уже понятный или конкретный предмет. Ориентируемся на звук, а не только на букву."
+      },
+      {
+        "prompt": "Выбираем a/an по чему?",
+        "choices": [
+          "Только по первой букве",
+          "По цвету предмета",
+          "По первому звуку"
+        ],
+        "answer": 2,
+        "speech": "I have a yellow bag.",
+        "explanation": "Верный вариант: По первому звуку. A/an вводит один исчисляемый предмет, который ещё не определён для собеседника. An ставим перед гласным звуком, a — перед согласным: an apple, a book. The помогает назвать уже понятный или конкретный предмет. Ориентируемся на звук, а не только на букву."
+      }
+    ]
+  },
+  {
+    "id": "start-11",
+    "title": "Это и те предметы",
+    "level": "A1",
+    "group": "words",
+    "rule": "This — один предмет рядом, that — один дальше. These — несколько рядом, those — несколько дальше. Сопоставляй и расстояние, и количество.",
+    "examples": [
+      "This is my desk. — Это моя парта.",
+      "Those are birds. — Вон те — птицы."
+    ],
+    "questions": [
+      {
+        "prompt": "Одна ручка у тебя в руке",
+        "choices": [
+          "These are pens.",
+          "Those are pens.",
+          "This is a pen."
+        ],
+        "answer": 2,
+        "speech": "This is a pen.",
+        "explanation": "Верный вариант: This is a pen.. This — один предмет рядом, that — один дальше. These — несколько рядом, those — несколько дальше. Сопоставляй и расстояние, и количество."
+      },
+      {
+        "prompt": "Несколько книг рядом",
+        "choices": [
+          "That is a book.",
+          "These are books.",
+          "This is a book."
+        ],
+        "answer": 1,
+        "speech": "These are books.",
+        "explanation": "Верный вариант: These are books.. This — один предмет рядом, that — один дальше. These — несколько рядом, those — несколько дальше. Сопоставляй и расстояние, и количество."
+      },
+      {
+        "prompt": "Один дом вдалеке",
+        "choices": [
+          "That is a house.",
+          "These are houses.",
+          "Those are houses."
+        ],
+        "answer": 0,
+        "speech": "That is a house.",
+        "explanation": "Верный вариант: That is a house.. This — один предмет рядом, that — один дальше. These — несколько рядом, those — несколько дальше. Сопоставляй и расстояние, и количество."
+      },
+      {
+        "prompt": "Несколько птиц вдалеке",
+        "choices": [
+          "That is a bird.",
+          "This is a bird.",
+          "Those are birds."
+        ],
+        "answer": 2,
+        "speech": "Those are birds.",
+        "explanation": "Верный вариант: Those are birds.. This — один предмет рядом, that — один дальше. These — несколько рядом, those — несколько дальше. Сопоставляй и расстояние, и количество."
+      },
+      {
+        "prompt": "Выбери согласованное предложение",
+        "choices": [
+          "This are my pencils.",
+          "These are my pencils.",
+          "These is my pencil."
+        ],
+        "answer": 1,
+        "speech": "These are my pencils.",
+        "explanation": "Верный вариант: These are my pencils.. This — один предмет рядом, that — один дальше. These — несколько рядом, those — несколько дальше. Сопоставляй и расстояние, и количество."
+      }
+    ]
+  },
+  {
+    "id": "start-12",
+    "title": "Сколько: some, many, much",
+    "level": "A1",
+    "group": "words",
+    "rule": "Книги можно посчитать: many books. Воду обычно считаем порциями: much water. Some означает некоторое количество и часто используется в утверждениях. Для начала сравниваем предметы и вещества; сложные исключения оставим на потом.",
+    "examples": [
+      "There are some apples. — Есть несколько яблок.",
+      "There is some water. — Есть немного воды."
+    ],
+    "questions": [
+      {
+        "prompt": "Книги считаются по одной",
+        "choices": [
+          "How book many?",
+          "How many books?",
+          "How much books?"
+        ],
+        "answer": 1,
+        "speech": "How many books are there?",
+        "explanation": "Верный вариант: How many books?. Книги можно посчитать: many books. Воду обычно считаем порциями: much water. Some означает некоторое количество и часто используется в утверждениях. Для начала сравниваем предметы и вещества; сложные исключения оставим на потом."
+      },
+      {
+        "prompt": "Спроси о количестве воды",
+        "choices": [
+          "How much water?",
+          "How many water?",
+          "How waters?"
+        ],
+        "answer": 0,
+        "speech": "How much water is there?",
+        "explanation": "Верный вариант: How much water?. Книги можно посчитать: many books. Воду обычно считаем порциями: much water. Some означает некоторое количество и часто используется в утверждениях. Для начала сравниваем предметы и вещества; сложные исключения оставим на потом."
+      },
+      {
+        "prompt": "Выбери «немного молока»",
+        "choices": [
+          "many milk",
+          "a milk books",
+          "some milk"
+        ],
+        "answer": 2,
+        "speech": "There is some milk.",
+        "explanation": "Верный вариант: some milk. Книги можно посчитать: many books. Воду обычно считаем порциями: much water. Some означает некоторое количество и часто используется в утверждениях. Для начала сравниваем предметы и вещества; сложные исключения оставим на потом."
+      },
+      {
+        "prompt": "Выбери «много ручек»",
+        "choices": [
+          "a pens",
+          "many pens",
+          "much pens"
+        ],
+        "answer": 1,
+        "speech": "There are many pens.",
+        "explanation": "Верный вариант: many pens. Книги можно посчитать: many books. Воду обычно считаем порциями: much water. Some означает некоторое количество и часто используется в утверждениях. Для начала сравниваем предметы и вещества; сложные исключения оставим на потом."
+      },
+      {
+        "prompt": "Что обычно нельзя посчитать без меры?",
+        "choices": [
+          "water",
+          "pencil",
+          "apple"
+        ],
+        "answer": 0,
+        "speech": "I drink some water.",
+        "explanation": "Верный вариант: water. Книги можно посчитать: many books. Воду обычно считаем порциями: much water. Some означает некоторое количество и часто используется в утверждениях. Для начала сравниваем предметы и вещества; сложные исключения оставим на потом."
+      }
+    ]
+  },
+  {
+    "id": "start-13",
+    "title": "Где находится предмет?",
+    "level": "A1",
+    "group": "sentences",
+    "rule": "In — внутри, on — на поверхности, under — под, next to — рядом. Строим простую схему: предмет + is + место. Проверяем смысл по ситуации, а не только переводим одно слово.",
+    "examples": [
+      "The ball is under the chair. — Мяч под стулом.",
+      "The book is on the desk. — Книга на парте."
+    ],
+    "questions": [
+      {
+        "prompt": "Ключи внутри сумки",
+        "choices": [
+          "The keys are in the bag.",
+          "The keys are under the bag.",
+          "The keys are on the bag."
+        ],
+        "answer": 0,
+        "speech": "The keys are in the bag.",
+        "explanation": "Верный вариант: The keys are in the bag.. In — внутри, on — на поверхности, under — под, next to — рядом. Строим простую схему: предмет + is + место. Проверяем смысл по ситуации, а не только переводим одно слово."
+      },
+      {
+        "prompt": "Книга на парте",
+        "choices": [
+          "The book is in the desk.",
+          "The book is under the desk.",
+          "The book is on the desk."
+        ],
+        "answer": 2,
+        "speech": "The book is on the desk.",
+        "explanation": "Верный вариант: The book is on the desk.. In — внутри, on — на поверхности, under — под, next to — рядом. Строим простую схему: предмет + is + место. Проверяем смысл по ситуации, а не только переводим одно слово."
+      },
+      {
+        "prompt": "Мяч под стулом",
+        "choices": [
+          "The ball is in the chair.",
+          "The ball is under the chair.",
+          "The ball is on the chair."
+        ],
+        "answer": 1,
+        "speech": "The ball is under the chair.",
+        "explanation": "Верный вариант: The ball is under the chair.. In — внутри, on — на поверхности, under — под, next to — рядом. Строим простую схему: предмет + is + место. Проверяем смысл по ситуации, а не только переводим одно слово."
+      },
+      {
+        "prompt": "Школа рядом с парком",
+        "choices": [
+          "The school is next to the park.",
+          "The school is in the park.",
+          "The school is under the park."
+        ],
+        "answer": 0,
+        "speech": "The school is next to the park.",
+        "explanation": "Верный вариант: The school is next to the park.. In — внутри, on — на поверхности, under — под, next to — рядом. Строим простую схему: предмет + is + место. Проверяем смысл по ситуации, а не только переводим одно слово."
+      },
+      {
+        "prompt": "Между двумя коробками",
+        "choices": [
+          "The toy is above the boxes.",
+          "The toy is on the boxes.",
+          "The toy is between the boxes."
+        ],
+        "answer": 2,
+        "speech": "The toy is between the boxes.",
+        "explanation": "Верный вариант: The toy is between the boxes.. In — внутри, on — на поверхности, under — под, next to — рядом. Строим простую схему: предмет + is + место. Проверяем смысл по ситуации, а не только переводим одно слово."
+      }
+    ]
+  },
+  {
+    "id": "start-14",
+    "title": "Am, is, are",
+    "level": "A1",
+    "group": "sentences",
+    "rule": "В английском предложении «Я рад» нужен глагол be: I am happy. С I — am, с he/she/it — is, с you/we/they — are. В вопросе be переходит перед тем, о ком спрашиваем; not создаёт отрицание.",
+    "examples": [
+      "You are kind. — Ты добрый.",
+      "Is she ready? — Она готова?"
+    ],
+    "questions": [
+      {
+        "prompt": "Я рад",
+        "choices": [
+          "I is happy.",
+          "I are happy.",
+          "I am happy."
+        ],
+        "answer": 2,
+        "speech": "I am happy.",
+        "explanation": "Верный вариант: I am happy.. В английском предложении «Я рад» нужен глагол be: I am happy. С I — am, с he/she/it — is, с you/we/they — are. В вопросе be переходит перед тем, о ком спрашиваем; not создаёт отрицание."
+      },
+      {
+        "prompt": "Она готова",
+        "choices": [
+          "She are ready.",
+          "She is ready.",
+          "She am ready."
+        ],
+        "answer": 1,
+        "speech": "She is ready.",
+        "explanation": "Верный вариант: She is ready.. В английском предложении «Я рад» нужен глагол be: I am happy. С I — am, с he/she/it — is, с you/we/they — are. В вопросе be переходит перед тем, о ком спрашиваем; not создаёт отрицание."
+      },
+      {
+        "prompt": "Мы здесь",
+        "choices": [
+          "We are here.",
+          "We is here.",
+          "We am here."
+        ],
+        "answer": 0,
+        "speech": "We are here.",
+        "explanation": "Верный вариант: We are here.. В английском предложении «Я рад» нужен глагол be: I am happy. С I — am, с he/she/it — is, с you/we/they — are. В вопросе be переходит перед тем, о ком спрашиваем; not создаёт отрицание."
+      },
+      {
+        "prompt": "Спроси: она готова?",
+        "choices": [
+          "She ready is?",
+          "Are she ready?",
+          "Is she ready?"
+        ],
+        "answer": 2,
+        "speech": "Is she ready?",
+        "explanation": "Верный вариант: Is she ready?. В английском предложении «Я рад» нужен глагол be: I am happy. С I — am, с he/she/it — is, с you/we/they — are. В вопросе be переходит перед тем, о ком спрашиваем; not создаёт отрицание."
+      },
+      {
+        "prompt": "Скажи: он не устал",
+        "choices": [
+          "He are not tired.",
+          "He is not tired.",
+          "He not tired."
+        ],
+        "answer": 1,
+        "speech": "He is not tired.",
+        "explanation": "Верный вариант: He is not tired.. В английском предложении «Я рад» нужен глагол be: I am happy. С I — am, с he/she/it — is, с you/we/they — are. В вопросе be переходит перед тем, о ком спрашиваем; not создаёт отрицание."
+      }
+    ]
+  },
+  {
+    "id": "start-15",
+    "title": "У меня есть: have",
+    "level": "A1",
+    "group": "sentences",
+    "rule": "Have означает «иметь»: I have a bag. С he/she/it в настоящем времени — has. В обычном вопросе используем do/does, а после does возвращаем have. Конструкцию have got можно изучить отдельно, не смешивая схемы.",
+    "examples": [
+      "She has a bike. — У неё есть велосипед.",
+      "Do you have a pen? — У тебя есть ручка?"
+    ],
+    "questions": [
+      {
+        "prompt": "У меня есть сумка",
+        "choices": [
+          "I am a bag.",
+          "I have a bag.",
+          "I has a bag."
+        ],
+        "answer": 1,
+        "speech": "I have a bag.",
+        "explanation": "Верный вариант: I have a bag.. Have означает «иметь»: I have a bag. С he/she/it в настоящем времени — has. В обычном вопросе используем do/does, а после does возвращаем have. Конструкцию have got можно изучить отдельно, не смешивая схемы."
+      },
+      {
+        "prompt": "У неё есть велосипед",
+        "choices": [
+          "She has a bike.",
+          "She have a bike.",
+          "She is a bike."
+        ],
+        "answer": 0,
+        "speech": "She has a bike.",
+        "explanation": "Верный вариант: She has a bike.. Have означает «иметь»: I have a bag. С he/she/it в настоящем времени — has. В обычном вопросе используем do/does, а после does возвращаем have. Конструкцию have got можно изучить отдельно, не смешивая схемы."
+      },
+      {
+        "prompt": "Спроси: у тебя есть ручка?",
+        "choices": [
+          "Are you have a pen?",
+          "Does you has a pen?",
+          "Do you have a pen?"
+        ],
+        "answer": 2,
+        "speech": "Do you have a pen?",
+        "explanation": "Верный вариант: Do you have a pen?. Have означает «иметь»: I have a bag. С he/she/it в настоящем времени — has. В обычном вопросе используем do/does, а после does возвращаем have. Конструкцию have got можно изучить отдельно, не смешивая схемы."
+      },
+      {
+        "prompt": "Спроси о нём",
+        "choices": [
+          "Do he has a dog?",
+          "Does he have a dog?",
+          "Does he has a dog?"
+        ],
+        "answer": 1,
+        "speech": "Does he have a dog?",
+        "explanation": "Верный вариант: Does he have a dog?. Have означает «иметь»: I have a bag. С he/she/it в настоящем времени — has. В обычном вопросе используем do/does, а после does возвращаем have. Конструкцию have got можно изучить отдельно, не смешивая схемы."
+      },
+      {
+        "prompt": "У нас нет машины",
+        "choices": [
+          "We do not have a car.",
+          "We are not have a car.",
+          "We does not have a car."
+        ],
+        "answer": 0,
+        "speech": "We do not have a car.",
+        "explanation": "Верный вариант: We do not have a car.. Have означает «иметь»: I have a bag. С he/she/it в настоящем времени — has. В обычном вопросе используем do/does, а после does возвращаем have. Конструкцию have got можно изучить отдельно, не смешивая схемы."
+      }
+    ]
+  },
+  {
+    "id": "start-16",
+    "title": "Я умею: can",
+    "level": "A1",
+    "group": "sentences",
+    "rule": "Can помогает рассказать об умении. После can используем глагол без to и без -s. Вопрос начинается с can; отрицание — cannot или can't. У разных лиц форма can одна и та же.",
+    "examples": [
+      "I can draw. — Я умею рисовать.",
+      "Can you swim? — Ты умеешь плавать?"
+    ],
+    "questions": [
+      {
+        "prompt": "Я умею рисовать",
+        "choices": [
+          "I can draw.",
+          "I can to draw.",
+          "I can draws."
+        ],
+        "answer": 0,
+        "speech": "I can draw.",
+        "explanation": "Верный вариант: I can draw.. Can помогает рассказать об умении. После can используем глагол без to и без -s. Вопрос начинается с can; отрицание — cannot или can't. У разных лиц форма can одна и та же."
+      },
+      {
+        "prompt": "Она умеет плавать",
+        "choices": [
+          "She cans swim.",
+          "She can swims.",
+          "She can swim."
+        ],
+        "answer": 2,
+        "speech": "She can swim.",
+        "explanation": "Верный вариант: She can swim.. Can помогает рассказать об умении. После can используем глагол без to и без -s. Вопрос начинается с can; отрицание — cannot или can't. У разных лиц форма can одна и та же."
+      },
+      {
+        "prompt": "Спроси об умении плавать",
+        "choices": [
+          "Do you can swim?",
+          "Can you swim?",
+          "You swim can?"
+        ],
+        "answer": 1,
+        "speech": "Can you swim?",
+        "explanation": "Верный вариант: Can you swim?. Can помогает рассказать об умении. После can используем глагол без to и без -s. Вопрос начинается с can; отрицание — cannot или can't. У разных лиц форма can одна и та же."
+      },
+      {
+        "prompt": "Я не умею летать",
+        "choices": [
+          "I cannot fly.",
+          "I not can fly.",
+          "I can not to fly."
+        ],
+        "answer": 0,
+        "speech": "I cannot fly.",
+        "explanation": "Верный вариант: I cannot fly.. Can помогает рассказать об умении. После can используем глагол без to и без -s. Вопрос начинается с can; отрицание — cannot или can't. У разных лиц форма can одна и та же."
+      },
+      {
+        "prompt": "Короткий положительный ответ",
+        "choices": [
+          "Yes, I do can.",
+          "Yes, I am can.",
+          "Yes, I can."
+        ],
+        "answer": 2,
+        "speech": "Yes, I can.",
+        "explanation": "Верный вариант: Yes, I can.. Can помогает рассказать об умении. После can используем глагол без to и без -s. Вопрос начинается с can; отрицание — cannot или can't. У разных лиц форма can одна и та же."
+      }
+    ]
+  },
+  {
+    "id": "start-17",
+    "title": "В комнате есть: there is/are",
+    "level": "A1",
+    "group": "sentences",
+    "rule": "Чтобы впервые сказать, что где-то что-то есть, начинаем с There is (один предмет) или There are (несколько). Затем называем предмет и место. Вопрос меняет порядок is/are и there.",
+    "examples": [
+      "There is a lamp in the room. — В комнате есть лампа.",
+      "There are two chairs. — Есть два стула."
+    ],
+    "questions": [
+      {
+        "prompt": "В комнате одна лампа",
+        "choices": [
+          "There are a lamp in the room.",
+          "There am a lamp in the room.",
+          "There is a lamp in the room."
+        ],
+        "answer": 2,
+        "speech": "There is a lamp in the room.",
+        "explanation": "Верный вариант: There is a lamp in the room.. Чтобы впервые сказать, что где-то что-то есть, начинаем с There is (один предмет) или There are (несколько). Затем называем предмет и место. Вопрос меняет порядок is/are и there."
+      },
+      {
+        "prompt": "В комнате два стула",
+        "choices": [
+          "There be two chairs.",
+          "There are two chairs.",
+          "There is two chairs."
+        ],
+        "answer": 1,
+        "speech": "There are two chairs.",
+        "explanation": "Верный вариант: There are two chairs.. Чтобы впервые сказать, что где-то что-то есть, начинаем с There is (один предмет) или There are (несколько). Затем называем предмет и место. Вопрос меняет порядок is/are и there."
+      },
+      {
+        "prompt": "Спроси: есть ли парк?",
+        "choices": [
+          "Is there a park?",
+          "There a park is?",
+          "Are there a park?"
+        ],
+        "answer": 0,
+        "speech": "Is there a park?",
+        "explanation": "Верный вариант: Is there a park?. Чтобы впервые сказать, что где-то что-то есть, начинаем с There is (один предмет) или There are (несколько). Затем называем предмет и место. Вопрос меняет порядок is/are и there."
+      },
+      {
+        "prompt": "Спроси: есть ли книги?",
+        "choices": [
+          "Is there any books?",
+          "There books are?",
+          "Are there any books?"
+        ],
+        "answer": 2,
+        "speech": "Are there any books?",
+        "explanation": "Верный вариант: Are there any books?. Чтобы впервые сказать, что где-то что-то есть, начинаем с There is (один предмет) или There are (несколько). Затем называем предмет и место. Вопрос меняет порядок is/are и there."
+      },
+      {
+        "prompt": "В коробке нет игрушки",
+        "choices": [
+          "There no is toy in the box.",
+          "There is no toy in the box.",
+          "There are no toy in the box."
+        ],
+        "answer": 1,
+        "speech": "There is no toy in the box.",
+        "explanation": "Верный вариант: There is no toy in the box.. Чтобы впервые сказать, что где-то что-то есть, начинаем с There is (один предмет) или There are (несколько). Затем называем предмет и место. Вопрос меняет порядок is/are и there."
+      }
+    ]
+  },
+  {
+    "id": "start-18",
+    "title": "Что, где и кто?",
+    "level": "A1",
+    "group": "sentences",
+    "rule": "What спрашивает «что», where — «где», who — «кто», when — «когда». Сначала короткий вопрос с be: Where is the bag? Затем — ответ целой фразой. Не нужно заучивать все типы вопросов за один урок.",
+    "examples": [
+      "Where is my bag? — Где моя сумка?",
+      "Who is your teacher? — Кто твой учитель?"
+    ],
+    "questions": [
+      {
+        "prompt": "Спроси, где сумка",
+        "choices": [
+          "When is the bag?",
+          "Where is the bag?",
+          "Who is the bag?"
+        ],
+        "answer": 1,
+        "speech": "Where is the bag?",
+        "explanation": "Верный вариант: Where is the bag?. What спрашивает «что», where — «где», who — «кто», when — «когда». Сначала короткий вопрос с be: Where is the bag? Затем — ответ целой фразой. Не нужно заучивать все типы вопросов за один урок."
+      },
+      {
+        "prompt": "Спроси, кто учитель",
+        "choices": [
+          "Who is the teacher?",
+          "Where is the teacher?",
+          "When is the teacher?"
+        ],
+        "answer": 0,
+        "speech": "Who is the teacher?",
+        "explanation": "Верный вариант: Who is the teacher?. What спрашивает «что», where — «где», who — «кто», when — «когда». Сначала короткий вопрос с be: Where is the bag? Затем — ответ целой фразой. Не нужно заучивать все типы вопросов за один урок."
+      },
+      {
+        "prompt": "Спроси, что это",
+        "choices": [
+          "Who is this thing?",
+          "Where this is?",
+          "What is this?"
+        ],
+        "answer": 2,
+        "speech": "What is this?",
+        "explanation": "Верный вариант: What is this?. What спрашивает «что», where — «где», who — «кто», when — «когда». Сначала короткий вопрос с be: Where is the bag? Затем — ответ целой фразой. Не нужно заучивать все типы вопросов за один урок."
+      },
+      {
+        "prompt": "Спроси, когда урок",
+        "choices": [
+          "What lesson is when?",
+          "When is the lesson?",
+          "Who is the lesson?"
+        ],
+        "answer": 1,
+        "speech": "When is the lesson?",
+        "explanation": "Верный вариант: When is the lesson?. What спрашивает «что», where — «где», who — «кто», when — «когда». Сначала короткий вопрос с be: Where is the bag? Затем — ответ целой фразой. Не нужно заучивать все типы вопросов за один урок."
+      },
+      {
+        "prompt": "Ответь на Where is the cat?",
+        "choices": [
+          "The cat is on the sofa.",
+          "The cat is black.",
+          "The cat is small."
+        ],
+        "answer": 0,
+        "speech": "The cat is on the sofa.",
+        "explanation": "Верный вариант: The cat is on the sofa.. What спрашивает «что», where — «где», who — «кто», when — «когда». Сначала короткий вопрос с be: Where is the bag? Затем — ответ целой фразой. Не нужно заучивать все типы вопросов за один урок."
+      }
+    ]
+  },
+  {
+    "id": "start-19",
+    "title": "Обычно: Present Simple",
+    "level": "A1",
+    "group": "time",
+    "rule": "Для привычек используем Present Simple. I play, но she plays. Вопрос: Do you play? / Does she play? После does окончание -s у основного глагола исчезает. Сначала отработай утверждение, затем вопрос и отрицание.",
+    "examples": [
+      "I walk to school every day. — Я хожу в школу каждый день.",
+      "She reads after lunch. — Она читает после обеда."
+    ],
+    "questions": [
+      {
+        "prompt": "Я играю каждый день",
+        "choices": [
+          "I play every day.",
+          "I plays every day.",
+          "I am play every day."
+        ],
+        "answer": 0,
+        "speech": "I play every day.",
+        "explanation": "Верный вариант: I play every day.. Для привычек используем Present Simple. I play, но she plays. Вопрос: Do you play? / Does she play? После does окончание -s у основного глагола исчезает. Сначала отработай утверждение, затем вопрос и отрицание."
+      },
+      {
+        "prompt": "Она читает после обеда",
+        "choices": [
+          "She read after lunch.",
+          "She reading after lunch.",
+          "She reads after lunch."
+        ],
+        "answer": 2,
+        "speech": "She reads after lunch.",
+        "explanation": "Верный вариант: She reads after lunch.. Для привычек используем Present Simple. I play, но she plays. Вопрос: Do you play? / Does she play? После does окончание -s у основного глагола исчезает. Сначала отработай утверждение, затем вопрос и отрицание."
+      },
+      {
+        "prompt": "Спроси о его привычке",
+        "choices": [
+          "Is he walk to school?",
+          "Does he walk to school?",
+          "Does he walks to school?"
+        ],
+        "answer": 1,
+        "speech": "Does he walk to school?",
+        "explanation": "Верный вариант: Does he walk to school?. Для привычек используем Present Simple. I play, но she plays. Вопрос: Do you play? / Does she play? После does окончание -s у основного глагола исчезает. Сначала отработай утверждение, затем вопрос и отрицание."
+      },
+      {
+        "prompt": "Я не играю ночью",
+        "choices": [
+          "I do not play at night.",
+          "I does not play at night.",
+          "I am not play at night."
+        ],
+        "answer": 0,
+        "speech": "I do not play at night.",
+        "explanation": "Верный вариант: I do not play at night.. Для привычек используем Present Simple. I play, но she plays. Вопрос: Do you play? / Does she play? После does окончание -s у основного глагола исчезает. Сначала отработай утверждение, затем вопрос и отрицание."
+      },
+      {
+        "prompt": "Какое слово указывает на привычку?",
+        "choices": [
+          "right now",
+          "yesterday",
+          "every day"
+        ],
+        "answer": 2,
+        "speech": "I read every day.",
+        "explanation": "Верный вариант: every day. Для привычек используем Present Simple. I play, но she plays. Вопрос: Do you play? / Does she play? После does окончание -s у основного глагола исчезает. Сначала отработай утверждение, затем вопрос и отрицание."
+      }
+    ]
+  },
+  {
+    "id": "start-20",
+    "title": "Сейчас: Present Continuous",
+    "level": "A1",
+    "group": "time",
+    "rule": "Для действия в процессе сейчас: am/is/are + глагол с -ing. I am reading. Сравни привычку I read every day и процесс I am reading now. Одного слова now недостаточно: проверяй смысл действия.",
+    "examples": [
+      "I am drawing now. — Я сейчас рисую.",
+      "They are playing outside. — Они играют на улице."
+    ],
+    "questions": [
+      {
+        "prompt": "Я сейчас читаю",
+        "choices": [
+          "I reading now.",
+          "I am read now.",
+          "I am reading now."
+        ],
+        "answer": 2,
+        "speech": "I am reading now.",
+        "explanation": "Верный вариант: I am reading now.. Для действия в процессе сейчас: am/is/are + глагол с -ing. I am reading. Сравни привычку I read every day и процесс I am reading now. Одного слова now недостаточно: проверяй смысл действия."
+      },
+      {
+        "prompt": "Она сейчас рисует",
+        "choices": [
+          "She drawing now.",
+          "She is drawing now.",
+          "She are drawing now."
+        ],
+        "answer": 1,
+        "speech": "She is drawing now.",
+        "explanation": "Верный вариант: She is drawing now.. Для действия в процессе сейчас: am/is/are + глагол с -ing. I am reading. Сравни привычку I read every day и процесс I am reading now. Одного слова now недостаточно: проверяй смысл действия."
+      },
+      {
+        "prompt": "Они сейчас играют",
+        "choices": [
+          "They are playing now.",
+          "They is playing now.",
+          "They am playing now."
+        ],
+        "answer": 0,
+        "speech": "They are playing now.",
+        "explanation": "Верный вариант: They are playing now.. Для действия в процессе сейчас: am/is/are + глагол с -ing. I am reading. Сравни привычку I read every day и процесс I am reading now. Одного слова now недостаточно: проверяй смысл действия."
+      },
+      {
+        "prompt": "Спроси о действии сейчас",
+        "choices": [
+          "Do you reading?",
+          "You are read?",
+          "Are you reading?"
+        ],
+        "answer": 2,
+        "speech": "Are you reading?",
+        "explanation": "Верный вариант: Are you reading?. Для действия в процессе сейчас: am/is/are + глагол с -ing. I am reading. Сравни привычку I read every day и процесс I am reading now. Одного слова now недостаточно: проверяй смысл действия."
+      },
+      {
+        "prompt": "Выбери привычку, а не действие сейчас",
+        "choices": [
+          "She is reading now.",
+          "I read every evening.",
+          "I am reading now."
+        ],
+        "answer": 1,
+        "speech": "I read every evening.",
+        "explanation": "Верный вариант: I read every evening.. Для действия в процессе сейчас: am/is/are + глагол с -ing. I am reading. Сравни привычку I read every day и процесс I am reading now. Одного слова now недостаточно: проверяй смысл действия."
+      }
+    ]
+  },
+  {
+    "id": "start-21",
+    "title": "Вчера и завтра",
+    "level": "A1",
+    "group": "time",
+    "rule": "Сначала сравниваем время на понятной линии: вчера — сейчас — завтра. Для начала: was/were — был/были; played — играл; will + глагол — простое сообщение о будущем. Все сложные времена остаются в следующих уровнях, а не в первом маршруте.",
+    "examples": [
+      "I was at home yesterday. — Вчера я был дома.",
+      "I will help you tomorrow. — Завтра я тебе помогу."
+    ],
+    "questions": [
+      {
+        "prompt": "Вчера я был дома",
+        "choices": [
+          "I were at home yesterday.",
+          "I was at home yesterday.",
+          "I am at home tomorrow."
+        ],
+        "answer": 1,
+        "speech": "I was at home yesterday.",
+        "explanation": "Верный вариант: I was at home yesterday.. Сначала сравниваем время на понятной линии: вчера — сейчас — завтра. Для начала: was/were — был/были; played — играл; will + глагол — простое сообщение о будущем. Все сложные времена остаются в следующих уровнях, а не в первом маршруте."
+      },
+      {
+        "prompt": "Вчера мы были в парке",
+        "choices": [
+          "We were in the park yesterday.",
+          "We was in the park yesterday.",
+          "We are in the park tomorrow."
+        ],
+        "answer": 0,
+        "speech": "We were in the park yesterday.",
+        "explanation": "Верный вариант: We were in the park yesterday.. Сначала сравниваем время на понятной линии: вчера — сейчас — завтра. Для начала: was/were — был/были; played — играл; will + глагол — простое сообщение о будущем. Все сложные времена остаются в следующих уровнях, а не в первом маршруте."
+      },
+      {
+        "prompt": "Вчера я играл",
+        "choices": [
+          "I play tomorrow.",
+          "I playing yesterday.",
+          "I played yesterday."
+        ],
+        "answer": 2,
+        "speech": "I played yesterday.",
+        "explanation": "Верный вариант: I played yesterday.. Сначала сравниваем время на понятной линии: вчера — сейчас — завтра. Для начала: was/were — был/были; played — играл; will + глагол — простое сообщение о будущем. Все сложные времена остаются в следующих уровнях, а не в первом маршруте."
+      },
+      {
+        "prompt": "Завтра я помогу",
+        "choices": [
+          "I helped tomorrow.",
+          "I will help tomorrow.",
+          "I will helps tomorrow."
+        ],
+        "answer": 1,
+        "speech": "I will help tomorrow.",
+        "explanation": "Верный вариант: I will help tomorrow.. Сначала сравниваем время на понятной линии: вчера — сейчас — завтра. Для начала: was/were — был/были; played — играл; will + глагол — простое сообщение о будущем. Все сложные времена остаются в следующих уровнях, а не в первом маршруте."
+      },
+      {
+        "prompt": "Какое слово означает «вчера»?",
+        "choices": [
+          "yesterday",
+          "tomorrow",
+          "today"
+        ],
+        "answer": 0,
+        "speech": "I was here yesterday.",
+        "explanation": "Верный вариант: yesterday. Сначала сравниваем время на понятной линии: вчера — сейчас — завтра. Для начала: was/were — был/были; played — играл; will + глагол — простое сообщение о будущем. Все сложные времена остаются в следующих уровнях, а не в первом маршруте."
+      }
+    ]
+  },
+  {
+    "id": "start-22",
+    "title": "Цвет, размер и сравнение",
+    "level": "A1",
+    "group": "words",
+    "rule": "Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better.",
+    "examples": [
+      "This is a small bag. — Это маленькая сумка.",
+      "My bag is bigger than yours. — Моя сумка больше твоей."
+    ],
+    "questions": [
+      {
+        "prompt": "Красная сумка",
+        "choices": [
+          "a red bag",
+          "a bag red",
+          "an red bag"
+        ],
+        "answer": 0,
+        "speech": "This is a red bag.",
+        "explanation": "Верный вариант: a red bag. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      },
+      {
+        "prompt": "Две красные сумки",
+        "choices": [
+          "two reds bags",
+          "two red bag",
+          "two red bags"
+        ],
+        "answer": 2,
+        "speech": "I have two red bags.",
+        "explanation": "Верный вариант: two red bags. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      },
+      {
+        "prompt": "Эта кошка меньше той",
+        "choices": [
+          "This cat is smallest than that cat.",
+          "This cat is smaller than that cat.",
+          "This cat is small than that cat."
+        ],
+        "answer": 1,
+        "speech": "This cat is smaller than that cat.",
+        "explanation": "Верный вариант: This cat is smaller than that cat.. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      },
+      {
+        "prompt": "Этот день лучше",
+        "choices": [
+          "This day is better.",
+          "This day is gooder.",
+          "This day is more good."
+        ],
+        "answer": 0,
+        "speech": "This day is better.",
+        "explanation": "Верный вариант: This day is better.. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      },
+      {
+        "prompt": "Какое слово описывает размер?",
+        "choices": [
+          "tomorrow",
+          "under",
+          "small"
+        ],
+        "answer": 2,
+        "speech": "This is a small room.",
+        "explanation": "Верный вариант: small. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      }
+    ]
+  },
+  {
+    "id": "start-23",
+    "title": "Дни и время на часах",
+    "level": "A1",
+    "group": "time",
+    "rule": "Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами.",
+    "examples": [
+      "The lesson is on Monday. — Урок в понедельник.",
+      "We start at two o'clock. — Мы начинаем в два часа."
+    ],
+    "questions": [
+      {
+        "prompt": "В понедельник",
+        "choices": [
+          "in Monday",
+          "at Monday",
+          "on Monday"
+        ],
+        "answer": 2,
+        "speech": "The lesson is on Monday.",
+        "explanation": "Верный вариант: on Monday. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      },
+      {
+        "prompt": "В два часа",
+        "choices": [
+          "in two o'clock",
+          "at two o'clock",
+          "on two o'clock"
+        ],
+        "answer": 1,
+        "speech": "We start at two o'clock.",
+        "explanation": "Верный вариант: at two o'clock. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      },
+      {
+        "prompt": "Утром",
+        "choices": [
+          "in the morning",
+          "on the morning",
+          "at the morning"
+        ],
+        "answer": 0,
+        "speech": "I read in the morning.",
+        "explanation": "Верный вариант: in the morning. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      },
+      {
+        "prompt": "Выбери правильное написание дня",
+        "choices": [
+          "friday",
+          "FRIday",
+          "Friday"
+        ],
+        "answer": 2,
+        "speech": "We meet on Friday.",
+        "explanation": "Верный вариант: Friday. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      },
+      {
+        "prompt": "Спроси, который час",
+        "choices": [
+          "Who is the time?",
+          "What time is it?",
+          "Where time is it?"
+        ],
+        "answer": 1,
+        "speech": "What time is it?",
+        "explanation": "Верный вариант: What time is it?. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      }
+    ]
+  },
+  {
+    "id": "start-24",
+    "title": "Вежливая просьба и маленький диалог",
+    "level": "A1",
+    "group": "sentences",
+    "rule": "Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме.",
+    "examples": [
+      "Can I have some water, please? — Можно мне немного воды, пожалуйста?",
+      "Here you are. Thank you! — Вот, пожалуйста. Спасибо!"
+    ],
+    "questions": [
+      {
+        "prompt": "Вежливо попроси воды",
+        "choices": [
+          "Water is a colour.",
+          "Can I have some water, please?",
+          "Where is your water yesterday?"
+        ],
+        "answer": 1,
+        "speech": "Can I have some water, please?",
+        "explanation": "Верный вариант: Can I have some water, please?. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      },
+      {
+        "prompt": "Тебе дали книгу. Поблагодари",
+        "choices": [
+          "Thank you!",
+          "Who is the book?",
+          "Good night, book!"
+        ],
+        "answer": 0,
+        "speech": "Thank you!",
+        "explanation": "Верный вариант: Thank you!. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      },
+      {
+        "prompt": "Ответь на благодарность",
+        "choices": [
+          "I am tomorrow.",
+          "It is a chair.",
+          "You are welcome."
+        ],
+        "answer": 2,
+        "speech": "You are welcome.",
+        "explanation": "Верный вариант: You are welcome.. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      },
+      {
+        "prompt": "Попроси открыть окно",
+        "choices": [
+          "Where open you?",
+          "Please open the window.",
+          "The window is yesterday."
+        ],
+        "answer": 1,
+        "speech": "Please open the window.",
+        "explanation": "Верный вариант: Please open the window.. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      },
+      {
+        "prompt": "Ответь на Can you help me?",
+        "choices": [
+          "Yes, I can help you.",
+          "I am a table.",
+          "The park is green."
+        ],
+        "answer": 0,
+        "speech": "Yes, I can help you.",
+        "explanation": "Верный вариант: Yes, I can help you.. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      }
+    ]
+  }
+]
