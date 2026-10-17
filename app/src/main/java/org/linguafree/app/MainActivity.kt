@@ -161,12 +161,11 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var reviewLeft by remember { mutableStateOf<String?>(null) }
    var reviewRight by remember { mutableStateOf<String?>(null) }
    var reviewMatched by remember { mutableStateOf(setOf<String>()) }
-   val reviewSets=listOf(
-    listOf("please" to "пожалуйста","coffee" to "кофе","tea" to "чай","hot" to "горячий","or" to "или"),
-    listOf("hello" to "привет","thank you" to "спасибо","yes" to "да","no" to "нет","water" to "вода"),
-    listOf("cat" to "кот","dog" to "собака","book" to "книга","apple" to "яблоко","house" to "дом")
-   )
-   val reviewPairs=reviewSets[current%reviewSets.size]
+   val reviewPairs=lessons[current].questions.map { q ->
+    val quoted=q.prompt.substringAfter("«","").substringBefore("»","")
+    if(q.prompt.startsWith("Как по-английски"))q.choices[q.answer] to quoted
+    else quoted to q.choices[q.answer]
+   }.filter { it.first.isNotBlank() && it.second.isNotBlank() }.distinctBy { it.first }.take(5)
    fun checkPair(left:String?,right:String?){
     if(left!=null && right!=null){
      if(reviewPairs.any{it.first==left && it.second==right}){
@@ -280,7 +279,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       } else if(screen=="review") {
        item { Text("🧠 Закрепляем слова",fontSize=29.sp,fontWeight=FontWeight.Black,color=purple) }
        item { Text("Нажимай на пары: английское слово и его перевод",fontSize=17.sp,color=ink) }
-       item { LinearProgressIndicator(progress={reviewMatched.size/5f},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=green) }
+       item { LinearProgressIndicator(progress={reviewMatched.size.toFloat()/reviewPairs.size.coerceAtLeast(1)},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=green) }
        item { Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
         Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(12.dp)) {
          reviewPairs.forEach { (en,_) ->
