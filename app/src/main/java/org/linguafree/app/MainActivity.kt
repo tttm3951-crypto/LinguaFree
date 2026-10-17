@@ -221,27 +221,6 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var storyFeedback by remember { mutableStateOf("") }
    var speechTarget by remember { mutableStateOf("Hello") }
    var speechResult by remember { mutableStateOf("") }
-   val speechLauncher=rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
-    val heard=result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.firstOrNull().orEmpty()
-    speechResult=heard
-    if(heard.isNotBlank() && heard.trim().lowercase(Locale.ROOT).replace(Regex("[^a-z ]"),"")==speechTarget.lowercase(Locale.ROOT).replace(Regex("[^a-z ]"),"")){
-     xp+=10;gems+=1;foxExcited=true;sayReaction(true);storyFeedback="Отличное произношение! +10 XP"
-    }else if(heard.isNotBlank()){sayReaction(false);storyFeedback="Распознано: $heard. Попробуй ещё раз!"}
-    else storyFeedback="Речь не распознана. Попробуй снова."
-    prefs.edit().putInt("xp",xp).putInt("gems",gems).apply()
-   }
-   fun practiceSpeech(phrase:String){
-    speechTarget=phrase;speechResult="";storyFeedback=""
-    try {
-     val intent=Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply{
-      putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-      putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US")
-      putExtra(RecognizerIntent.EXTRA_PROMPT,"Скажи: $phrase")
-      putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,3)
-     }
-     speechLauncher.launch(intent)
-    }catch(_:Exception){storyFeedback="На устройстве нет службы распознавания речи. Установи или включи голосовой ввод Android."}
-   }
    val stories=listOf(
     listOf(Triple("Hello! My name is Fox.","Привет! Меня зовут Лис.","Привет! Меня зовут Лис."),Triple("What is your name?","Как тебя зовут?","Как тебя зовут?"),Triple("Nice to meet you!","Рад познакомиться!","Рад познакомиться!")),
     listOf(Triple("I would like some tea, please.","Я хотел бы чаю, пожалуйста.","Я хотел бы чаю, пожалуйста."),Triple("How much is it?","Сколько это стоит?","Сколько это стоит?"),Triple("Thank you very much!","Большое спасибо!","Большое спасибо!")),
@@ -282,6 +261,28 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var correctCount by remember { mutableIntStateOf(0) }
    var foxMessage by remember { mutableStateOf("Давай попробуем!") }
    var foxExcited by remember { mutableStateOf(false) }
+   val speechLauncher=rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
+    val heard=result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.firstOrNull().orEmpty()
+    speechResult=heard
+    if(heard.isNotBlank() && heard.trim().lowercase(Locale.ROOT).replace(Regex("[^a-z ]"),"")==speechTarget.lowercase(Locale.ROOT).replace(Regex("[^a-z ]"),"")){
+     xp+=10;gems+=1;foxExcited=true;sayReaction(true);storyFeedback="Отличное произношение! +10 XP"
+    }else if(heard.isNotBlank()){sayReaction(false);storyFeedback="Распознано: $heard. Попробуй ещё раз!"}
+    else storyFeedback="Речь не распознана. Попробуй снова."
+    prefs.edit().putInt("xp",xp).putInt("gems",gems).apply()
+   }
+   fun practiceSpeech(phrase:String){
+    speechTarget=phrase;speechResult="";storyFeedback=""
+    try {
+     val intent=Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply{
+      putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+      putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US")
+      putExtra(RecognizerIntent.EXTRA_PROMPT,"Скажи: $phrase")
+      putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,3)
+     }
+     speechLauncher.launch(intent)
+    }catch(_:Exception){storyFeedback="На устройстве нет службы распознавания речи. Установи или включи голосовой ввод Android."}
+   }
+
    var celebration by remember { mutableStateOf(false) }
    var reviewLeft by remember { mutableStateOf<String?>(null) }
    var reviewRight by remember { mutableStateOf<String?>(null) }
