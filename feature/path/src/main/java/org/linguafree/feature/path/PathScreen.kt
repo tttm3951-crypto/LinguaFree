@@ -154,7 +154,7 @@ fun PathScreen(
             LazyColumn(state = listState, modifier = Modifier.fillMaxSize().testTag("path"), contentPadding = PaddingValues(bottom = 96.dp)) {
                 item(key = "header") {
                     Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        DailyGoalRow(state.todayXp, state.dailyGoalXp, state.doubleXpUntil)
+                        DailyGoalRow(state.todayXp, state.dailyGoalXp)
                         QuestsCard(state.quests, state.monthly, onOpen = { sheet = "quests" })
                     }
                 }
@@ -203,7 +203,6 @@ fun PathScreen(
         "hearts" -> HeartsSheet(
             state,
             onPractice = { sheet = null; viewModel.startHeartsPractice() },
-            onBuy = { viewModel.buyHearts { toast = it } },
             onToggleNoHearts = viewModel::setHeartsDisabled,
             onDismiss = { sheet = null },
         )
@@ -242,7 +241,7 @@ private fun isVisible(state: LazyListState, index: Int): Boolean {
 }
 
 @Composable
-private fun DailyGoalRow(todayXp: Int, goal: Int, doubleXpUntil: Long) {
+private fun DailyGoalRow(todayXp: Int, goal: Int) {
     val c = LfTheme.colors
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         LfIcon(R.drawable.ic_xp, size = 26.dp)
@@ -253,7 +252,6 @@ private fun DailyGoalRow(todayXp: Int, goal: Int, doubleXpUntil: Long) {
             )
             LfProgressBar(todayXp.toFloat() / goal.coerceAtLeast(1), color = c.xp, height = 10.dp, label = "Цель дня")
         }
-        if (doubleXpUntil > System.currentTimeMillis()) LfIcon(R.drawable.ic_double_xp, size = 26.dp, contentDescription = "Двойной XP активен")
     }
 }
 

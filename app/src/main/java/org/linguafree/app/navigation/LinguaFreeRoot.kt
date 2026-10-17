@@ -10,6 +10,15 @@ import org.linguafree.core.ui.theme.ThemeAccent
 import org.linguafree.feature.path.LearnScreen
 import org.linguafree.feature.lesson.LessonRoute
 import org.linguafree.feature.lesson.lessonScreen
+import org.linguafree.feature.leagues.LeaguesScreen
+import org.linguafree.feature.onboarding.OnboardingScreen
+import org.linguafree.feature.profile.AboutScreen
+import org.linguafree.feature.profile.ProfileScreen
+import org.linguafree.feature.profile.SettingsScreen
+import org.linguafree.feature.profile.TeacherScreen
+import org.linguafree.feature.shop.ShopScreen
+import org.linguafree.core.domain.model.SessionKind
+import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Column
@@ -52,9 +61,11 @@ fun LinguaFreeRoot(root: RootViewModel) {
         when (val s = startup) {
             StartupState.Loading -> { Box(Modifier.fillMaxSize().background(LfTheme.colors.background)); return@LinguaFreeTheme }
             is StartupState.Failed -> { ContentError(s.errors); return@LinguaFreeTheme }
-            StartupState.Ready -> Unit
+            StartupState.Ready -> if (settings == null) { Box(Modifier.fillMaxSize().background(LfTheme.colors.background)); return@LinguaFreeTheme }
         }
         val nav = rememberNavController()
+        // Decide the start destination once, so finishing onboarding doesn't rebuild the graph.
+        val startRoute = remember { if (settings?.onboarded == true) MainTab.Learn.route else ONBOARDING }
         val entry by nav.currentBackStackEntryAsState()
         val currentTab = MainTab.entries.firstOrNull { it.route == entry?.destination?.route }
         Scaffold(
@@ -70,7 +81,7 @@ fun LinguaFreeRoot(root: RootViewModel) {
                 })
             },
         ) { padding ->
-            NavHost(nav, startDestination = MainTab.Learn.route, modifier = Modifier.padding(padding)) {
+            NavHost(nav, startDestination = startRoute, modifier = Modifier.padding(padding)) {
                 composable(MainTab.Learn.route) {
                     LearnScreen(
                         onStartSession = { kind, node, unit -> nav.navigate(LessonRoute.of(kind, node, unit)) },
@@ -82,13 +93,34 @@ fun LinguaFreeRoot(root: RootViewModel) {
                     onStartSession = { route -> nav.navigate(route) { popUpTo(LessonRoute.PATTERN) { inclusive = true } } },
                     onOpenSettings = { nav.navigate(MainTab.Profile.route) { popUpTo(LessonRoute.PATTERN) { inclusive = true } } },
                 )
-                MainTab.entries.filter { it != MainTab.Learn }.forEach { tab ->
-                    composable(tab.route) { TabIntro(tab) }
+                composable(ONBOARDING) {
+                    OnboardingScreen(onFinished = { placement ->
+                        nav.navigate(MainTab.Learn.route) { popUpTo(ONBOARDING) { inclusive = true } }
+                        if (placement) nav.navigate(LessonRoute.of(SessionKind.Placement))
+                    })
                 }
+                composable(MainTab.Practice.route) { TabIntro(MainTab.Practice) }
+                composable(MainTab.Leagues.route) { LeaguesScreen() }
+                composable(MainTab.Shop.route) { ShopScreen() }
+                composable(MainTab.Profile.route) {
+                    ProfileScreen(
+                        onSettings = { nav.navigate(SETTINGS) },
+                        onAbout = { nav.navigate(ABOUT) },
+                        onTeacher = { nav.navigate(TEACHER) },
+                    )
+                }
+                composable(SETTINGS) { SettingsScreen(onBack = { nav.popBackStack() }) }
+                composable(ABOUT) { AboutScreen(onBack = { nav.popBackStack() }) }
+                composable(TEACHER) { TeacherScreen(onBack = { nav.popBackStack() }) }
             }
         }
     }
 }
+
+private const val ONBOARDING = "onboarding"
+private const val SETTINGS = "profile/settings"
+private const val ABOUT = "profile/about"
+private const val TEACHER = "profile/teacher"
 
 @Composable
 private fun ContentError(errors: List<String>) {

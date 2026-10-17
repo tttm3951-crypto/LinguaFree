@@ -76,7 +76,6 @@ fun LessonScreen(
             LessonPhase.OutOfHearts -> OutOfHeartsScreen(
                 state = state,
                 onPractice = { onStartSession(LessonRoute.of(SessionKind.HeartsRefill)) },
-                onBuy = viewModel::buyHearts,
                 onClose = onClose,
                 onOpenSettings = onOpenSettings,
             )

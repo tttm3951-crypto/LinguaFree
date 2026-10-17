@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -22,8 +23,9 @@ android {
     testOptions { unitTests.isReturnDefaultValues = true }
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
+// The Room Gradle plugin keeps one schema per DB version and avoids variant tasks racing on the same file.
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {

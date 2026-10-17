@@ -8,6 +8,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.linguafree.core.data.AppBootstrapper
+import org.linguafree.core.data.backup.BackupManager
+import org.linguafree.core.data.backup.TeacherTools
 import org.linguafree.core.data.content.ContentLoader
 import org.linguafree.core.data.db.LinguaFreeDatabase
 import org.linguafree.core.data.migration.LegacyMigration
@@ -95,6 +97,13 @@ object DataModule {
 
     @Provides @Singleton
     fun feedback(@ApplicationContext context: Context) = Feedback(context)
+
+    @Provides @Singleton
+    fun backupManager(@ApplicationContext context: Context, db: LinguaFreeDatabase, s: SettingsRepositoryImpl, m: LegacyMigration) =
+        BackupManager(context, db, s, m)
+
+    @Provides @Singleton
+    fun teacherTools(@ApplicationContext context: Context, db: LinguaFreeDatabase, s: SettingsRepositoryImpl) = TeacherTools(context, db, s)
 
     @Provides @Singleton
     fun bootstrapper(c: ContentRepository, m: LegacyMigration, d: DailyMaintenanceUseCase) = AppBootstrapper(c, m, d)
