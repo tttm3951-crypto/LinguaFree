@@ -44,6 +44,12 @@ jobs:
           yes | "$SDKMANAGER" --licenses > /dev/null || true
           "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
 
+      - name: Prepare uploaded original fox artwork
+        run: |
+          test -s fox_original.png
+          mkdir -p app/src/main/res/drawable
+          cp fox_original.png app/src/main/res/drawable/fox_original.png
+
       - name: Compile debug APK
         run: gradle --no-daemon --stacktrace assembleDebug
 
