@@ -310,8 +310,9 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     val n=cardIndex.coerceIn(0,dictionary.lastIndex)
     val due=System.currentTimeMillis()+(if(remembered)3L else 0L)*86400000L
     cardDue=cardDue+(n to due)
-    if(remembered)cardMastered=cardMastered+dictionary[n].getString("en")
-    else cardMastered=cardMastered-dictionary[n].getString("en")
+    val cardKey=dictionary[n].getString("en")+"|"+dictionary[n].getString("ru")
+    if(remembered)cardMastered=cardMastered+cardKey
+    else cardMastered=cardMastered-cardKey-dictionary[n].getString("en")
     prefs.edit().putStringSet("cardMastered",cardMastered).putString("cardDue",cardDue.entries.joinToString(";"){"${it.key}:${it.value}"}).apply()
     val next=(1..dictionary.size).map{(n+it)%dictionary.size}.firstOrNull{cardDue[it]==null || cardDue[it]!!<=System.currentTimeMillis()}
     cardIndex=next?:((n+1)%dictionary.size)
@@ -742,7 +743,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
           Text("🎯 Цель на сегодня: $todayCompleted / $dailyGoal занятий",fontSize=18.sp,fontWeight=FontWeight.Bold,color=ink)
           LinearProgressIndicator(progress={(todayCompleted.toFloat()/dailyGoal).coerceIn(0f,1f)},modifier=Modifier.fillMaxWidth(),color=green)
           Text(if(todayCompleted>=dailyGoal)"Цель выполнена! Продолжай в удобном темпе." else "До цели осталось ${dailyGoal-todayCompleted} занятий.",color=ink)
-          Text("🔥 Серия: $streak дн. · ⭐ $xp XP · 📚 ${completed.size}/300 уроков",color=ink)
+          Text("🔥 Серия: ${if(LocalDate.now().toString() in studiedDates || LocalDate.now().minusDays(1).toString() in studiedDates)streak else 0} дн. · ⭐ $xp XP · 📚 ${completed.size}/300 уроков",color=ink)
           if(reviewDue.values.any{it<=System.currentTimeMillis()}){
            OutlinedButton(onClick={val key=reviewDue.filterValues{it<=System.currentTimeMillis()}.keys.first();start((key/1000).coerceIn(0,lessons.lastIndex));index=(key%1000).coerceIn(0,lessons[current].questions.lastIndex)},modifier=Modifier.fillMaxWidth()){Text("🧠 Повторить по расписанию")}
           }
