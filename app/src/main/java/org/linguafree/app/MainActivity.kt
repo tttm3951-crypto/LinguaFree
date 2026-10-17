@@ -38,6 +38,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.ImageBitmap
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -200,15 +206,16 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val dark=Color(0xFF102124)
    val panel=Color(0xFF1E3338)
    val compact=LocalConfiguration.current.screenHeightDp<780
+   val foxTransparent=remember { val source=BitmapFactory.decodeResource(resources,R.drawable.fox_original); val bitmap=source.copy(Bitmap.Config.ARGB_8888,true); val pixels=IntArray(bitmap.width*bitmap.height);bitmap.getPixels(pixels,0,bitmap.width,0,0,bitmap.width,bitmap.height); for(i in pixels.indices){val c=pixels[i];val rr=android.graphics.Color.red(c);val gg=android.graphics.Color.green(c);val bb=android.graphics.Color.blue(c);if(rr>235 && gg>235 && bb>235){pixels[i]=c and 0x00FFFFFF}else if(rr>215 && gg>215 && bb>215 && kotlin.math.abs(rr-gg)<15 && kotlin.math.abs(gg-bb)<15){pixels[i]=(c and 0x00FFFFFF) or ((255-(minOf(rr,gg,bb)-215)*6).coerceIn(0,255) shl 24)}};bitmap.setPixels(pixels,0,bitmap.width,0,0,bitmap.width,bitmap.height);bitmap.asImageBitmap() }
    val floating=rememberInfiniteTransition(label="mascot")
    val bounce by floating.animateFloat(initialValue=0f,targetValue=-8f,animationSpec=infiniteRepeatable(tween(1300),RepeatMode.Reverse),label="bounce")
    MaterialTheme(colorScheme=darkColorScheme(primary=purple,secondary=pink,background=dark,surface=panel,onSurface=ink)) {
     Surface(Modifier.fillMaxSize(),color=dark) {
      Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
-     LazyColumn(modifier=Modifier.weight(1f),contentPadding=PaddingValues(start=14.dp,end=14.dp,top=27.dp,bottom=12.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson") 7.dp else 12.dp)) {
+     LazyColumn(modifier=Modifier.weight(1f),contentPadding=PaddingValues(start=14.dp,end=14.dp,top=if(screen=="lesson" || screen=="placement") 10.dp else 27.dp,bottom=8.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson" || screen=="placement") 5.dp else 12.dp)) {
       if(screen=="onboarding") {
        item { LinearProgressIndicator(progress={(onboardStep+1)/3f},modifier=Modifier.fillMaxWidth().height(10.dp),color=green) }
-       item { Row(verticalAlignment=Alignment.CenterVertically) { Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка",modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько минут будем играть каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
+       item { Row(verticalAlignment=Alignment.CenterVertically) { Image(bitmap=foxTransparent,contentDescription="Лисичка",modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько минут будем играть каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
        if(onboardStep==0) item { Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=23.sp,fontWeight=FontWeight.Bold,color=pink) }
        if(onboardStep==1) { item { Text("Выбери свой уровень",fontSize=21.sp,fontWeight=FontWeight.Black,color=ink) }; listOf("Начинающий","Знаю несколько слов","Могу говорить").forEach { option -> item { OutlinedButton(onClick={level=option},modifier=Modifier.fillMaxWidth().height(70.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(level==option)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(level==option)green else Color(0xFF3B5057))) {Text(option,fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
        if(onboardStep==2) { listOf(3,10,15,30).forEach { minutes -> item { OutlinedButton(onClick={dailyGoal=minutes},modifier=Modifier.fillMaxWidth().height(65.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(dailyGoal==minutes)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(dailyGoal==minutes)green else Color(0xFF3B5057))) {Text("$minutes минут в день",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
@@ -217,7 +224,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
-       Image(painter=painterResource(R.drawable.fox_original),contentDescription="Весёлая лисичка LinguaFree",modifier=Modifier.size(92.dp).offset(y=bounce.dp))
+       Image(bitmap=foxTransparent,contentDescription="Весёлая лисичка LinguaFree",modifier=Modifier.size(92.dp).offset(y=bounce.dp))
       } }
       
       if(screen=="home") item {
@@ -296,14 +303,14 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        } }
        if(reviewMatched.size==reviewPairs.size) item {
         Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally) {
-         Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка радуется",modifier=Modifier.size(110.dp).offset(y=bounce.dp).graphicsLayer{scaleX=foxScale;scaleY=foxScale})
+         Image(bitmap=foxTransparent,contentDescription="Лисичка радуется",modifier=Modifier.size(110.dp).offset(y=bounce.dp).graphicsLayer{scaleX=foxScale;scaleY=foxScale})
          Text("🎊 ТАДА-А-АМ! Все пары найдены!",fontSize=21.sp,fontWeight=FontWeight.Black,color=green)
          Text("Ты отлично закрепил слова! ⭐",fontSize=17.sp,color=ink)
         }
        }
       } else if(screen=="done") {
        item { Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.fillMaxWidth()) {
-        Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка празднует победу",modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f; scaleX=foxScale;scaleY=foxScale })
+        Image(bitmap=foxTransparent,contentDescription="Лисичка празднует победу",modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f; scaleX=foxScale;scaleY=foxScale })
         Text("🎉 УРА! УРОК ПРОЙДЕН!",fontSize=30.sp,fontWeight=FontWeight.Black,color=pink)
         Text("🦊 Hooray! Fantastic! 🌟",fontSize=23.sp,fontWeight=FontWeight.Black,color=green)
        } }
@@ -323,15 +330,15 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
 
        item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFF3B2A45))) { Column(Modifier.padding(12.dp)) {
         Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(9.dp)) {
-         Image(painter=painterResource(R.drawable.fox_original),contentDescription=null,modifier=Modifier.size(28.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale })
+         Image(bitmap=foxTransparent,contentDescription=null,modifier=Modifier.size(24.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale })
          Text(foxMessage,fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
         }
         Spacer(Modifier.height(4.dp))
         Text(q.prompt,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp)
        } } }
-       item { Text(q.speech,modifier=Modifier.clickable {showTranslation=!showTranslation;sayEnglish(q.speech)},fontSize=24.sp,fontWeight=FontWeight.Black,color=purple) }
-       if(showTranslation) item { Text(q.explanation,fontSize=16.sp,color=ink) }
-       item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(46.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
+       if(selected!=null) item { Text(q.speech,modifier=Modifier.clickable {sayEnglish(q.speech)},fontSize=19.sp,fontWeight=FontWeight.Black,color=purple) }
+       if(selected!=null && showTranslation) item { Text(q.explanation,fontSize=14.sp,color=ink) }
+       item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
        if(wordBank) item {
         Text("Составьте перевод из слов:",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)
         Text(bankWords.joinToString("  ").ifBlank { "Нажимайте на слова ниже ↓" },modifier=Modifier.fillMaxWidth().padding(vertical=12.dp),fontSize=23.sp,fontWeight=FontWeight.Bold,color=green)
@@ -353,10 +360,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          foxMessage=if(i==q.answer) listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4] else "Try again! 💪"
          sayEnglish(q.choices[q.answer])
          sayReaction(i==q.answer)
-        },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(55.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFF40565D))) {
-         Column(horizontalAlignment=Alignment.CenterHorizontally) {
-          if(pictureMode) Text(when { choice.contains("Tea",true)->"🍵";choice.contains("Coffee",true)->"☕";choice.contains("Milk",true)->"🥛";choice.contains("Apple",true)->"🍎";choice.contains("Cat",true)->"🐈";choice.contains("Dog",true)->"🐕";choice.contains("Water",true)->"💧";choice.contains("Book",true)->"📚";choice.contains("House",true)->"🏠";choice.contains("Hello",true)->"👋";else->"🗂️" },fontSize=25.sp)
-          Text(choice,fontSize=19.sp,fontWeight=FontWeight.ExtraBold,lineHeight=23.sp)
+        },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(if(pictureMode) 68.dp else 54.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFF40565D))) {
+         Column(horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(1.dp)) {
+          if(pictureMode) Text(when { choice.contains("Tea",true)->"🍵";choice.contains("Coffee",true)->"☕";choice.contains("Milk",true)->"🥛";choice.contains("Apple",true)->"🍎";choice.contains("Cat",true)->"🐈";choice.contains("Dog",true)->"🐕";choice.contains("Water",true)->"💧";choice.contains("Book",true)->"📚";choice.contains("House",true)->"🏠";choice.contains("Hello",true)->"👋";else->"🗂️" },fontSize=if(compact) 21.sp else 24.sp)
+          Text(choice,fontSize=if(compact) 16.sp else 18.sp,fontWeight=FontWeight.ExtraBold,lineHeight=21.sp,maxLines=2)
          }
         }
        } }
@@ -372,11 +379,11 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          save()
         },modifier=Modifier.fillMaxWidth().height(48.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОДОЛЖИТЬ 🚀",fontSize=17.sp,fontWeight=FontWeight.Black)} } */
        }
-       item { TextButton(onClick={screen="home"},modifier=Modifier.height(34.dp)){Text("← К урокам",fontSize=13.sp)} }
+       if(selected==null) item { TextButton(onClick={screen="home"},modifier=Modifier.height(30.dp)){Text("← К урокам",fontSize=13.sp)} }
       }
      }
      if(screen=="review" && reviewMatched.size==reviewPairs.size) {
-      Button(onClick={screen="done";foxExcited=true},modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=51.dp).height(54.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark),shape=RoundedCornerShape(17.dp)) {Text("ЗАБРАТЬ ОПЫТ ⭐",fontSize=21.sp,fontWeight=FontWeight.Black)}
+      Button(onClick={screen="done";foxExcited=true},modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=4.dp,bottom=14.dp).height(54.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark),shape=RoundedCornerShape(17.dp)) {Text("ЗАБРАТЬ ОПЫТ ⭐",fontSize=21.sp,fontWeight=FontWeight.Black)}
      }
      if(screen=="onboarding" || ((screen=="lesson" || screen=="placement") && selected!=null)) {
       Button(onClick={
@@ -392,7 +399,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         else if(index==lessons[current].questions.lastIndex){completed=completed+current;markStudyDay();screen="review"}else index++
         save()
        }
-      },modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=51.dp).height(54.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
+      },modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=4.dp,bottom=14.dp).height(54.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
        Text(if(screen=="onboarding")if(onboardStep==2)"ПОЕХАЛИ! 🚀" else "ПРОДОЛЖИТЬ" else "ПРОДОЛЖИТЬ 🚀",fontSize=21.sp,fontWeight=FontWeight.Black)
       }
      }
