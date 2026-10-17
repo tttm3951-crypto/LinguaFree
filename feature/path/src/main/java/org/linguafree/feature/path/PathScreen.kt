@@ -32,6 +32,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.gestures.animateScrollBy
+import kotlinx.coroutines.flow.first
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -135,9 +139,21 @@ fun PathScreen(
     var initialScrollDone by remember { mutableStateOf(false) }
     LaunchedEffect(currentIndex) {
         if (currentIndex >= 0 && !initialScrollDone) {
-            listState.scrollToItem((currentIndex - 2).coerceAtLeast(0))
+            // Put the current lesson in the upper third of the screen, whatever the font scale.
+            val viewport = snapshotFlow { listState.layoutInfo.viewportSize.height }.first { it > 0 }
+            listState.scrollToItem(currentIndex)
+            listState.scrollBy(-viewport * 0.3f)
             initialScrollDone = true
         }
+    }
+    // An opened popover sits under its node: bring a node in the lower half up so the popover fits.
+    LaunchedEffect(selected) {
+        val id = selected ?: return@LaunchedEffect
+        val index = items.indexOfFirst { it is PathItem.Node && it.node.node.id == id }
+        val info = listState.layoutInfo
+        val item = info.visibleItemsInfo.firstOrNull { it.index == index } ?: return@LaunchedEffect
+        val viewport = info.viewportEndOffset - info.viewportStartOffset
+        if (item.offset > viewport * 0.45f) listState.animateScrollBy(item.offset - viewport * 0.25f)
     }
     val currentVisible by remember(currentIndex) { derivedStateOf { isVisible(listState, currentIndex) } }
 

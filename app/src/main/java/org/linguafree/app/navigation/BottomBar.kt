@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
@@ -56,6 +57,7 @@ fun LfBottomBar(current: MainTab?, onSelect: (MainTab) -> Unit, modifier: Modifi
                         .background(if (selected) c.gems.copy(alpha = if (c.isDark) 0.18f else 0.10f) else Color.Transparent)
                         .border(2.dp, if (selected) c.gems else Color.Transparent, RoundedCornerShape(14.dp))
                         .clickable(role = Role.Tab) { onSelect(tab) }
+                        .testTag("tab-${tab.name}")
                         .semantics { this.selected = selected }
                         .padding(vertical = 6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,

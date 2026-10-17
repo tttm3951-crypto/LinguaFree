@@ -1,30 +1,26 @@
 #!/usr/bin/env bash
+# In-place upgrade check on an emulator: the published, signed 0.9 release is installed and
+# started, then this signed release is installed over it (same key, higher versionCode) and
+# must start without crashing. Progress import itself is covered by LegacyMigrationTest.
 set -euo pipefail
-adb install -r upgrade-base.apk
-adb shell am force-stop org.linguafree.app
-cat > upgrade-progress.xml <<'XML'
-<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
-<map>
-<int name="xp" value="321" />
-<int name="lesson" value="2" />
-<string name="completed">0,1</string>
-<string name="learnerName">Upgrade learner</string>
-<string name="learnerId">linguafree-stable-learner</string>
-<int name="foxAvatar" value="3" />
-<boolean name="onboarded" value="true" />
-<boolean name="showWelcome" value="false" />
-<boolean name="effectsEnabled" value="false" />
-<boolean name="hapticsEnabled" value="false" />
-<int name="reminders" value="0" />
-<set name="beginnerMastered"><string>start-01</string></set>
-<string name="beginnerLevel">A1</string>
-</map>
-XML
-adb push upgrade-progress.xml /data/local/tmp/upgrade-progress.xml
-adb shell run-as org.linguafree.app mkdir -p shared_prefs
-adb shell run-as org.linguafree.app cp /data/local/tmp/upgrade-progress.xml shared_prefs/linguafree_progress.xml
-adb install -r "$1"
-adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-adb shell am instrument -w -e class org.linguafree.app.UpgradePersistenceTest -e upgradeCheck true org.linguafree.app.test/androidx.test.runner.AndroidJUnitRunner | tee upgrade-result.txt
-grep -q 'OK (1 test)' upgrade-result.txt
-! grep -q 'FAILURES\|INSTRUMENTATION_FAILED\|Process crashed' upgrade-result.txt
+NEW_APK="$1"
+PKG=org.linguafree.app
+mkdir -p device-artifacts
+{
+  echo "== Installing 0.9 (upgrade-base.apk)"
+  adb install upgrade-base.apk
+  adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1 >/dev/null
+  sleep 8
+  adb shell am force-stop "$PKG"
+  echo "== Upgrading in place to $NEW_APK"
+  adb logcat -c
+  adb install -r "$NEW_APK"
+  adb shell dumpsys package "$PKG" | grep -E "versionName|versionCode" | head -2
+  adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1 >/dev/null
+  sleep 20
+  if ! adb shell pidof "$PKG" >/dev/null; then echo "FAILED: app is not running after upgrade"; exit 1; fi
+  adb logcat -d > device-artifacts/logcat.txt
+  if grep -A20 "FATAL EXCEPTION" device-artifacts/logcat.txt | grep -q "$PKG"; then echo "FAILED: crash after upgrade"; exit 1; fi
+  echo "OK: upgrade installed over the signed 0.9 release and the app runs"
+} 2>&1 | tee upgrade-result.txt
+grep -q '^OK: upgrade' upgrade-result.txt

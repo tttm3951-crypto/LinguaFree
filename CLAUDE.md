@@ -66,7 +66,13 @@ python3 scripts/content/validate_content.py # проверка контента
 ./gradlew lint test assembleDebug           # то же, что в CI
 ./gradlew assembleRelease                   # R8; подпись — только из секретов CI
 bash scripts/ci/check_forbidden_deps.sh     # нет рекламы/биллинга/аналитики
+./gradlew connectedDebugAndroidTest         # UI-тесты (в CI — workflow «Android device checks»)
+git tag vX.Y.Z && git push origin vX.Y.Z     # выпуск: подписанный APK, проверка обновления с 0.9, GitHub Release
 ```
+
+Сеть в среде Claude Code закрыта для Maven: Gradle-сборка идёт только в GitHub Actions
+(результаты — через аннотации к шагам). Логику `:core:domain` можно проверить локально
+скриптом `~/tools/bin/domain-test`, если он есть.
 
 ## Правила работы с репозиторием
 
@@ -79,3 +85,6 @@ bash scripts/ci/check_forbidden_deps.sh     # нет рекламы/биллин
 - Лисёнок всегда на прозрачном фоне, без подложек. Иконка — лисёнок на зелёном.
 - При ошибке распознавания речи показывать подсказку про офлайн-пакет
   (`SpeechHelp.OFFLINE_PACK_HINT`).
+- Магазин — только за кристаллы и только заморозки серии, наряды лиса и темы.
+  Сердца и бусты не продаются (решение владельца).
+- Пакет `org.linguafree.app` и ключ подписи 0.9 сохраняются: новые версии ставятся поверх.

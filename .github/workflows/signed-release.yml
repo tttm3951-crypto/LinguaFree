@@ -1,21 +1,23 @@
 name: Signed release and upgrade check
+# Builds the R8-minified release signed with the LinguaFree key (CI secrets only), verifies an
+# in-place upgrade from the published 0.9 release keeps progress, and publishes a GitHub Release.
 on:
-  # Paused during the 1.0 rebuild; re-enabled in stage 9/10 with the new module layout.
+  push:
+    tags: ['v*']
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
   release:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 50
     env:
       LINGUAFREE_KEYSTORE_PATH: ${{ github.workspace }}/.private-release.p12
       LINGUAFREE_STORE_PASSWORD: ${{ secrets.LINGUAFREE_STORE_PASSWORD }}
       LINGUAFREE_KEY_ALIAS: ${{ secrets.LINGUAFREE_KEY_ALIAS }}
       LINGUAFREE_KEY_PASSWORD: ${{ secrets.LINGUAFREE_KEY_PASSWORD }}
-      LINGUAFREE_CLASSROOM_URL: ${{ vars.LINGUAFREE_CLASSROOM_URL }}
       LINGUAFREE_SIGN_DEBUG_FOR_UPGRADE: 'true'
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -23,11 +25,8 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
       - name: Read release version
-        run: |
-          python3 scripts/release_version.py >> "$GITHUB_ENV"
+        run: python3 scripts/release_version.py >> "$GITHUB_ENV"
       - name: Prepare private signing key
         env:
           KEYSTORE_B64: ${{ secrets.LINGUAFREE_KEYSTORE_B64 }}
@@ -38,56 +37,69 @@ jobs:
           test -n "$LINGUAFREE_KEY_PASSWORD"
           umask 077
           printf '%s' "$KEYSTORE_B64" | base64 --decode > "$LINGUAFREE_KEYSTORE_PATH"
-      - name: Prepare and validate offline assets
+      - name: Validate content and build offline reference
         run: |
-          mkdir -p app/src/main/res/drawable
-          cp fox_original.png app/src/main/res/drawable/fox_original.png
+          python3 scripts/content/validate_content.py
+          python3 scripts/validate_library.py
           python3 scripts/build_offline_library.py
-          python3 scripts/validate_content.py
-          python3 scripts/validate_curriculum.py
-          python3 scripts/validate_beginner.py
-      - name: Build lower-version signed upgrade fixture
+      - name: Build release (R8), debug and instrumentation APKs
         run: |
-          LINGUAFREE_VERSION_CODE="$PREVIOUS_CODE" gradle --no-daemon assembleDebug
-          cp app/build/outputs/apk/debug/app-debug.apk upgrade-base.apk
-      - name: Build signed release and instrumentation
+          set -o pipefail
+          ./gradlew --no-daemon --stacktrace test assembleRelease assembleDebug assembleDebugAndroidTest 2>&1 | tee build.log
+      - name: Explain build failure
+        if: failure()
+        run: python3 scripts/ci/annotate_build_failure.py build.log
+      - name: Check forbidden dependencies and permissions of the release APK
         run: |
-          gradle --no-daemon testDebugUnitTest assembleRelease assembleDebugAndroidTest
+          bash scripts/ci/check_forbidden_deps.sh
+          bash scripts/ci/check_permissions.sh app/build/outputs/apk/release/app-release.apk
+      - name: Sign check and checksums
+        run: |
           mkdir -p signed-release
           cp app/build/outputs/apk/release/app-release.apk "signed-release/LinguaFree-${APP_VERSION}.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "signed-release/LinguaFree-${APP_VERSION}-debug.apk"
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "signed-release/LinguaFree-${APP_VERSION}.apk" | tee signed-release/certificate.txt
           grep -qi '65a9c94c2325b15c86a3129500c4642d30c04380c2159463f536be0a2a42bcd9' signed-release/certificate.txt
-          sha256sum "signed-release/LinguaFree-${APP_VERSION}.apk" > signed-release/SHA256SUMS.txt
+          (cd signed-release && sha256sum *.apk > SHA256SUMS.txt)
+      - name: Download the published 0.9 release for the upgrade check
+        run: gh release download v0.9.0 --pattern 'LinguaFree-0.9.apk' --output upgrade-base.apk
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Verify signed in-place upgrade preserves progress
+      - name: Verify in-place upgrade 0.9 → this release keeps progress
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
+          api-level: 34
           arch: x86_64
+          target: google_apis
           profile: pixel_2
           disable-animations: true
           script: bash scripts/check_signed_upgrade.sh "signed-release/LinguaFree-${APP_VERSION}.apk"
+      - name: Explain upgrade failure
+        if: failure()
+        run: |
+          test -f upgrade-result.txt && sed 's/^/::error title=Upgrade check::/' upgrade-result.txt | head -40 || true
+          python3 scripts/ci/annotate_test_failures.py
       - name: Upload verified release
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: LinguaFree-verified-signed-release
           path: |
             signed-release/
             upgrade-result.txt
-      - name: Publish tested Android release
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        env:
-          GH_TOKEN: ${{ github.token }}
+            device-artifacts/
+          if-no-files-found: ignore
+      - name: Publish GitHub Release
         run: |
           if gh release view "$APP_TAG" >/dev/null 2>&1; then
             echo 'Release already exists; do not replace immutable user downloads.'
             exit 0
           fi
-          gh release create "$APP_TAG" "signed-release/LinguaFree-${APP_VERSION}.apk" signed-release/SHA256SUMS.txt signed-release/certificate.txt --target "$GITHUB_SHA" --title "LinguaFree ${APP_VERSION} — офлайн-обучение" --notes-file RELEASE_NOTES_RU.md
+          gh release create "$APP_TAG" signed-release/*.apk signed-release/SHA256SUMS.txt signed-release/certificate.txt \
+            --target "$GITHUB_SHA" --title "LinguaFree ${APP_VERSION}" --notes-file RELEASE_NOTES_RU.md --latest
       - name: Remove private runner key
         if: always()
         run: rm -f -- "$LINGUAFREE_KEYSTORE_PATH"
