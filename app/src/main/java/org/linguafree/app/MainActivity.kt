@@ -12,6 +12,9 @@ import android.os.Looper
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.content.Context
 import kotlin.math.sin
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
@@ -93,7 +96,39 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   if(!speechReady)return
   tts?.speak(value,if(flush)TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD,null,"english-"+System.nanoTime())
  }
+ private fun playCorrectFeedback(){
+  try {
+   val vibrator=getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+   if(Build.VERSION.SDK_INT>=26) vibrator?.vibrate(VibrationEffect.createOneShot(65,VibrationEffect.DEFAULT_AMPLITUDE))
+   else @Suppress("DEPRECATION") vibrator?.vibrate(65)
+  }catch(_:Exception){}
+  Thread {
+   try {
+    val rate=22050
+    val notes=doubleArrayOf(523.25,783.99)
+    val durations=intArrayOf(105,190)
+    val samples=ShortArray(durations.sum()*rate/1000)
+    var offset=0
+    for(n in notes.indices){
+     val count=durations[n]*rate/1000
+     for(i in 0 until count){
+      val envelope=minOf(1.0,i/180.0,(count-i)/550.0).coerceAtLeast(0.0)
+      val tone=sin(2.0*Math.PI*notes[n]*i/rate)+0.18*sin(4.0*Math.PI*notes[n]*i/rate)
+      samples[offset+i]=(tone*envelope*5500).toInt().toShort()
+     }
+     offset+=count
+    }
+    val track=AudioTrack.Builder()
+     .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build())
+     .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(rate).setChannelMask(AudioFormat.CHANNEL_OUT_MONO).build())
+     .setBufferSizeInBytes(samples.size*2).setTransferMode(AudioTrack.MODE_STATIC).build()
+    track.write(samples,0,samples.size);track.play()
+    Thread.sleep(durations.sum().toLong()+80);track.stop();track.release()
+   }catch(_:Exception){}
+  }.start()
+ }
  private fun sayReaction(correct:Boolean){
+  if(correct)playCorrectFeedback()
   if(!speechReady)return
   val phrases=if(correct) listOf("Great!","Well done!","Excellent!","Fantastic!","Amazing!","You did it!")
    else listOf("Try again!","Keep going!","You can do it!","Nice try!")
