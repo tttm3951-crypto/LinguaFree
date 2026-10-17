@@ -143,6 +143,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
    fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();showTranslation=false;correctCount=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
+   LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true; sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false } }
    LaunchedEffect(screen,current,index) {
     if(screen=="lesson" || screen=="placement") {
      kotlinx.coroutines.delay(380)
@@ -213,8 +214,9 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
       } else if(screen=="done") {
        item { Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.fillMaxWidth()) {
-        Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка празднует победу",modifier=Modifier.size(160.dp).graphicsLayer { rotationZ=bounce*1.2f })
+        Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка празднует победу",modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f; scaleX=foxScale;scaleY=foxScale })
         Text("🎉 УРА! УРОК ПРОЙДЕН!",fontSize=30.sp,fontWeight=FontWeight.Black,color=pink)
+        Text("🦊 Hooray! Fantastic! 🌟",fontSize=23.sp,fontWeight=FontWeight.Black,color=green)
        } }
        item { Text("Верных ответов: $correctCount из ${lessons[current].questions.size}") }
        item { Button(onClick={start((current+1).coerceAtMost(lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("Следующий урок")} }
@@ -232,7 +234,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
 
        item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFF3B2A45))) { Column(Modifier.padding(12.dp)) {
         Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(9.dp)) {
-         Image(painter=painterResource(R.drawable.fox_original),contentDescription=null,modifier=Modifier.size(40.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale })
+         Image(painter=painterResource(R.drawable.fox_original),contentDescription=null,modifier=Modifier.size(28.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale })
          Text(foxMessage,fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
         }
         Spacer(Modifier.height(4.dp))
@@ -302,7 +304,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         else if(index==lessons[current].questions.lastIndex){completed=completed+current;screen="done"}else index++
         save()
        }
-      },modifier=Modifier.fillMaxWidth().padding(horizontal=16.dp,vertical=10.dp).height(58.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
+      },modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=32.dp).height(54.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
        Text(if(screen=="onboarding")if(onboardStep==2)"ПОЕХАЛИ! 🚀" else "ПРОДОЛЖИТЬ" else "ПРОДОЛЖИТЬ 🚀",fontSize=21.sp,fontWeight=FontWeight.Black)
       }
      }
