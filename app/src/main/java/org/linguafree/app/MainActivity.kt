@@ -234,6 +234,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var speedCorrect by remember { mutableIntStateOf(0) }
    var speedFinished by remember { mutableStateOf(false) }
    var speedStartedAt by remember { mutableLongStateOf(0L) }
+   var speedRemaining by remember { mutableIntStateOf(60) }
    var speedBest by remember { mutableIntStateOf(prefs.getInt("speedBest",0)) }
    var skillCorrect by remember { mutableStateOf(prefs.getString("skillCorrect","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}.let{if(it.size==4)it else listOf(0,0,0,0)}) }
    var skillTotal by remember { mutableStateOf(prefs.getString("skillTotal","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}.let{if(it.size==4)it else listOf(0,0,0,0)}) }
@@ -322,6 +323,15 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putString("repeatQueue",repeatQueue.joinToString(",")).putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
    fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();typedAnswer="";hintShown=false;showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
+   LaunchedEffect(screen,speedStartedAt) {
+    if(screen=="speed" && !speedFinished) {
+     while(screen=="speed" && !speedFinished) {
+      speedRemaining=(60-((System.currentTimeMillis()-speedStartedAt)/1000L).toInt()).coerceAtLeast(0)
+      if(speedRemaining==0){speedFinished=true;if(speedCorrect>speedBest){speedBest=speedCorrect;prefs.edit().putInt("speedBest",speedBest).apply()};markStudyDay();break}
+      kotlinx.coroutines.delay(250)
+     }
+    }
+   }
    LaunchedEffect(screen) { if(screen=="review"){reviewMatched=emptySet();reviewLeft=null;reviewRight=null;sayEnglish("Match the words!")} }
    LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true;celebration=true;playMilestoneSound();sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false;celebration=false } }
    LaunchedEffect(screen,current,index) {
@@ -407,7 +417,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
          Text("⚡ Игра на скорость",fontSize=22.sp,fontWeight=FontWeight.Black,color=ink)
          Text("10 вопросов за 60 секунд. Рекорд: $speedBest",color=ink)
-         Button(onClick={speedRound=0;speedCorrect=0;speedFinished=false;speedStartedAt=System.currentTimeMillis();screen="speed"},modifier=Modifier.fillMaxWidth()){Text("Начать скоростную игру")}
+         Button(onClick={speedRound=0;speedCorrect=0;speedFinished=false;speedStartedAt=System.currentTimeMillis();speedRemaining=60;screen="speed"},modifier=Modifier.fillMaxWidth()){Text("Начать скоростную игру")}
         }
        }
       }
@@ -423,7 +433,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        }
       }
       if(screen=="speed"){
-       val elapsed=(System.currentTimeMillis()-speedStartedAt)/1000L
+       val elapsed=60-speedRemaining
        val q=lessons[(speedRound*7+current)%lessons.size].questions[speedRound%7]
        item { Text("‹  ⚡ Игра на скорость",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
        item { Text("Вопрос ${speedRound.coerceAtMost(10)}/10 · Верно: $speedCorrect · Время: ${(60-elapsed).coerceAtLeast(0)} с",fontSize=18.sp,color=ink) }
