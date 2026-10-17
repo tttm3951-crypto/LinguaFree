@@ -230,6 +230,22 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     }
    }
    val stories=storyData
+   val storyTitles=remember {
+    val json=JSONArray(assets.open("stories.json").bufferedReader().use{it.readText()})
+    (0 until json.length()).map{n->json.getJSONObject(n).getString("title")}
+   }
+   var storyQuery by remember { mutableStateOf("") }
+   val vocabulary=remember {
+    (lessons.flatMap { lesson -> lesson.questions.map { q ->
+     val quoted=q.prompt.substringAfter("«","").substringBefore("»","")
+     if(q.prompt.startsWith("Как по-английски"))q.choices[q.answer] to quoted
+     else quoted to q.choices[q.answer]
+    } } + storyData.flatten().map { it.first to it.second })
+    .filter{it.first.isNotBlank() && it.second.isNotBlank()}
+    .distinctBy{it.first.lowercase(Locale.ROOT)+"|"+it.second.lowercase(Locale.ROOT)}
+    .sortedBy{it.first.lowercase(Locale.ROOT)}
+   }
+   var vocabQuery by remember { mutableStateOf("") }
    var speedRound by remember { mutableIntStateOf(0) }
    var speedCorrect by remember { mutableIntStateOf(0) }
    var speedFinished by remember { mutableStateOf(false) }
@@ -405,9 +421,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Column(Modifier.padding(15.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
          Text("📖 Истории с лисичкой",fontSize=23.sp,fontWeight=FontWeight.Black,color=ink)
          Text("Слушай диалоги, отвечай и тренируй произношение.",color=ink)
-         Text("30 оригинальных историй · уровни A1–B1",color=ink)
+         Text("${stories.size} оригинальных историй · уровни A1–B1",color=ink)
          Button(onClick={storyIndex=0;storyStep=0;storyFeedback="";screen="story"},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("Начать историю",color=dark)}
-         OutlinedButton(onClick={screen="storyLibrary"},modifier=Modifier.fillMaxWidth()){Text("📚 Выбрать из 30 историй")}
+         OutlinedButton(onClick={screen="storyLibrary"},modifier=Modifier.fillMaxWidth()){Text("📚 Выбрать из ${stories.size} историй")}
+         OutlinedButton(onClick={screen="vocabulary"},modifier=Modifier.fillMaxWidth()){Text("📗 Словарь · ${vocabulary.size} выражений")}
          OutlinedButton(onClick={speechTarget="Hello!";storyFeedback="";screen="speaking"},modifier=Modifier.fillMaxWidth()){Text("🎙️ Тренировать произношение")}
         }
        }
@@ -455,11 +472,26 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         },modifier=Modifier.fillMaxWidth()){Text(choice,color=ink)} }}
        }
       }
+      if(screen=="vocabulary"){
+       item { Text("‹  Словарь",modifier=Modifier.clickable{screen="home"},fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Text("${vocabulary.size} уникальных пар «английский — перевод» из уроков и историй",color=ink) }
+       item { OutlinedTextField(value=vocabQuery,onValueChange={vocabQuery=it},label={Text("Поиск слова или выражения")},singleLine=true,modifier=Modifier.fillMaxWidth()) }
+       val filtered=vocabulary.filter{(en,ru)->vocabQuery.isBlank() || en.contains(vocabQuery,true)||ru.contains(vocabQuery,true)}
+       item { Text("Найдено: ${filtered.size}. Показаны первые 100.",color=ink) }
+       items(filtered.take(100)){pair->
+        OutlinedButton(onClick={sayEnglish(pair.first)},modifier=Modifier.fillMaxWidth()){
+         Column(Modifier.fillMaxWidth()){Text("🔊 "+pair.first,fontSize=17.sp,color=ink);Text(pair.second,fontSize=14.sp,color=pink)}
+        }
+       }
+      }
       if(screen=="storyLibrary"){
        item { Text("‹  Библиотека историй",modifier=Modifier.clickable{screen="home"},fontSize=24.sp,fontWeight=FontWeight.Black,color=purple) }
-       items(30){n->
-        val title=listOf("Приветствие","Знакомство","Дружба","Домашние животные","Игрушки","Прогулка","Еда","В кафе","Книги","Библиотека","Школа","Время","Автобус","Билет","Магазин","Подарок","День рождения","Велосипед","Дождь","Отдых","Помощь","Мотивация","На вокзале","Чаепитие","Цвета","Музыка","Птицы","Сад","Вопрос","Ошибки")[n]
-        OutlinedButton(onClick={storyIndex=n;storyStep=0;storyFeedback="";screen="story"},modifier=Modifier.fillMaxWidth()){Text("${n+1}. $title · ${if(n<10)"A1" else if(n<20)"A2" else "B1"} ${if(n in rewardedStories)"✓" else ""}",color=ink)}
+       item { OutlinedTextField(value=storyQuery,onValueChange={storyQuery=it},label={Text("Поиск по названию")},modifier=Modifier.fillMaxWidth(),singleLine=true) }
+       val filtered=storyTitles.indices.filter{storyQuery.isBlank()||storyTitles[it].contains(storyQuery,true)}
+       items(filtered){n->
+        OutlinedButton(onClick={storyIndex=n;storyStep=0;storyFeedback="";screen="story"},modifier=Modifier.fillMaxWidth()){
+         Text("${n+1}. ${storyTitles[n]} ${if(n in rewardedStories)"✓" else ""}",color=ink)
+        }
        }
       }
       if(screen=="story") {
