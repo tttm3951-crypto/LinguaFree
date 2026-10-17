@@ -8,6 +8,8 @@ import org.linguafree.app.StartupState
 import org.linguafree.core.ui.theme.DarkMode
 import org.linguafree.core.ui.theme.ThemeAccent
 import org.linguafree.feature.path.LearnScreen
+import org.linguafree.feature.lesson.LessonRoute
+import org.linguafree.feature.lesson.lessonScreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Column
@@ -69,7 +71,14 @@ fun LinguaFreeRoot(root: RootViewModel) {
             },
         ) { padding ->
             NavHost(nav, startDestination = MainTab.Learn.route, modifier = Modifier.padding(padding)) {
-                composable(MainTab.Learn.route) { LearnScreen() }
+                composable(MainTab.Learn.route) {
+                    LearnScreen(onStartSession = { kind, node, unit -> nav.navigate(LessonRoute.of(kind, node, unit)) })
+                }
+                lessonScreen(
+                    onClose = { nav.popBackStack() },
+                    onStartSession = { route -> nav.navigate(route) { popUpTo(LessonRoute.PATTERN) { inclusive = true } } },
+                    onOpenSettings = { nav.navigate(MainTab.Profile.route) { popUpTo(LessonRoute.PATTERN) { inclusive = true } } },
+                )
                 MainTab.entries.filter { it != MainTab.Learn }.forEach { tab ->
                     composable(tab.route) { TabIntro(tab) }
                 }

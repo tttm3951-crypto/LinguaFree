@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.linguafree.core.domain.model.NodeType
+import org.linguafree.core.domain.model.SessionKind
+import androidx.compose.foundation.clickable
 import org.linguafree.core.ui.components.LfProgressBar
 import org.linguafree.core.ui.components.StatsTopBar
 import org.linguafree.core.ui.mascot.FoxEmotion
@@ -34,7 +36,10 @@ import org.linguafree.core.ui.theme.LfTheme
 
 /** Learn tab: course outline loaded from Room (stage 2). */
 @Composable
-fun LearnScreen(viewModel: LearnViewModel = hiltViewModel()) {
+fun LearnScreen(
+    onStartSession: (SessionKind, String?, String?) -> Unit,
+    viewModel: LearnViewModel = hiltViewModel(),
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val c = LfTheme.colors
     Column(Modifier.fillMaxSize().background(c.background).statusBarsPadding()) {
@@ -56,8 +61,14 @@ fun LearnScreen(viewModel: LearnViewModel = hiltViewModel()) {
                 items(section.units, key = { it.id }) { unit ->
                     val lessons = unit.nodes.filter { it.type == NodeType.Lesson }
                     val done = lessons.count { it.id in state.completed }
+                    val next = unit.nodes.firstOrNull { (it.type == NodeType.Lesson || it.type == NodeType.Story) && it.id !in state.completed }
                     Column(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Color(unit.color)).padding(16.dp),
+                        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Color(unit.color))
+                            .clickable {
+                                if (next != null) onStartSession(if (next.type == NodeType.Story) SessionKind.Story else SessionKind.Lesson, next.id, unit.id)
+                                else onStartSession(SessionKind.UnitReview, unit.nodes.firstOrNull { it.type == NodeType.Review }?.id, unit.id)
+                            }
+                            .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(unit.title, style = MaterialTheme.typography.titleMedium, color = Color.White)
