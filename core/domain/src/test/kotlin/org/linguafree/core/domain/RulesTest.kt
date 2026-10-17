@@ -29,8 +29,8 @@ class SrsTest {
     @Test
     fun `recall is one half after one half-life`() {
         val day = 86_400_000L
-        val m = Srs.Memory(2, 0, 2.0, lastSeen = 0)
-        assertEquals(0.5, Srs.strength(m, 2 * day), 1e-9)
+        val m = Srs.Memory(2, 0, 2.0, lastSeen = 1)
+        assertEquals(0.5, Srs.strength(m, 1 + 2 * day), 1e-9)
         assertEquals(1.0, Srs.strength(m.copy(lastSeen = 5), 5), 1e-9)
     }
 

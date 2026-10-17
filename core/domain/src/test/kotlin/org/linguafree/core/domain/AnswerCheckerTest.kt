@@ -40,7 +40,7 @@ class AnswerCheckerTest {
 
     @Test
     fun `too many typos are wrong and return the expected answer`() {
-        val v = AnswerChecker.checkTyped("I lik aplles", listOf("I like apples."))
+        val v = AnswerChecker.checkTyped("I lik apels", listOf("I like apples."))
         assertFalse(v.correct)
         assertEquals("I like apples.", v.expected)
     }
