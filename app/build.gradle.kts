@@ -12,8 +12,8 @@ android {
         applicationId = "org.linguafree.app"
         minSdk = 24
         targetSdk = 35
-        versionName = "0.8"
-        versionCode = 8
+        versionName = "0.9"
+        versionCode = 9
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val classroomUrl = System.getenv("LINGUAFREE_CLASSROOM_URL").orEmpty().trimEnd('/')
         if (classroomUrl.isNotEmpty()) {
@@ -65,3 +65,8 @@ dependencies {
     implementation("androidx.compose.ui:ui")
 }
 
+
+// Offline corpus must be bundled; never silently ship an empty reference screen.
+tasks.named("preBuild") {
+    doFirst { require(file("src/main/assets/offline-reference.db").isFile) { "Run python3 scripts/build_offline_library.py before Gradle" } }
+}

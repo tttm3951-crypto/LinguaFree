@@ -260,7 +260,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      val correct=prefs.getString("skillCorrect","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}
      val report=JSONObject().put("format","LinguaFreeStudyReport").put("version",1)
       .put("learnerId",ClassroomSync.learnerId(this@MainActivity))
-      .put("grammarTopicsCompleted",prefs.getStringSet("grammarMastered",emptySet())?.size?:0)
+      .put("grammarTopicsCompleted",(prefs.getStringSet("grammarMastered",emptySet())?.size?:0)+(prefs.getStringSet("beginnerMastered",emptySet())?.size?:0))
       .put("generatedAt",java.time.OffsetDateTime.now().toString())
       .put("student",prefs.getString("learnerName","").orEmpty().trim().ifBlank{"Ученик"})
       .put("completedLessons",completedLessons.size)
@@ -560,6 +560,12 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         onContinue={start(current)},onHome={screen="home"},onAvatar={screen="avatar"},
         onHide={prefs.edit().putBoolean("showWelcome",false).apply();screen="home"}) }
       }
+      if(screen=="beginner") {
+       item { GrammarCourse(this@MainActivity,recommendedLevel="Pre-A1",onSpeak={sayEnglish(it)},onSessionFinished={markStudyDay()},onBack={screen="home"},beginner=true) }
+      }
+      if(screen=="reference") {
+       item { OfflineReference(this@MainActivity,onSpeak={sayEnglish(it)},onBack={screen="vocabulary"}) }
+      }
       if(screen=="grammar") {
        item {
         GrammarCourse(this@MainActivity,
@@ -680,6 +686,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
       if(screen=="vocabulary"){
        item { Text("‹  Офлайн-словарь",modifier=Modifier.clickable{screen="home"},fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Button(onClick={screen="reference"},modifier=Modifier.fillMaxWidth()){Text("📚 Большой офлайн-справочник · 150 000")} }
        item { Text("${dictionary.size} английских слов и выражений с русским переводом. Все данные встроены в APK.",color=ink) }
        item { OutlinedTextField(value=vocabQuery,onValueChange={vocabQuery=it},label={Text("Поиск на английском или русском")},singleLine=true,modifier=Modifier.fillMaxWidth()) }
        item { Row(horizontalArrangement=Arrangement.spacedBy(5.dp)){listOf("Все","A1","A2","B1").forEach{level->
@@ -868,6 +875,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         }
        }
        item { OutlinedButton(onClick={screen="avatar"},modifier=Modifier.fillMaxWidth()){Text("🦊 Моя лисичка: ${foxAvatarNames[foxAvatar]}")} }
+       item { Button(onClick={screen="beginner"},modifier=Modifier.fillMaxWidth()){Text("🌱 Английский с нуля: буквы → первые фразы")} }
        item { Button(onClick={screen="grammar"},modifier=Modifier.fillMaxWidth()){Text("🧩 Грамматика: местоимения, глаголы, времена")} }
        item { Text("🚀 Путь приключений",fontSize=26.sp,fontWeight=FontWeight.Black,color=ink) }
        itemsIndexed(lessons) { n,l ->

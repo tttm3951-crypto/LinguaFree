@@ -18,14 +18,18 @@ fun GrammarCourse(
     recommendedLevel: String,
     onSpeak: (String) -> Unit,
     onSessionFinished: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    beginner: Boolean = false
 ) {
+    val prefix = if(beginner) "beginner" else "grammar"
+    val levels = if(beginner) listOf("Pre-A1", "A1") else listOf("A1", "A2", "B1", "B2")
+    val groups = if(beginner) listOf("all" to "Все темы", "reading" to "Буквы и чтение", "words" to "Слова и формы", "sentences" to "Предложения", "time" to "Время действия") else listOf("all" to "Все темы", "pronouns" to "Местоимения", "verbs" to "Типы глаголов", "tenses" to "Времена")
     val prefs = remember { context.getSharedPreferences("linguafree_progress", Context.MODE_PRIVATE) }
     val topics = remember {
-        val data = JSONArray(context.assets.open("grammar.json").bufferedReader().use { it.readText() })
+        val data = JSONArray(context.assets.open(if(beginner) "beginner.json" else "grammar.json").bufferedReader().use { it.readText() })
         (0 until data.length()).map { data.getJSONObject(it) }
     }
-    var level by rememberSaveable { mutableStateOf(prefs.getString("grammarLevel", recommendedLevel) ?: recommendedLevel) }
+    var level by rememberSaveable { mutableStateOf(prefs.getString("${prefix}Level", recommendedLevel) ?: recommendedLevel) }
     var group by rememberSaveable { mutableStateOf("all") }
     var topicId by rememberSaveable { mutableStateOf("") }
     var phase by rememberSaveable { mutableStateOf("intro") }
@@ -36,8 +40,8 @@ fun GrammarCourse(
     var mistakes by rememberSaveable { mutableStateOf(intArrayOf()) }
     var retry by rememberSaveable { mutableStateOf(false) }
     var hint by rememberSaveable { mutableStateOf(false) }
-    var mastered by remember { mutableStateOf(prefs.getStringSet("grammarMastered", emptySet())?.toSet() ?: emptySet()) }
-    var best by remember { mutableStateOf(runCatching { JSONObject(prefs.getString("grammarBest", "{}") ?: "{}") }.getOrDefault(JSONObject())) }
+    var mastered by remember { mutableStateOf(prefs.getStringSet("${prefix}Mastered", emptySet())?.toSet() ?: emptySet()) }
+    var best by remember { mutableStateOf(runCatching { JSONObject(prefs.getString("${prefix}Best", "{}") ?: "{}") }.getOrDefault(JSONObject())) }
     val topic = topics.firstOrNull { it.getString("id") == topicId }
 
     fun begin(indices: List<Int>, isRetry: Boolean) {
@@ -52,19 +56,19 @@ fun GrammarCourse(
         }) { Text(if (topic != null) "‹ К темам грамматики" else "‹ К урокам") }
 
         if (topic == null) {
-            Text("🧩 Грамматика с лисичкой", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-            Text("Местоимения, глаголы и времена: короткое правило → примеры → 5 заданий → работа над ошибками.")
+            Text(if(beginner) "🌱 Английский с нуля" else "🧩 Грамматика с лисичкой", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Text(if(beginner) "Буквы и звуки → чтение → слова → простые предложения → время действия. Одна тема: правило, примеры, пять заданий, разбор ошибок. Сначала выбирай Pre-A1, затем A1." else "Местоимения, глаголы и времена: короткое правило → примеры → 5 заданий → работа над ошибками.")
             Text("Стартовая рекомендация: $recommendedLevel. Уровень можно выбрать самостоятельно; это не оценка CEFR.")
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                listOf("A1", "A2", "B1", "B2").forEach { item ->
+                levels.forEach { item ->
                     FilterChip(selected = level == item, onClick = {
                         level = item
-                        prefs.edit().putString("grammarLevel", item).apply()
+                        prefs.edit().putString("${prefix}Level", item).apply()
                     }, label = { Text(item) }, modifier = Modifier.weight(1f))
                 }
             }
             // A column keeps category labels readable on small screens and large font settings.
-            listOf("all" to "Все темы", "pronouns" to "Местоимения", "verbs" to "Типы глаголов", "tenses" to "Времена").forEach { (id, title) ->
+            groups.forEach { (id, title) ->
                 FilterChip(selected = group == id, onClick = { group = id }, label = { Text(title) })
             }
             val available = topics.filter { it.getString("level") == level && (group == "all" || it.getString("group") == group) }
@@ -89,7 +93,7 @@ fun GrammarCourse(
                 val examples = topic.getJSONArray("examples")
                 for (i in 0 until examples.length()) {
                     Text(examples.getString(i), style = MaterialTheme.typography.titleMedium)
-                    OutlinedButton(onClick = { onSpeak(examples.getString(i)) }) { Text("🔊 Послушать пример") }
+                    OutlinedButton(onClick = { onSpeak(examples.getString(i).substringBefore(" — ")) }) { Text("🔊 Послушать пример") }
                 }
                 Text("Для освоения темы нужно 4 из 5 верных ответов. Повторять и исправлять ошибки можно без ограничения.")
                 Button(onClick = { begin((0 until questions.length()).toList(), false) }, modifier = Modifier.fillMaxWidth()) { Text("Начать практику 🚀") }
@@ -122,7 +126,7 @@ fun GrammarCourse(
                                 val id = topic.getString("id")
                                 best = JSONObject(best.toString()).put(id, maxOf(best.optInt(id, 0), correct))
                                 if (correct * 100 >= order.size * 80) mastered = mastered + id
-                                prefs.edit().putString("grammarBest", best.toString()).putStringSet("grammarMastered", mastered).apply()
+                                prefs.edit().putString("${prefix}Best", best.toString()).putStringSet("${prefix}Mastered", mastered).apply()
                                 onSessionFinished()
                             }
                             phase = "result"

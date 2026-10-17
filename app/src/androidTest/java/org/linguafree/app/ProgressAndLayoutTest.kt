@@ -56,6 +56,29 @@ class ProgressAndLayoutTest {
         assertEquals("Тест",p.getString("learnerName",""))
     }
 
+    @Test fun bundledReferenceHas150000DistinctPairsAndSearchesBothLanguages(){
+        OfflineReferenceStore.open(compose.activity).use { db ->
+            db.rawQuery("SELECT count(*) FROM entries",null).use { c -> c.moveToFirst();assertEquals(150000,c.getInt(0)) }
+            db.rawQuery("SELECT count(*) FROM (SELECT en,ru FROM entries GROUP BY en,ru)",null).use { c -> c.moveToFirst();assertEquals(150000,c.getInt(0)) }
+        }
+        assertTrue(OfflineReferenceStore.find(compose.activity,"hello",0).isNotEmpty())
+        assertTrue(OfflineReferenceStore.find(compose.activity,"привет",0).isNotEmpty())
+        assertTrue(OfflineReferenceStore.find(compose.activity,"' OR 1=1 --",0).isEmpty())
+        assertTrue(OfflineReferenceStore.find(compose.activity,"",0).isEmpty())
+        assertTrue(OfflineReferenceStore.find(compose.activity,"the",0).size<=51)
+        val p=compose.activity.getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
+        assertEquals(123,p.getInt("xp",0)); assertEquals("0,1",p.getString("completed",""))
+    }
+
+    @Test fun beginnerRouteOpensWithoutResettingExistingLearner(){
+        compose.onNodeWithTag("main-content").performScrollToNode(hasText("🌱 Английский с нуля: буквы → первые фразы"))
+        compose.onNodeWithText("🌱 Английский с нуля: буквы → первые фразы").performClick()
+        compose.onNodeWithText("🌱 Английский с нуля").assertIsDisplayed()
+        compose.onNodeWithText("Pre-A1").assertIsDisplayed()
+        val p=compose.activity.getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
+        assertEquals(123,p.getInt("xp",0));assertEquals("Тест",p.getString("learnerName",""))
+    }
+
     @Test fun lessonAnswersAndContinueStayInsideTheAvailableWindow(){
         compose.onNodeWithTag("main-content").performScrollToNode(hasText("УРОК 1"))
         compose.onNode(hasText("УРОК 1") and hasClickAction()).performScrollTo().performClick()

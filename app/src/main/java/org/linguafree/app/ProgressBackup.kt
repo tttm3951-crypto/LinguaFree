@@ -18,8 +18,8 @@ fun Reader.readBounded(maxChars:Int):String{
 object ProgressBackup {
     private val intKeys=setOf("xp","gems","lesson","cardIndex","dailyGoal","dailyStreak","foxAvatar","goalCount","placementScore","reminders","speedBest")
     private val booleanKeys=setOf("onboarded","effectsEnabled","hapticsEnabled","showWelcome")
-    private val setKeys=setOf("cardMastered","dictionaryFavorites","grammarMastered")
-    private val stringKeys=setOf("completed","goalDate","learnerName","learnerId","level","cardDue","mistakes","repeatQueue","reviewDue","reviewStages","rewardedStories","skillCorrect","skillTotal","studiedDates","grammarBest","grammarLevel")
+    private val setKeys=setOf("cardMastered","dictionaryFavorites","grammarMastered","beginnerMastered")
+    private val stringKeys=setOf("completed","goalDate","learnerName","learnerId","level","cardDue","mistakes","repeatQueue","reviewDue","reviewStages","rewardedStories","skillCorrect","skillTotal","studiedDates","grammarBest","grammarLevel","beginnerBest","beginnerLevel")
 
     fun restore(prefs:SharedPreferences,json:JSONObject):Boolean{
         require(json.optString("format")=="LinguaFreeProgress"&&json.optInt("version")==1){"Неверный формат резервной копии"}
