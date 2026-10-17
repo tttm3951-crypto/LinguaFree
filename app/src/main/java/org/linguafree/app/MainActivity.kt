@@ -318,7 +318,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     val score=speechSimilarity(speechTarget,heard)
     if(heard.isNotBlank() && score>=85){
      trackSkill(3,true);foxExcited=true;foxMood="happy";sayReaction(true)
-     storyFeedback="Хорошо распознано ($score%). Произнесено: $heard"
+     storyFeedback="Распознано $score% слов. Произнесено: $heard. Это не оценка акцента."
     }else if(heard.isNotBlank()){
      trackSkill(3,false);foxExcited=false;foxMood="support";sayReaction(false)
      storyFeedback="Совпадение слов: $score%. Распознано: $heard. Послушай образец и повтори."
@@ -527,7 +527,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Button(onClick={sayEnglish(phrase.first)},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать диалог")} }
        item { OutlinedButton(onClick={sayEnglish(phrase.first,slow=true)},modifier=Modifier.fillMaxWidth()){Text("🐢 Медленно")} }
        item { Text("Как перевести фразу?",fontSize=20.sp,fontWeight=FontWeight.Bold,color=ink) }
-       val alternatives=listOf(phrase.second,"Я не понимаю.","До свидания, друг!")
+       val storyTranslations=stories.flatMap{story->story.map{it.second}}.distinct().filter{it!=phrase.second}
+       val alternatives=listOf(phrase.second,storyTranslations[(storyIndex*7+storyStep*11)%storyTranslations.size],storyTranslations[(storyIndex*17+storyStep*19+23)%storyTranslations.size]).distinct().let{options->if(options.size<3)options+storyTranslations.first{it !in options} else options}
        val ordered=if(storyStep%2==0)listOf(alternatives[1],alternatives[0],alternatives[2]) else listOf(alternatives[2],alternatives[1],alternatives[0])
        ordered.forEach{answer->item { OutlinedButton(onClick={
         if(answer==phrase.second){trackSkill(0,true);storyFeedback="Правильно! "+phrase.second;sayReaction(true)}
