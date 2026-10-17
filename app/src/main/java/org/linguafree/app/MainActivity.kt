@@ -20,7 +20,25 @@ private data class Lesson(val title:String,val questions:List<Quiz>)
 
 class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
  private var tts:TextToSpeech?=null
- override fun onInit(status:Int){if(status==TextToSpeech.SUCCESS) tts?.language=Locale.US}
+ private var speechReady=false
+ override fun onInit(status:Int){
+  if(status!=TextToSpeech.SUCCESS)return
+  val engine=tts?:return
+  val result=engine.setLanguage(Locale.US)
+  if(result==TextToSpeech.LANG_MISSING_DATA||result==TextToSpeech.LANG_NOT_SUPPORTED)return
+  val englishVoices=engine.voices.orEmpty().filter{
+   it.locale.language=="en" && !it.isNetworkConnectionRequired
+  }
+  val female=englishVoices.filter{
+   val name=it.name.lowercase(Locale.ROOT)
+   name.contains("female")||name.contains("woman")||name.contains("feminine")||
+   name.contains("en-us-x-sfg")||name.contains("en-us-x-tpf")
+  }
+  val preferred=female.firstOrNull{it.locale.country=="US"}?:female.firstOrNull()
+  if(preferred!=null)engine.voice=preferred
+  engine.setSpeechRate(0.85f)
+  speechReady=true
+ }
  override fun onDestroy(){tts?.stop();tts?.shutdown();super.onDestroy()}
  override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState)
   tts=TextToSpeech(this,this)
@@ -80,7 +98,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { LinearProgressIndicator(progress={(index+1).toFloat()/l.questions.size},modifier=Modifier.fillMaxWidth()) }
        item { Text("Вопрос ${index+1} из ${l.questions.size}") }
        item { Text(q.prompt,style=MaterialTheme.typography.headlineSmall) }
-       item { OutlinedButton(onClick={tts?.speak(q.speech,TextToSpeech.QUEUE_FLUSH,null,"linguafree")}){Text("🔊 Прослушать английский")} }
+       item { OutlinedButton(onClick={if(speechReady)tts?.speak(q.speech,TextToSpeech.QUEUE_FLUSH,null,"linguafree")}){Text("🔊 Пример произношения · английский голос")} }
        q.choices.forEachIndexed { i,choice -> item {
         OutlinedButton(onClick={selected=i},enabled=selected==null,modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(14.dp)){Text(choice)}
        } }
