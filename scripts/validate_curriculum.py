@@ -17,7 +17,7 @@ def excess_words(questions):
 
 
 def validate(root):
-    assets = root / 'app/src/main/assets'
+    assets = root / 'core/data/src/main/assets/library'
     lessons = json.loads((assets / 'lessons.json').read_text(encoding='utf-8'))
     grammar = json.loads((assets / 'grammar.json').read_text(encoding='utf-8'))
     all_questions = [q for lesson in lessons + grammar for q in lesson['questions']]

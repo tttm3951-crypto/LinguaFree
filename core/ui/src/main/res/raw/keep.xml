@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Images are looked up by name from course content; keep them when shrinking resources. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/img_*,@drawable/ic_*,@drawable/fox_*" />
