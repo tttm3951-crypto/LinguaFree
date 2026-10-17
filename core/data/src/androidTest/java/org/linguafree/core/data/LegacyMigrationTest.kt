@@ -31,7 +31,8 @@ class LegacyMigrationTest {
             .putBoolean("onboarded", true).putStringSet("beginnerMastered", setOf("start-01")).commit()
         val db = Room.inMemoryDatabaseBuilder(ctx, LinguaFreeDatabase::class.java).build()
         val content = ContentRepositoryImpl(ContentLoader(ctx, db.content()), db.content())
-        assertTrue(content.ensureContent() is ContentStatus.Ready)
+        val status = content.ensureContent()
+        assertTrue("content: $status", status is ContentStatus.Ready)
         val progress = ProgressRepositoryImpl(db.progress(), db.content())
         val game = GameRepositoryImpl(db.game())
         val settings = SettingsRepositoryImpl(ctx.settingsStore)
@@ -43,10 +44,10 @@ class LegacyMigrationTest {
 
         assertEquals(321, progress.results().first().sumOf { it.xp })
         val done = progress.nodeProgressNow().filterValues { it.completed }.keys
-        assertTrue("legacy-L000" in done && "legacy-L001" in done)
+        assertTrue("completed: $done", "legacy-L000" in done && "legacy-L001" in done)
         val s = settings.current()
         assertEquals("Upgrade learner", s.name)
-        assertTrue(s.onboarded)
+        assertTrue("onboarded", s.onboarded)
         // Library state stays in the 0.9 keys.
         assertEquals(setOf("start-01"), ctx.getSharedPreferences(LegacyMigration.LEGACY_PREFS, Context.MODE_PRIVATE).getStringSet("beginnerMastered", emptySet()))
         db.close()

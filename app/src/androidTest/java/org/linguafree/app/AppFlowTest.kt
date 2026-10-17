@@ -13,6 +13,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
@@ -76,7 +77,9 @@ class AppFlowTest {
         }
 
         // Path → first lesson.
-        waitTag("node-u01-l1", 15_000)
+        waitTag("path", 15_000)
+        compose.onNodeWithTag("path").performScrollToNode(hasTestTag("node-u01-l1"))
+        waitTag("node-u01-l1", 5_000)
         compose.onNodeWithTag("node-u01-l1").performClick()
         waitTag("node-start", 5_000)
         compose.onNodeWithTag("node-start").performClick()

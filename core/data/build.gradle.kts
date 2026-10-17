@@ -43,6 +43,8 @@ dependencies {
     ksp(libs.hilt.compiler)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     testImplementation(libs.junit4)
+    // Course pictures live in :core:ui; the content validator looks them up by name.
+    androidTestImplementation(project(":core:ui"))
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
 }
