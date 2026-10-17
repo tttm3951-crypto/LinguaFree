@@ -13,14 +13,11 @@ import java.util.Calendar
 
 class ReminderReceiver:BroadcastReceiver(){
  override fun onReceive(context:Context,intent:Intent){
-  if(intent.action==Intent.ACTION_BOOT_COMPLETED){schedule(context);return}
+  if(intent.action in setOf(Intent.ACTION_BOOT_COMPLETED,Intent.ACTION_TIME_CHANGED,Intent.ACTION_TIMEZONE_CHANGED,Intent.ACTION_MY_PACKAGE_REPLACED)){schedule(context);return}
   val prefs=context.getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
-  if(prefs.getInt("reminders",3)==0)return
-  val today=java.time.LocalDate.now().toString()
-  val studied=prefs.getString("studiedDates","").orEmpty().split(",")
-  if(today in studied)return
   val slot=intent.getIntExtra("slot",0)
-  if(prefs.getInt("reminders",3)==2 && slot==1)return
+  if(!LearningPolicy.shouldRemind(prefs.getInt("reminders",3),slot,java.time.LocalDate.now(),
+      prefs.getString("goalDate","").orEmpty(),prefs.getInt("goalCount",0),prefs.getInt("dailyGoal",10)))return
   val manager=context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
   if(Build.VERSION.SDK_INT>=26)manager.createNotificationChannel(NotificationChannel("study","Напоминания об английском",NotificationManager.IMPORTANCE_DEFAULT))
   val launch=context.packageManager.getLaunchIntentForPackage(context.packageName)
@@ -37,11 +34,12 @@ class ReminderReceiver:BroadcastReceiver(){
     val intent=Intent(context,ReminderReceiver::class.java).putExtra("slot",slot)
     val pending=PendingIntent.getBroadcast(context,100+slot,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     alarm.cancel(pending)
-    if(count==0 || (count==2 && slot==1))continue
     val hour=listOf(9,14,19)[slot]
-    val whenTo=Calendar.getInstance().apply{set(Calendar.HOUR_OF_DAY,hour);set(Calendar.MINUTE,0);set(Calendar.SECOND,0);if(timeInMillis<=System.currentTimeMillis())add(Calendar.DAY_OF_YEAR,1)}
+    if(hour !in LearningPolicy.reminderHours(count))continue
+    val whenTo=Calendar.getInstance().apply{set(Calendar.HOUR_OF_DAY,hour);set(Calendar.MINUTE,0);set(Calendar.SECOND,0);set(Calendar.MILLISECOND,0);if(timeInMillis<=System.currentTimeMillis())add(Calendar.DAY_OF_YEAR,1)}
     alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP,whenTo.timeInMillis,AlarmManager.INTERVAL_DAY,pending)
    }
   }
  }
 }
+

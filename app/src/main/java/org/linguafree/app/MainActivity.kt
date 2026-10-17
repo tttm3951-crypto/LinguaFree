@@ -21,6 +21,7 @@ import android.speech.RecognizerIntent
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
@@ -111,11 +112,13 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   tts?.speak(value,if(flush)TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD,null,"english-"+System.nanoTime())
  }
  private fun playCorrectFeedback(){
-  try {
+  val feedbackPrefs=getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
+  if(feedbackPrefs.getBoolean("hapticsEnabled",feedbackPrefs.getBoolean("effectsEnabled",true)))try {
    val vibrator=getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
    if(Build.VERSION.SDK_INT>=26) vibrator?.vibrate(VibrationEffect.createOneShot(65,VibrationEffect.DEFAULT_AMPLITUDE))
    else @Suppress("DEPRECATION") vibrator?.vibrate(65)
   }catch(_:Exception){}
+  if(!feedbackPrefs.getBoolean("effectsEnabled",true))return
   Thread {
    try {
     val rate=22050
@@ -153,11 +156,13 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   }.start()
  }
  private fun playWrongFeedback(){
-  try {
+  val feedbackPrefs=getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
+  if(feedbackPrefs.getBoolean("hapticsEnabled",feedbackPrefs.getBoolean("effectsEnabled",true)))try {
    val vibrator=getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
    if(Build.VERSION.SDK_INT>=26)vibrator?.vibrate(VibrationEffect.createOneShot(35,70))
    else @Suppress("DEPRECATION") vibrator?.vibrate(35)
   }catch(_:Exception){}
+  if(!feedbackPrefs.getBoolean("effectsEnabled",true))return
   Thread {
    try {
     val rate=22050;val notes=doubleArrayOf(330.0,277.18);val duration=105
@@ -169,8 +174,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   }.start()
  }
  private fun sayReaction(correct:Boolean){
-  if(getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE).getBoolean("effectsEnabled",true)){if(correct)playCorrectFeedback() else playWrongFeedback()}
-  if(!speechReady)return
+  if(correct)playCorrectFeedback() else playWrongFeedback()
+  if(!speechReady||!getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE).getBoolean("effectsEnabled",true))return
   val phrases=if(correct) listOf("Great!","Well done!","Excellent!","Fantastic!","Amazing!","You did it!")
    else listOf("Try again!","Keep going!","You can do it!","Nice try!")
   val phrase=phrases[reactionNumber%phrases.size]
@@ -198,6 +203,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
  }
  override fun onDestroy(){tts?.stop();tts?.shutdown();super.onDestroy()}
  override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState)
+  enableEdgeToEdge()
   if(getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE).getBoolean("effectsEnabled",true))playWelcomeMelody()
   tts=TextToSpeech(this,this)
   val raw=JSONArray(assets.open("lessons.json").bufferedReader().use{it.readText()})
@@ -323,9 +329,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var mistakes by remember { mutableStateOf(prefs.getString("mistakes","")!!.split(",").mapNotNull{it.toIntOrNull()}.toSet()) }
    var repeatQueue by remember { mutableStateOf(prefs.getString("repeatQueue","")!!.split(",").mapNotNull{it.toIntOrNull()}.toSet()) }
    var selected by remember { mutableStateOf<Int?>(null) }
-   var screen by remember { mutableStateOf(if(prefs.getBoolean("onboarded",false))"home" else "onboarding") }
+   var screen by remember { mutableStateOf(if(prefs.getBoolean("onboarded",false))if(prefs.getBoolean("showWelcome",true))"welcome" else "home" else "onboarding") }
    var onboardStep by remember { mutableIntStateOf(0) }
    var learnerName by remember { mutableStateOf(prefs.getString("learnerName","")?:"") }
+   var foxAvatar by remember { mutableIntStateOf(prefs.getInt("foxAvatar",0).coerceIn(0,6)) }
    fun saveLearnerName(value:String){
     learnerName=value.take(24).replace(Regex("[\\r\\n\\t]")," ").trimStart()
     prefs.edit().putString("learnerName",learnerName.trim()).apply()
@@ -402,6 +409,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var answerCombo by remember { mutableIntStateOf(0) }
    var reminderCount by remember { mutableIntStateOf(prefs.getInt("reminders",3)) }
    var effectsEnabled by remember { mutableStateOf(prefs.getBoolean("effectsEnabled",true)) }
+   var hapticsEnabled by remember { mutableStateOf(prefs.getBoolean("hapticsEnabled",prefs.getBoolean("effectsEnabled",true))) }
    var voiceSpeed by remember { mutableFloatStateOf(prefs.getFloat("voiceSpeed",0.93f)) }
    var studiedDates by remember { mutableStateOf(prefs.getString("studiedDates","")!!.split(",").filter{it.isNotBlank()}.toSet()) }
    fun markStudyDay(){
@@ -409,7 +417,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     todayCompleted=if(prefs.getString("goalDate","")==key)todayCompleted+1 else 1
     prefs.edit().putString("goalDate",key).putInt("goalCount",todayCompleted).apply()
     if(key !in studiedDates){
-     streak=if(today.minusDays(1).toString() in studiedDates)streak+1 else 1
+     streak=LearningPolicy.streak(studiedDates+key,today)
      studiedDates=studiedDates+key
      prefs.edit().putInt("dailyStreak",streak).putString("studiedDates",studiedDates.joinToString(",")).apply()
     }
@@ -490,10 +498,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     if(left!=null && right!=null){
      if(reviewPairs.any{it.first==left && it.second==right}){
       reviewMatched=reviewMatched+left
-      if(effectsEnabled)playCorrectFeedback()
+      playCorrectFeedback()
       sayEnglish(left)
       if(reviewMatched.size==reviewPairs.size){foxExcited=true;playMilestoneSound();sayEnglish("Ta-da! Amazing! You did it!",false)}
-     }else{if(effectsEnabled)playWrongFeedback();sayEnglish("Try again!")}
+     }else{playWrongFeedback();sayEnglish("Try again!")}
      reviewLeft=null;reviewRight=null
     }
    }
@@ -555,8 +563,16 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val foxWiggle by floating.animateFloat(initialValue=-2f,targetValue=2f,animationSpec=infiniteRepeatable(tween(750),RepeatMode.Reverse),label="foxWiggle")
    MaterialTheme(colorScheme=darkColorScheme(primary=purple,secondary=pink,background=dark,surface=panel,onSurface=ink)) {
     Surface(Modifier.fillMaxSize(),color=dark) {
-     Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+     Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().imePadding()) {
      LazyColumn(modifier=Modifier.weight(1f),userScrollEnabled=screen!="lesson" && screen!="placement",contentPadding=PaddingValues(start=14.dp,end=14.dp,top=if(screen=="lesson" || screen=="placement") 4.dp else 16.dp,bottom=if(screen=="lesson" || screen=="placement") 0.dp else 8.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson" || screen=="placement") 4.dp else 12.dp)) {
+      if(screen=="avatar") {
+       item { FoxAvatarPicker(foxTransparent,foxAvatar,onSelect={foxAvatar=it;prefs.edit().putInt("foxAvatar",it).apply()},onBack={screen="home"}) }
+      }
+      if(screen=="welcome") {
+       item { WelcomeScreen(foxTransparent,foxAvatar,displayName,current,xp,
+        onContinue={start(current)},onHome={screen="home"},onAvatar={screen="avatar"},
+        onHide={prefs.edit().putBoolean("showWelcome",false).apply();screen="home"}) }
+      }
       if(screen=="grammar") {
        item {
         GrammarCourse(this@MainActivity,
@@ -566,7 +582,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
       if(screen=="onboarding") {
        item { LinearProgressIndicator(progress={(onboardStep+1)/3f},modifier=Modifier.fillMaxWidth().height(10.dp),color=green) }
-       item { Row(verticalAlignment=Alignment.CenterVertically) { Image(bitmap=foxTransparent,contentDescription="Лисичка",modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько занятий будем проходить каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
+       item { Row(verticalAlignment=Alignment.CenterVertically) { FoxAvatar(original=foxTransparent,avatar=foxAvatar,mood=foxMood,modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько занятий будем проходить каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
        if(onboardStep==0) {
         item { Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=23.sp,fontWeight=FontWeight.Bold,color=pink) }
         item { OutlinedTextField(value=learnerName,onValueChange={saveLearnerName(it)},label={Text("Как тебя называть?")},singleLine=true,modifier=Modifier.fillMaxWidth(),supportingText={Text("До 24 символов. Имя хранится только на этом устройстве; можно изменить позже.")}) }
@@ -578,7 +594,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home" && showHomeGreeting) item {
        Card(colors=CardDefaults.cardColors(containerColor=Color(0xFF2B3544)),shape=RoundedCornerShape(22.dp),modifier=Modifier.fillMaxWidth()) {
         Row(Modifier.padding(14.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-         AnimatedFox(modifier=Modifier.size(82.dp).offset(y=bounce.dp),mood=foxMood)
+         FoxAvatar(original=foxTransparent,avatar=foxAvatar,modifier=Modifier.size(82.dp).offset(y=bounce.dp),mood=foxMood)
          Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)) {
           Text("Привет, $displayName! Я твоя лисичка! 🦊",fontSize=19.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=23.sp)
           Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=14.sp,color=pink,lineHeight=18.sp)
@@ -732,7 +748,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("‹  Истории с лисичкой",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
        item { LinearProgressIndicator(progress={(storyStep+1f)/stories[storyIndex].size},modifier=Modifier.fillMaxWidth(),color=green) }
        item { Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)){
-        AnimatedFox(modifier=Modifier.size(100.dp).offset(y=bounce.dp),mood=if(storyFeedback.startsWith("Правильно"))"happy" else if(storyFeedback.isNotBlank())"support" else "curious")
+        FoxAvatar(original=foxTransparent,avatar=foxAvatar,modifier=Modifier.size(100.dp).offset(y=bounce.dp),mood=if(storyFeedback.startsWith("Правильно"))"happy" else if(storyFeedback.isNotBlank())"support" else "curious")
         Text(phrase.first,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,modifier=Modifier.weight(1f))
        } }
        item { Button(onClick={sayEnglish(phrase.first)},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать диалог")} }
@@ -757,7 +773,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
       if(screen=="speaking") {
        item { Text("‹  Говорим по-английски",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
-       item { AnimatedFox(modifier=Modifier.size(155.dp).offset(y=bounce.dp),mood=foxMood) }
+       item { FoxAvatar(original=foxTransparent,avatar=foxAvatar,modifier=Modifier.size(155.dp).offset(y=bounce.dp),mood=foxMood) }
        item { Text("Повтори за лисичкой",fontSize=22.sp,fontWeight=FontWeight.Bold,color=ink) }
        item { Text(speechTarget,fontSize=30.sp,fontWeight=FontWeight.Black,color=green) }
        item { Button(onClick={sayEnglish(speechTarget)},modifier=Modifier.fillMaxWidth()){Text("🔊 Слушать")} }
@@ -769,13 +785,13 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
-       AnimatedFox(modifier=Modifier.size(92.dp).offset(y=bounce.dp),mood=foxMood)
+       FoxAvatar(original=foxTransparent,avatar=foxAvatar,modifier=Modifier.size(92.dp).offset(y=bounce.dp),mood=foxMood)
       } }
       
       if(screen=="home") item {
        Card(colors=CardDefaults.cardColors(containerColor=panel),shape=RoundedCornerShape(22.dp)) {
         Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-         Text("🔥 ${if(studiedDates.contains(LocalDate.now().toString()) || studiedDates.contains(LocalDate.now().minusDays(1).toString()))streak else 0} дней подряд",fontSize=24.sp,fontWeight=FontWeight.Black,color=Color(0xFFFFAC35))
+         Text("🔥 ${LearningPolicy.streak(studiedDates)} дней подряд",fontSize=24.sp,fontWeight=FontWeight.Black,color=Color(0xFFFFAC35))
          Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){
           val today=LocalDate.now()
           (6 downTo 0).forEach { offset ->
@@ -855,13 +871,14 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
           Text("🎯 Цель на сегодня: $todayCompleted / $dailyGoal занятий",fontSize=18.sp,fontWeight=FontWeight.Bold,color=ink)
           LinearProgressIndicator(progress={(todayCompleted.toFloat()/dailyGoal).coerceIn(0f,1f)},modifier=Modifier.fillMaxWidth(),color=green)
           Text(if(todayCompleted>=dailyGoal)"Цель выполнена! Продолжай в удобном темпе." else "До цели осталось ${dailyGoal-todayCompleted} занятий.",color=ink)
-          Text("🔥 Серия: ${if(LocalDate.now().toString() in studiedDates || LocalDate.now().minusDays(1).toString() in studiedDates)streak else 0} дн. · ⭐ $xp XP · 📚 ${completed.size}/300 уроков",color=ink)
+          Text("🔥 Серия: ${LearningPolicy.streak(studiedDates)} дн. · ⭐ $xp XP · 📚 ${completed.size}/300 уроков",color=ink)
           if(reviewDue.values.any{it<=System.currentTimeMillis()}){
            OutlinedButton(onClick={val key=reviewDue.filterValues{it<=System.currentTimeMillis()}.keys.first();start((key/1000).coerceIn(0,lessons.lastIndex));index=(key%1000).coerceIn(0,lessons[current].questions.lastIndex)},modifier=Modifier.fillMaxWidth()){Text("🧠 Повторить по расписанию")}
           }
          }
         }
        }
+       item { OutlinedButton(onClick={screen="avatar"},modifier=Modifier.fillMaxWidth()){Text("🦊 Моя лисичка: ${foxAvatarNames[foxAvatar]}")} }
        item { Button(onClick={screen="grammar"},modifier=Modifier.fillMaxWidth()){Text("🧩 Грамматика: местоимения, глаголы, времена")} }
        item { Text("🚀 Путь приключений",fontSize=26.sp,fontWeight=FontWeight.Black,color=ink) }
        itemsIndexed(lessons) { n,l ->
@@ -923,7 +940,9 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Row(horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf(0.80f,0.93f,1.08f).forEach{speed->OutlinedButton(onClick={voiceSpeed=speed;prefs.edit().putFloat("voiceSpeed",speed).apply();sayEnglish("Hello! Welcome to LinguaFree!")},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(voiceSpeed==speed)green else panel)){Text(when(speed){0.80f->"Медленно";0.93f->"Обычно";else->"Быстро"},fontSize=12.sp,color=if(voiceSpeed==speed)dark else ink)}}} }
        item { Button(onClick={sayEnglish("Hello! Let's learn English together!")},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать голос лисички")} }
 
-       item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){Text("🔊 Звуки и вибрация ответов",color=ink);Switch(checked=effectsEnabled,onCheckedChange={effectsEnabled=it;prefs.edit().putBoolean("effectsEnabled",it).apply()})} }
+       item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){Text("🔊 Звуки ответов",color=ink);Switch(checked=effectsEnabled,onCheckedChange={effectsEnabled=it;prefs.edit().putBoolean("effectsEnabled",it).apply()})} }
+       item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){Text("📳 Вибрация ответов",color=ink);Switch(checked=hapticsEnabled,onCheckedChange={hapticsEnabled=it;prefs.edit().putBoolean("hapticsEnabled",it).apply();if(it)playCorrectFeedback()})} }
+       item { OutlinedButton(onClick={screen="welcome"},modifier=Modifier.fillMaxWidth()){Text("🦊 Открыть приветственный экран")} }
        item { Text("Опыт: $xp XP · Алмазы: $gems · Уроков: ${completed.size} · Ошибок: ${mistakes.size}") }
        item { Text("Слов для повторения: ${repeatQueue.size}. Ошибки сохраняются, чтобы можно было вернуться к сложным заданиям.") }
        item { Text("🧠 По расписанию на сегодня: ${reviewDue.values.count{it<=System.currentTimeMillis()}}. Интервалы 1, 3, 7, 14 и 30 дней.",fontSize=16.sp,color=ink) }
@@ -949,14 +968,14 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        } }
        if(reviewMatched.size==reviewPairs.size) item {
         Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally) {
-         Image(bitmap=foxTransparent,contentDescription="Лисичка радуется",modifier=Modifier.size(110.dp).offset(y=bounce.dp).graphicsLayer{scaleX=foxScale;scaleY=foxScale;rotationZ=foxTilt+foxWiggle})
+         FoxAvatar(original=foxTransparent,avatar=foxAvatar,mood=foxMood,modifier=Modifier.size(110.dp).offset(y=bounce.dp).graphicsLayer{scaleX=foxScale;scaleY=foxScale;rotationZ=foxTilt+foxWiggle})
          Text("🎊 ТАДА-А-АМ! Все пары найдены!",fontSize=21.sp,fontWeight=FontWeight.Black,color=green)
          Text("Ты отлично закрепил слова! ⭐",fontSize=17.sp,color=ink)
         }
        }
       } else if(screen=="done") {
        item { Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.fillMaxWidth()) {
-        Image(bitmap=foxTransparent,contentDescription="Лисичка празднует победу",modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f+foxTilt; scaleX=foxScale;scaleY=foxScale })
+        FoxAvatar(original=foxTransparent,avatar=foxAvatar,mood=foxMood,modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f+foxTilt; scaleX=foxScale;scaleY=foxScale })
         Text("🎉 $displayName, УРОК ПРОЙДЕН!",fontSize=27.sp,fontWeight=FontWeight.Black,color=pink)
         Text(if(celebration)"🎊 ✨ 🌟 🎉 ✨ 🎊" else "🦊 Hooray! Fantastic! 🌟",fontSize=23.sp,fontWeight=FontWeight.Black,color=green)
        } }
@@ -965,90 +984,31 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { OutlinedButton(onClick={start(current)},modifier=Modifier.fillMaxWidth()){Text("Повторить урок")} }
        item { TextButton(onClick={screen="home"}){Text("К карте уроков")} }
       } else if(screen=="lesson" || screen=="placement") {
-       val l=lessons[current];val q=activeQuestion();val key=current*1000+index
+       val q=activeQuestion()
+       val key=current*1000+index
        val mastery=reviewStages[key]?:0
        val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ") && mastery<2
-       // Lessons 1-50 teach recognition; spelling is introduced gradually later.
-       // A mastered word alone must never force typing in a beginner lesson.
        val englishPrompt=q.prompt.startsWith("Как по-английски")
        val missingMode=screen=="lesson" && current>=50 && index%7==6 && englishPrompt && q.choices[q.answer].length>2
        val typedMode=screen=="lesson" && englishPrompt && (missingMode || (current>=100 && mastery>=2 && (index%7==4 || index%7==5)))
-       val correctWord=q.choices[q.answer]
-       val missingIndex=correctWord.indexOfFirst{it.lowercaseChar() in "aeiou"}.let{if(it>0)it else 1}
-       val audioMode=screen=="lesson" && index%7==1 && mastery>=1 && !q.prompt.startsWith("Как по-английски")
-       val pictureMode=screen=="lesson" && index%7==0 && q.choices.all { it.lowercase(Locale.ROOT) in setOf("tea","coffee","milk","apple","cat","dog","water","book","house","hello") }
-       item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
-        Text("‹",modifier=Modifier.clickable{screen="home"}.padding(end=8.dp),fontSize=26.sp,fontWeight=FontWeight.Black,color=purple)
-        Text(if(screen=="placement")"🎯 Проверка знаний" else "🎯 "+l.title,fontSize=if(compact)16.sp else 19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
-        Text("⚡ $answerCombo  ⭐ ${index+1}/${if(screen=="placement")placementLessons.size else l.questions.size}",fontSize=if(compact)13.sp else 15.sp,fontWeight=FontWeight.Black,color=pink)
-       } }
-
-       item { LinearProgressIndicator(progress={(index+1).toFloat()/(if(screen=="placement")placementLessons.size else l.questions.size)},modifier=Modifier.fillMaxWidth().height(if(compact)6.dp else 9.dp).clip(RoundedCornerShape(9.dp)),color=green,trackColor=Color(0xFFE7DDF9)) }
-
-       item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFF3B2A45))) { Column(Modifier.padding(if(compact)9.dp else 12.dp)) {
-        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(7.dp)) {
-         Image(bitmap=foxTransparent,contentDescription=null,modifier=Modifier.size(if(compact)20.dp else 24.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale;rotationZ=foxTilt+foxWiggle })
-         Text("$displayName, $foxMessage",fontSize=if(compact)13.sp else 15.sp,fontWeight=FontWeight.Black,color=pink)
-        }
-        Spacer(Modifier.height(2.dp))
-        Text(if(audioMode)"🎧 $displayName, прослушай слово и выбери перевод" else "$displayName, твоё задание: ${q.prompt}",fontSize=if(compact)19.sp else 23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=if(compact)23.sp else 28.sp)
-       } } }
-       if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(6.dp)){Button(onClick={sayEnglish(q.speech)},modifier=Modifier.weight(1f).height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=if(compact)12.sp else 15.sp,fontWeight=FontWeight.Black)};OutlinedButton(onClick={sayEnglish(q.speech,slow=true)},modifier=Modifier.weight(1f).height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp)){Text("🐢 МЕДЛЕННО",fontSize=if(compact)12.sp else 15.sp,fontWeight=FontWeight.Black)}} }
-       if(typedMode) item {
-        Text(if(missingMode)"🔤 Впиши пропущенную букву: "+correctWord.replaceRange(missingIndex,missingIndex+1,"_") else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
-        OutlinedTextField(value=typedAnswer,onValueChange={typedAnswer=it},label={Text("Твой ответ")},singleLine=true,modifier=Modifier.fillMaxWidth(),enabled=selected==null)
-        if(selected==null) TextButton(onClick={hintShown=true}){Text(if(hintShown)"Подсказка: первая буква — ${q.choices[q.answer].firstOrNull()?:'?'}" else "💡 Нужна подсказка?")}
-        Button(onClick={
-         val right=typedAnswer.trim().equals(if(missingMode)correctWord[missingIndex].toString() else correctWord,ignoreCase=true)
-         selected=if(right)q.answer else (q.answer+1)%q.choices.size
-         foxExcited=right;foxMood=if(right)"happy" else "support";foxMessage=if(right)when(answerCombo+1){3->"🔥 Три подряд!";5->"🌟 Пять подряд!";10->"🏆 Десять подряд!";else->"Отлично! 🌟"} else "Попробуй ещё! 💪"
-         trackSkill(2,right)
-         sayEnglish(q.speech);sayReaction(right)
-        },enabled=selected==null && typedAnswer.isNotBlank(),modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОВЕРИТЬ",fontWeight=FontWeight.Black)}
+       val audioMode=screen=="lesson" && index%7==1 && mastery>=1 && !englishPrompt
+       item {
+        ExerciseView(
+         title=if(screen=="placement")"Проверка знаний · ${index+1}/${placementLessons.size}" else "${lessons[current].title} · ${index+1}/${lessons[current].questions.size}",
+         prompt="$displayName, твоё задание: ${q.prompt}",choices=q.choices,answer=q.answer,selected=selected,explanation=q.explanation,
+         audio=audioMode,showAudio=selected!=null || !englishPrompt,typed=typedMode,missing=missingMode,wordBank=wordBank,
+         typedAnswer=typedAnswer,onTyped={typedAnswer=it},
+         onAnswer={choice->
+          if(selected==null){
+           selected=choice
+           val right=choice==q.answer
+           foxExcited=right;foxMood=if(right)if(answerCombo>=2)"celebrate" else "happy" else "support"
+           trackSkill(if(typedMode)2 else if(audioMode)1 else 0,right)
+           sayEnglish(q.speech);sayReaction(right)
+          }
+         },onSpeak={slow->sayEnglish(q.speech,slow=slow)},onBack={screen="home"},
+         modifier=Modifier.fillParentMaxHeight().fillMaxWidth())
        }
-       if(wordBank) item {
-        Text("Составьте перевод из слов:",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)
-        Text(bankWords.joinToString("  ").ifBlank { "Нажимайте на слова ниже ↓" },modifier=Modifier.fillMaxWidth().padding(vertical=12.dp),fontSize=23.sp,fontWeight=FontWeight.Bold,color=green)
-        Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-         (q.choices[q.answer].split(" ").reversed()+listOf("the")).distinct().forEach { word ->
-          OutlinedButton(onClick={bankWords=bankWords+word;sayEnglish(word)},enabled=selected==null && word !in bankWords,contentPadding=PaddingValues(8.dp)) { Text(word,fontSize=16.sp) }
-         }
-        }
-        TextButton(onClick={bankWords=emptyList()},enabled=selected==null){Text("Очистить")}
-        Button(onClick={val right=bankWords.joinToString(" ").equals(q.choices[q.answer],ignoreCase=true);selected=if(right)q.answer else (q.answer+1)%q.choices.size;foxExcited=right;foxMessage=if(right)"Отлично! 🦊" else "Потренируемся ещё!";sayEnglish(q.speech);sayReaction(right)},enabled=selected==null && bankWords.isNotEmpty(),modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОВЕРИТЬ")}
-       }
-       if(!wordBank && !typedMode) q.choices.forEachIndexed { i,choice -> item {
-        val right=selected!=null && i==q.answer
-        val chosen=selected==i
-        val bg=if(right)Color(0xFFD8F8E7) else if(chosen)Color(0xFFFFE0EA) else panel
-        OutlinedButton(onClick={
-         selected=i
-         foxExcited=i==q.answer;foxMood=if(i==q.answer)if(answerCombo>=2)"celebrate" else "happy" else "support"
-         foxMessage=if(i==q.answer) when(answerCombo+1){3->"🔥 Три подряд! Great!";5->"🌟 Пять подряд! Excellent!";10->"🏆 Десять подряд! Amazing!";else->listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4]} else "Try again! 💪"
-         sayEnglish(q.choices[q.answer])
-         trackSkill(if(audioMode)1 else 0,i==q.answer)
-         sayReaction(i==q.answer)
-        },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(if(compact) (if(pictureMode) 58.dp else 49.dp) else (if(pictureMode) 68.dp else 54.dp)),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFF40565D))) {
-         Column(horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(1.dp)) {
-          if(pictureMode) Text(when { choice.contains("Tea",true)->"🍵";choice.contains("Coffee",true)->"☕";choice.contains("Milk",true)->"🥛";choice.contains("Apple",true)->"🍎";choice.contains("Cat",true)->"🐈";choice.contains("Dog",true)->"🐕";choice.contains("Water",true)->"💧";choice.contains("Book",true)->"📚";choice.contains("House",true)->"🏠";choice.contains("Hello",true)->"👋";else->"🗂️" },fontSize=if(compact) 21.sp else 24.sp)
-          Text(choice,fontSize=if(compact) 16.sp else 18.sp,fontWeight=FontWeight.ExtraBold,lineHeight=21.sp,maxLines=2)
-         }
-        }
-       } }
-       if(selected!=null) {
-        if(selected==q.answer && (answerCombo+1)==5) item { Text("🔥 Пять ответов подряд! Бонус после продолжения",fontSize=15.sp,fontWeight=FontWeight.Black,color=green) }
-        item { Text(q.explanation,fontSize=if(compact)12.sp else 14.sp,fontWeight=FontWeight.Bold,color=ink,maxLines=2) }
-        /* fixed bottom action handles advancing */
-       /* item { Button(onClick={
-         if(selected==q.answer){xp+=10;gems+=2;correctCount++;mistakes=mistakes-key}else{mistakes=mistakes+key}
-         selected=null
-         foxMessage="Давай попробуем!"
-         foxExcited=false
-         if(index==l.questions.lastIndex){completed=completed+current;screen="done"}else index++
-         save()
-        },modifier=Modifier.fillMaxWidth().height(48.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОДОЛЖИТЬ 🚀",fontSize=17.sp,fontWeight=FontWeight.Black)} } */
-       }
-
       }
      }
      if(screen=="review" && reviewMatched.size==reviewPairs.size) {
@@ -1069,7 +1029,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         else if(index==lessons[current].questions.lastIndex){completed=completed+current;markStudyDay();screen="review"}else index++
         save()
        }
-      },modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=4.dp,bottom=14.dp).height(54.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
+      },modifier=Modifier.fillMaxWidth().padding(start=12.dp,end=12.dp,top=4.dp,bottom=4.dp).heightIn(min=52.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
        Text(if(screen=="onboarding")if(onboardStep==2)"ПОЕХАЛИ! 🚀" else "ПРОДОЛЖИТЬ" else "ПРОДОЛЖИТЬ 🚀",fontSize=21.sp,fontWeight=FontWeight.Black)
       }
      }

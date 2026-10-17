@@ -67,7 +67,7 @@ jobs:
       - name: Compile debug APK
         env:
           LINGUAFREE_CLASSROOM_URL: ${{ vars.LINGUAFREE_CLASSROOM_URL }}
-        run: gradle --no-daemon --stacktrace assembleDebug
+        run: gradle --no-daemon --stacktrace testDebugUnitTest assembleDebug
 
       - name: Build persistently signed release when signing secrets exist
         if: github.event_name != 'pull_request'
