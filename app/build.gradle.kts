@@ -13,7 +13,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionName = "0.9"
-        versionCode = 9
+        versionCode = System.getenv("LINGUAFREE_VERSION_CODE")?.toInt() ?: 9
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val classroomUrl = System.getenv("LINGUAFREE_CLASSROOM_URL").orEmpty().trimEnd('/')
         if (classroomUrl.isNotEmpty()) {
@@ -33,6 +33,12 @@ android {
         }
     }
     buildTypes {
+        getByName("debug") {
+            // Used only by the private signed upgrade check; never publish this debug build.
+            if (System.getenv("LINGUAFREE_SIGN_DEBUG_FOR_UPGRADE") == "true") {
+                signingConfig = signingConfigs.getByName("linguafreeRelease")
+            }
+        }
         getByName("release") {
             if (!System.getenv("LINGUAFREE_KEYSTORE_PATH").isNullOrBlank()) {
                 signingConfig = signingConfigs.getByName("linguafreeRelease")

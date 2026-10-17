@@ -4,3 +4,6 @@
 /local.properties
 *.iml
 /app/src/main/assets/offline-reference.db
+*.p12
+*.jks
+*.keystore

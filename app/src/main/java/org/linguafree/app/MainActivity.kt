@@ -929,6 +929,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("📴 Без интернета: уроки, истории, словарь, прогресс, напоминания, анимации, звуки и вибрация. Для английской озвучки нужен установленный офлайн-голос Android, для распознавания — офлайн-языковой пакет.",fontSize=13.sp,color=ink) }
        item { OutlinedButton(onClick={exportProgress.launch("LinguaFree-progress.json")},modifier=Modifier.fillMaxWidth()){Text("💾 Сохранить резервную копию прогресса")} }
        item { OutlinedButton(onClick={importProgress.launch(arrayOf("application/json","text/plain"))},modifier=Modifier.fillMaxWidth()){Text("📂 Восстановить прогресс из файла")} }
+       item { Text("Версия ${BuildConfig.VERSION_NAME}. Следующие выпуски устанавливаются поверх приложения с сохранением прогресса. Перед обновлением можно сохранить резервную копию.",fontSize=13.sp,color=ink) }
+       item { OutlinedButton(onClick={runCatching{startActivity(Intent(Intent.ACTION_VIEW,android.net.Uri.parse("https://github.com/tttm3951-crypto/LinguaFree/releases/latest")))}.onFailure{backupStatus="Не удалось открыть страницу обновлений."}},modifier=Modifier.fillMaxWidth()){Text("⬆️ Открыть новые версии (нужен интернет)")} }
        item { Text("Восстановление заменит сохранённые значения. Перед ним сделай резервную копию. Файл хранится там, где ты выберешь.",fontSize=12.sp,color=ink) }
        if(backupStatus.isNotBlank())item { Text(backupStatus,color=ink) }
        item { OutlinedButton(onClick={try{startActivity(Intent("com.android.settings.TTS_SETTINGS"))}catch(_:Exception){startActivity(Intent(android.provider.Settings.ACTION_SETTINGS))}},modifier=Modifier.fillMaxWidth()){Text("⚙️ Настроить офлайн-голос Android")} }
