@@ -1,9 +1,31 @@
+# Gradle / build
 .gradle/
-/build/
-/app/build/
-/local.properties
+build/
+/captures
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+!**/src/**/*.apk
+
+# Local configuration
+local.properties
 *.iml
-/app/src/main/assets/offline-reference.db
-*.p12
+.DS_Store
+
+# IDE: keep only shared code style and inspection settings
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+
+# Signing keys and secrets — never commit
 *.jks
 *.keystore
+*.p12
+*.pem
+keystore.properties
+signing.properties
+.private-release*
+
+# Generated offline reference (built in CI by scripts/build_offline_library.py)
+core/data/src/main/assets/offline-reference.db
