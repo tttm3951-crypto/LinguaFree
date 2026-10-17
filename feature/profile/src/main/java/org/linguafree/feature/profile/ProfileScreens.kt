@@ -1,6 +1,10 @@
 package org.linguafree.feature.profile
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.content.ContextCompat
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -242,6 +246,12 @@ fun SettingsScreen(onBack: () -> Unit, viewModel: ProfileViewModel = hiltViewMod
     val s = state.settings
     val c = LfTheme.colors
     val context = LocalContext.current
+    val askNotifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    fun ensureNotifications(enabled: Boolean) {
+        if (enabled && Build.VERSION.SDK_INT >= 33 &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
     var name by remember(state.loaded) { mutableStateOf(s.name) }
     ScreenScaffold("Настройки", onBack) {
         Text("Профиль", style = MaterialTheme.typography.titleLarge, color = c.text)
@@ -275,11 +285,11 @@ fun SettingsScreen(onBack: () -> Unit, viewModel: ProfileViewModel = hiltViewMod
         }, style = LfButtonStyle.Secondary, modifier = Modifier.fillMaxWidth())
 
         Text("Напоминания", style = MaterialTheme.typography.titleLarge, color = c.text)
-        SettingSwitch("Ежедневное напоминание", "Время: %02d:%02d".format(s.reminderMinute / 60, s.reminderMinute % 60), s.remindersEnabled, "settings-reminders") { v -> viewModel.update { it.copy(remindersEnabled = v) } }
+        SettingSwitch("Ежедневное напоминание", "Время: %02d:%02d".format(s.reminderMinute / 60, s.reminderMinute % 60), s.remindersEnabled, "settings-reminders") { v -> ensureNotifications(v); viewModel.update { it.copy(remindersEnabled = v) } }
         if (s.remindersEnabled) {
             Segmented(listOf(8 * 60 to "08:00", 12 * 60 to "12:00", 18 * 60 to "18:00", 19 * 60 to "19:00", 21 * 60 to "21:00"), s.reminderMinute) { m -> viewModel.update { it.copy(reminderMinute = m) } }
         }
-        SettingSwitch("Вечером, если серия под угрозой", "Одно напоминание около 20:30, если сегодня ещё не было урока", s.eveningStreakReminder, "settings-evening") { v -> viewModel.update { it.copy(eveningStreakReminder = v) } }
+        SettingSwitch("Вечером, если серия под угрозой", "Одно напоминание около 20:30, если сегодня ещё не было урока", s.eveningStreakReminder, "settings-evening") { v -> ensureNotifications(v); viewModel.update { it.copy(eveningStreakReminder = v) } }
 
         Text("Оформление", style = MaterialTheme.typography.titleLarge, color = c.text)
         Segmented(listOf(0 to "Как в системе", 1 to "Светлая", 2 to "Тёмная"), s.darkMode) { m -> viewModel.update { it.copy(darkMode = m) } }

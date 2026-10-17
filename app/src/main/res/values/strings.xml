@@ -3,4 +3,21 @@
     <string name="app_name" translatable="false">LinguaFree</string>
     <string name="notification_channel_reminders">Напоминания о занятиях</string>
     <string name="notification_channel_reminders_desc">Дружелюбные напоминания от лисёнка в выбранное время</string>
+
+    <!-- Daily reminder: friendly, from the fox, no pressure. -->
+    <string-array name="reminder_daily_titles">
+        <item>Лисёнок ждёт тебя 🦊</item>
+        <item>Время английского!</item>
+        <item>Привет! Это лисёнок 🦊</item>
+        <item>Небольшой урок?</item>
+    </string-array>
+    <string-array name="reminder_daily_texts">
+        <item>Пять минут — и новые слова уже твои.</item>
+        <item>Урок уже готов. Начнём, когда тебе удобно.</item>
+        <item>Я приготовил для тебя пару новых фраз.</item>
+        <item>Даже одно упражнение — уже шаг вперёд.</item>
+    </string-array>
+    <string name="reminder_evening_title">Серия: %1$d дн. 🔥</string>
+    <string name="reminder_evening_text">Один короткий урок — и серия продолжится. Если сегодня не получается — ничего страшного.</string>
+    <string name="reminder_evening_text_freeze">Один короткий урок — и серия продолжится. А если не выйдет, её сбережёт заморозка.</string>
 </resources>
