@@ -17,6 +17,12 @@ import org.linguafree.feature.profile.ProfileScreen
 import org.linguafree.feature.profile.SettingsScreen
 import org.linguafree.feature.profile.TeacherScreen
 import org.linguafree.feature.shop.ShopScreen
+import org.linguafree.feature.practice.DictionaryScreen
+import org.linguafree.feature.practice.PracticeScreen
+import org.linguafree.feature.practice.TopicScreen
+import org.linguafree.feature.practice.TopicsScreen
+import org.linguafree.feature.practice.WordsScreen
+import org.linguafree.core.data.library.TopicBook
 import org.linguafree.core.domain.model.SessionKind
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.Arrangement
@@ -99,7 +105,21 @@ fun LinguaFreeRoot(root: RootViewModel) {
                         if (placement) nav.navigate(LessonRoute.of(SessionKind.Placement))
                     })
                 }
-                composable(MainTab.Practice.route) { TabIntro(MainTab.Practice) }
+                composable(MainTab.Practice.route) {
+                    PracticeScreen(
+                        onStart = { kind -> nav.navigate(LessonRoute.of(kind)) },
+                        onDictionary = { nav.navigate(DICTIONARY) },
+                        onTopics = { book -> nav.navigate("practice/topics/${book.name}") },
+                        onWords = { nav.navigate(WORDS) },
+                    )
+                }
+                composable(DICTIONARY) { DictionaryScreen(onBack = { nav.popBackStack() }) }
+                composable(WORDS) { WordsScreen(onBack = { nav.popBackStack() }) }
+                composable("practice/topics/{book}") { e ->
+                    val book = runCatching { TopicBook.valueOf(e.arguments?.getString("book").orEmpty()) }.getOrDefault(TopicBook.Grammar)
+                    TopicsScreen(book, onOpen = { id -> nav.navigate("practice/topic/$id") }, onBack = { nav.popBackStack() })
+                }
+                composable("practice/topic/{id}") { e -> TopicScreen(e.arguments?.getString("id").orEmpty(), onBack = { nav.popBackStack() }) }
                 composable(MainTab.Leagues.route) { LeaguesScreen() }
                 composable(MainTab.Shop.route) { ShopScreen() }
                 composable(MainTab.Profile.route) {
@@ -118,6 +138,8 @@ fun LinguaFreeRoot(root: RootViewModel) {
 }
 
 private const val ONBOARDING = "onboarding"
+private const val DICTIONARY = "practice/dictionary"
+private const val WORDS = "practice/words"
 private const val SETTINGS = "profile/settings"
 private const val ABOUT = "profile/about"
 private const val TEACHER = "profile/teacher"
@@ -133,36 +155,5 @@ private fun ContentError(errors: List<String>) {
         Text("Не удалось загрузить уроки", style = MaterialTheme.typography.headlineSmall, color = LfTheme.colors.text)
         Text("Файлы курса повреждены. Переустановите приложение. Подробности:", color = LfTheme.colors.textMuted)
         errors.take(10).forEach { Text(it, style = MaterialTheme.typography.bodySmall, color = LfTheme.colors.textMuted) }
-    }
-}
-
-/** Shell screen of each tab: the design system in action (top stats, fox, buttons). */
-@Composable
-private fun TabIntro(tab: MainTab) {
-    val emotion = when (tab) {
-        MainTab.Learn -> FoxEmotion.Waiting
-        MainTab.Practice -> FoxEmotion.Thinking
-        MainTab.Leagues -> FoxEmotion.Streak
-        MainTab.Shop -> FoxEmotion.Correct
-        MainTab.Profile -> FoxEmotion.Complete
-    }
-    Column(Modifier.fillMaxSize().background(LfTheme.colors.background).statusBarsPadding()) {
-        StatsTopBar(streak = 0, studiedToday = false, gems = 0, hearts = 5, unlimitedHearts = false)
-        Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            FoxMascot(emotion, Modifier.width(220.dp))
-            Text(tab.title, style = MaterialTheme.typography.headlineMedium, color = LfTheme.colors.text)
-            Text(
-                "LinguaFree — бесплатно, без рекламы, без подписок и без трекеров. Всё работает офлайн.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = LfTheme.colors.textMuted,
-                textAlign = TextAlign.Center,
-            )
-            LfButton("Начать", onClick = {}, modifier = Modifier.fillMaxWidth())
-            LfButton("Ещё", onClick = {}, modifier = Modifier.fillMaxWidth(), style = LfButtonStyle.Secondary)
-        }
     }
 }
