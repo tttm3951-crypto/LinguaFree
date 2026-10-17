@@ -256,7 +256,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       kotlinx.coroutines.delay(160)
      }
      val question=activeQuestion()
-     sayEnglish(question.speech)
+     if(!question.prompt.startsWith("Как по-английски"))sayEnglish(question.speech)
     }
    }
    val purple=Color(0xFFAF80FF)
@@ -407,7 +407,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        } } }
        if(selected!=null) item { Text(q.speech,modifier=Modifier.clickable {sayEnglish(q.speech)},fontSize=19.sp,fontWeight=FontWeight.Black,color=purple) }
        if(selected!=null && showTranslation) item { Text(q.explanation,fontSize=14.sp,color=ink) }
-       item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
+       if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
        if(typedMode) item {
         Text(if(index%7==6)"🔤 Восстанови слово по памяти" else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
         OutlinedTextField(value=typedAnswer,onValueChange={typedAnswer=it},label={Text("Твой ответ")},singleLine=true,modifier=Modifier.fillMaxWidth(),enabled=selected==null)
