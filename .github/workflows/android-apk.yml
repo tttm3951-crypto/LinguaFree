@@ -57,10 +57,13 @@ jobs:
         run: python3 scripts/validate_app_contract.py
 
       - name: Compile debug APK
+        env:
+          LINGUAFREE_CLASSROOM_URL: ${{ vars.LINGUAFREE_CLASSROOM_URL }}
         run: gradle --no-daemon --stacktrace assembleDebug
 
       - name: Build persistently signed release when signing secrets exist
         env:
+          LINGUAFREE_CLASSROOM_URL: ${{ vars.LINGUAFREE_CLASSROOM_URL }}
           LINGUAFREE_KEYSTORE_B64: ${{ secrets.LINGUAFREE_KEYSTORE_B64 }}
           LINGUAFREE_STORE_PASSWORD: ${{ secrets.LINGUAFREE_STORE_PASSWORD }}
           LINGUAFREE_KEY_ALIAS: ${{ secrets.LINGUAFREE_KEY_ALIAS }}
