@@ -2,7 +2,10 @@ package org.linguafree.app
 
 import android.Manifest
 import android.os.Build
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -37,12 +40,27 @@ class AppFlowTest {
         )
         .around(compose)
 
+    /** Waits for a node; on timeout fails with what is on screen (tags and texts) for the CI log. */
+    private fun waitFor(matcher: SemanticsMatcher, what: String, ms: Long = 15_000) {
+        try {
+            compose.waitUntilAtLeastOneExists(matcher, ms)
+        } catch (e: Throwable) {
+            val screen = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true).fetchSemanticsNodes().mapNotNull { n ->
+                val tag = n.config.getOrNull(SemanticsProperties.TestTag)
+                val text = n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ")
+                listOfNotNull(tag?.let { "#$it" }, text?.take(60)).joinToString(" ").ifBlank { null }
+            }.distinct().joinToString(" | ")
+            throw AssertionError("Timed out waiting for $what. On screen: ${screen.take(3500)}", e)
+        }
+    }
+    private fun waitTag(tag: String, ms: Long = 15_000) = waitFor(hasTestTag(tag), "#$tag", ms)
+
     private fun click(tag: String) = compose.onNodeWithTag(tag, useUnmergedTree = true).performScrollTo().performClick()
 
     @Test
     fun onboardingLessonPracticeAndProfile() {
         // Startup imports the course; wait for the first screen.
-        compose.waitUntilAtLeastOneExists(hasTestTag("onboarding-continue") or hasTestTag("path"), 30_000)
+        waitFor(hasTestTag("onboarding-continue") or hasTestTag("path"), "first screen", 30_000)
         if (compose.onAllNodes(hasTestTag("onboarding-continue")).fetchSemanticsNodes().isNotEmpty()) {
             compose.onNodeWithTag("onboarding-continue").performClick() // welcome
             click("goal-${LearningGoal.entries.first().name}")
@@ -52,43 +70,43 @@ class AppFlowTest {
             click("level-zero")
             compose.onNodeWithTag("onboarding-continue").performClick()
             compose.onNodeWithTag("onboarding-continue").performClick() // reminders (permission pre-granted)
-            compose.waitUntilAtLeastOneExists(hasTestTag("name-input"), 5_000)
+            waitTag("name-input", 5_000)
             compose.onNodeWithTag("name-input").performTextInput("Тест")
             compose.onNodeWithTag("onboarding-continue").performClick()
         }
 
         // Path → first lesson.
-        compose.waitUntilAtLeastOneExists(hasTestTag("node-u01-l1"), 15_000)
+        waitTag("node-u01-l1", 15_000)
         compose.onNodeWithTag("node-u01-l1").performClick()
-        compose.waitUntilAtLeastOneExists(hasTestTag("node-start"), 5_000)
+        waitTag("node-start", 5_000)
         compose.onNodeWithTag("node-start").performClick()
 
         // Exercise 1 of lesson 1 is «привет» → picture «hello».
-        compose.waitUntilAtLeastOneExists(hasTestTag("image:hello"), 15_000)
+        waitTag("image:hello", 15_000)
         compose.onNodeWithTag("image:hello").performClick()
         compose.onNodeWithTag("check").performClick()
-        compose.waitUntilAtLeastOneExists(hasTestTag("continue"), 5_000)
+        waitTag("continue", 5_000)
         compose.onNodeWithTag("continue").performClick()
 
         // Leave the lesson with confirmation.
         compose.onNodeWithTag("lesson-close").performClick()
-        compose.waitUntilAtLeastOneExists(hasText("Выйти"), 5_000)
+        waitFor(hasText("Выйти"), "text", 5_000)
         compose.onNodeWithText("Выйти").performClick()
-        compose.waitUntilAtLeastOneExists(hasTestTag("path"), 10_000)
+        waitTag("path", 10_000)
 
         // Practice → dictionary.
         compose.onNodeWithTag("tab-Practice").performClick()
-        compose.waitUntilAtLeastOneExists(hasTestTag("practice"), 10_000)
+        waitTag("practice", 10_000)
         click("practice-dictionary")
-        compose.waitUntilAtLeastOneExists(hasTestTag("dict-search"), 10_000)
+        waitTag("dict-search", 10_000)
         compose.onNodeWithTag("dict-search").performTextInput("apple")
-        compose.waitUntilAtLeastOneExists(hasText("Apple", substring = true, ignoreCase = true), 10_000)
+        waitFor(hasText("Apple", substring = true, ignoreCase = true), "text", 10_000)
         compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
 
         // Profile → about: the app states it is free.
         compose.onNodeWithTag("tab-Profile").performClick()
-        compose.waitUntilAtLeastOneExists(hasTestTag("profile"), 10_000)
+        waitTag("profile", 10_000)
         click("open-about")
-        compose.waitUntilAtLeastOneExists(hasTestTag("about-free"), 10_000)
+        waitTag("about-free", 10_000)
     }
 }

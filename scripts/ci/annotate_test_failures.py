@@ -14,7 +14,7 @@ for pattern in patterns:
         for case in root.iter('testcase'):
             for f in list(case.findall('failure')) + list(case.findall('error')):
                 text = (f.get('message') or '') + '\n' + (f.text or '')
-                text = text.strip()[:1500].replace('%', '%25').replace('\r', '').replace('\n', '%0A')
+                text = text.strip()[:4500].replace('%', '%25').replace('\r', '').replace('\n', '%0A')
                 print(f"::error title={case.get('classname')}.{case.get('name')}::{text}")
                 count += 1
 # Logcat crash lines help when the app dies before the assertion.
