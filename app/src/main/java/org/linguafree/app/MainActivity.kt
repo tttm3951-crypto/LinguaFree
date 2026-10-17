@@ -266,7 +266,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val ink=Color(0xFFF7F8FA)
    val dark=Color(0xFF102124)
    val panel=Color(0xFF1E3338)
-   val compact=LocalConfiguration.current.screenHeightDp<780
+   val compact=LocalConfiguration.current.screenHeightDp<850
    val foxTransparent=remember { val source=BitmapFactory.decodeResource(resources,R.drawable.fox_original); val bitmap=source.copy(Bitmap.Config.ARGB_8888,true); val pixels=IntArray(bitmap.width*bitmap.height);bitmap.getPixels(pixels,0,bitmap.width,0,0,bitmap.width,bitmap.height); for(i in pixels.indices){val c=pixels[i];val rr=android.graphics.Color.red(c);val gg=android.graphics.Color.green(c);val bb=android.graphics.Color.blue(c);if(rr>235 && gg>235 && bb>235){pixels[i]=c and 0x00FFFFFF}else if(rr>215 && gg>215 && bb>215 && kotlin.math.abs(rr-gg)<15 && kotlin.math.abs(gg-bb)<15){pixels[i]=(c and 0x00FFFFFF) or ((255-(minOf(rr,gg,bb)-215)*6).coerceIn(0,255) shl 24)}};bitmap.setPixels(pixels,0,bitmap.width,0,0,bitmap.width,bitmap.height);bitmap.asImageBitmap() }
    val floating=rememberInfiniteTransition(label="mascot")
    val bounce by floating.animateFloat(initialValue=0f,targetValue=-8f,animationSpec=infiniteRepeatable(tween(1300),RepeatMode.Reverse),label="bounce")
@@ -275,7 +275,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    MaterialTheme(colorScheme=darkColorScheme(primary=purple,secondary=pink,background=dark,surface=panel,onSurface=ink)) {
     Surface(Modifier.fillMaxSize(),color=dark) {
      Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
-     LazyColumn(modifier=Modifier.weight(1f),contentPadding=PaddingValues(start=14.dp,end=14.dp,top=if(screen=="lesson" || screen=="placement") 10.dp else 27.dp,bottom=8.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson" || screen=="placement") 5.dp else 12.dp)) {
+     LazyColumn(modifier=Modifier.weight(1f),userScrollEnabled=screen!="lesson" && screen!="placement",contentPadding=PaddingValues(start=14.dp,end=14.dp,top=if(screen=="lesson" || screen=="placement") 4.dp else 16.dp,bottom=if(screen=="lesson" || screen=="placement") 0.dp else 8.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson" || screen=="placement") 4.dp else 12.dp)) {
       if(screen=="onboarding") {
        item { LinearProgressIndicator(progress={(onboardStep+1)/3f},modifier=Modifier.fillMaxWidth().height(10.dp),color=green) }
        item { Row(verticalAlignment=Alignment.CenterVertically) { Image(bitmap=foxTransparent,contentDescription="Лисичка",modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько минут будем играть каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
@@ -283,7 +283,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        if(onboardStep==1) { item { Text("Выбери свой уровень",fontSize=21.sp,fontWeight=FontWeight.Black,color=ink) }; listOf("Начинающий","Знаю несколько слов","Могу говорить").forEach { option -> item { OutlinedButton(onClick={level=option},modifier=Modifier.fillMaxWidth().height(70.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(level==option)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(level==option)green else Color(0xFF3B5057))) {Text(option,fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
        if(onboardStep==2) { listOf(3,10,15,30).forEach { minutes -> item { OutlinedButton(onClick={dailyGoal=minutes},modifier=Modifier.fillMaxWidth().height(65.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(dailyGoal==minutes)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(dailyGoal==minutes)green else Color(0xFF3B5057))) {Text("$minutes минут в день",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
       }
-      if(screen=="placement") item { Text("🎯 Короткая проверка знаний · ${index+1}/${placementLessons.size}",fontSize=24.sp,fontWeight=FontWeight.Black,color=ink) }
+
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
@@ -383,7 +383,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Button(onClick={start((current+1).coerceAtMost(lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("Следующий урок")} }
        item { OutlinedButton(onClick={start(current)},modifier=Modifier.fillMaxWidth()){Text("Повторить урок")} }
        item { TextButton(onClick={screen="home"}){Text("К карте уроков")} }
-      } else {
+      } else if(screen=="lesson" || screen=="placement") {
        val l=lessons[current];val q=activeQuestion();val key=current*1000+index
        val mastery=reviewStages[key]?:0
        val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ") && mastery<2
@@ -394,23 +394,23 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        val audioMode=screen=="lesson" && index%7==1 && mastery>=1 && !q.prompt.startsWith("Как по-английски")
        val pictureMode=screen=="lesson" && index%7==0 && q.choices.all { it.lowercase(Locale.ROOT) in setOf("tea","coffee","milk","apple","cat","dog","water","book","house","hello") }
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
-        Text("🎯 "+l.title,fontSize=19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
-        Text("⚡ $answerCombo  ⭐ ${index+1}/${l.questions.size}",fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
+        Text(if(screen=="placement")"🎯 Проверка знаний" else "🎯 "+l.title,fontSize=if(compact)16.sp else 19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
+        Text("⚡ $answerCombo  ⭐ ${index+1}/${if(screen=="placement")placementLessons.size else l.questions.size}",fontSize=if(compact)13.sp else 15.sp,fontWeight=FontWeight.Black,color=pink)
        } }
-       item { Text("Уровень слова: ${when(mastery){0->"Изучаем";1->"Закрепляем";2->"Вспоминаем";else->"Уверенно знаем"}}",fontSize=12.sp,color=teal) }
-       item { LinearProgressIndicator(progress={(index+1).toFloat()/l.questions.size},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=green,trackColor=Color(0xFFE7DDF9)) }
 
-       item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFF3B2A45))) { Column(Modifier.padding(12.dp)) {
-        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(9.dp)) {
-         Image(bitmap=foxTransparent,contentDescription=null,modifier=Modifier.size(24.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale;rotationZ=foxTilt+foxWiggle })
-         Text(foxMessage,fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
+       item { LinearProgressIndicator(progress={(index+1).toFloat()/(if(screen=="placement")placementLessons.size else l.questions.size)},modifier=Modifier.fillMaxWidth().height(if(compact)6.dp else 9.dp).clip(RoundedCornerShape(9.dp)),color=green,trackColor=Color(0xFFE7DDF9)) }
+
+       item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFF3B2A45))) { Column(Modifier.padding(if(compact)9.dp else 12.dp)) {
+        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(7.dp)) {
+         Image(bitmap=foxTransparent,contentDescription=null,modifier=Modifier.size(if(compact)20.dp else 24.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale;rotationZ=foxTilt+foxWiggle })
+         Text(foxMessage,fontSize=if(compact)13.sp else 15.sp,fontWeight=FontWeight.Black,color=pink)
         }
-        Spacer(Modifier.height(4.dp))
-        Text(if(audioMode)"🎧 Прослушай слово и выбери перевод" else q.prompt,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp)
+        Spacer(Modifier.height(2.dp))
+        Text(if(audioMode)"🎧 Прослушай слово и выбери перевод" else q.prompt,fontSize=if(compact)19.sp else 23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=if(compact)23.sp else 28.sp)
        } } }
        if(selected!=null) item { Text(q.speech,modifier=Modifier.clickable {sayEnglish(q.speech)},fontSize=19.sp,fontWeight=FontWeight.Black,color=purple) }
        if(selected!=null && showTranslation) item { Text(q.explanation,fontSize=14.sp,color=ink) }
-       if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
+       if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
        if(typedMode) item {
         Text(if(missingMode)"🔤 Впиши пропущенную букву: "+correctWord.replaceRange(missingIndex,missingIndex+1,"_") else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
         OutlinedTextField(value=typedAnswer,onValueChange={typedAnswer=it},label={Text("Твой ответ")},singleLine=true,modifier=Modifier.fillMaxWidth(),enabled=selected==null)
@@ -467,7 +467,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
      }
      if(screen=="review" && reviewMatched.size==reviewPairs.size) {
-      Button(onClick={screen="done";foxExcited=true},modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=4.dp,bottom=14.dp).height(54.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark),shape=RoundedCornerShape(17.dp)) {Text("ЗАБРАТЬ ОПЫТ ⭐",fontSize=21.sp,fontWeight=FontWeight.Black)}
+      Button(onClick={screen="done";foxExcited=true},modifier=Modifier.fillMaxWidth().padding(start=14.dp,end=14.dp,top=3.dp,bottom=5.dp).height(if(compact)46.dp else 54.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark),shape=RoundedCornerShape(17.dp)) {Text("ЗАБРАТЬ ОПЫТ ⭐",fontSize=21.sp,fontWeight=FontWeight.Black)}
      }
      if(screen=="onboarding" || ((screen=="lesson" || screen=="placement") && selected!=null)) {
       Button(onClick={
