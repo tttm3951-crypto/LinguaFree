@@ -56,6 +56,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.json.JSONArray
+import org.json.JSONObject
 import java.util.Locale
 
 private data class Quiz(val prompt:String,val choices:List<String>,val answer:Int,val explanation:String,val speech:String)
@@ -206,6 +207,48 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   val prefs=getSharedPreferences("linguafree_progress",Activity.MODE_PRIVATE)
   ReminderReceiver.schedule(this)
   setContent {
+   var backupStatus by remember { mutableStateOf("") }
+   val exportProgress=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")){uri->
+    if(uri!=null)try{
+     val data=JSONObject().put("format","LinguaFreeProgress").put("version",1)
+     val values=JSONObject()
+     prefs.all.forEach{(key,value)->
+      when(value){
+       is String->values.put(key,value)
+       is Int->values.put(key,value)
+       is Long->values.put(key,value)
+       is Float->values.put(key,value.toDouble())
+       is Boolean->values.put(key,value)
+       is Set<*>->values.put(key,JSONArray(value.filterIsInstance<String>()))
+      }
+     }
+     data.put("preferences",values)
+     contentResolver.openOutputStream(uri)?.use{it.write(data.toString(2).toByteArray(Charsets.UTF_8))}
+     backupStatus="Резервная копия сохранена."
+    }catch(e:Exception){backupStatus="Ошибка экспорта: ${e.message}"}
+   }
+   val importProgress=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->
+    if(uri!=null)try{
+     val json=JSONObject(contentResolver.openInputStream(uri)!!.bufferedReader().use{it.readText()})
+     require(json.optString("format")=="LinguaFreeProgress" && json.optInt("version")==1){"Неверный формат резервной копии"}
+     val values=json.getJSONObject("preferences")
+     val editor=prefs.edit()
+     val keys=values.keys()
+     while(keys.hasNext()){
+      val key=keys.next()
+      when(val value=values.get(key)){
+       is String->editor.putString(key,value)
+       is Boolean->editor.putBoolean(key,value)
+       is Int->editor.putInt(key,value)
+       is Long->editor.putLong(key,value)
+       is Double->editor.putFloat(key,value.toFloat())
+       is JSONArray->editor.putStringSet(key,(0 until value.length()).map{value.getString(it)}.toSet())
+      }
+     }
+     if(editor.commit()){ReminderReceiver.schedule(this@MainActivity);recreate()}
+     else backupStatus="Не удалось восстановить прогресс."
+    }catch(e:Exception){backupStatus="Ошибка восстановления: ${e.message}"}
+   }
    var current by remember { mutableIntStateOf(prefs.getInt("lesson",0).coerceIn(0,lessons.lastIndex)) }
    var index by remember { mutableIntStateOf(0) }
    var xp by remember { mutableIntStateOf(prefs.getInt("xp",0)) }
@@ -625,6 +668,12 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("⚡ Лучший результат в игре: $speedBest/10",color=ink) }
        item { Text("🗣️ Голос: ${selectedVoiceName?:"Системный английский голос"}",fontSize=13.sp,color=ink) }
        item { Text("📴 Без интернета: уроки, истории, словарь, прогресс, напоминания, анимации, звуки и вибрация. Для английской озвучки нужен установленный офлайн-голос Android, для распознавания — офлайн-языковой пакет.",fontSize=13.sp,color=ink) }
+       item { OutlinedButton(onClick={exportProgress.launch("LinguaFree-progress.json")},modifier=Modifier.fillMaxWidth()){Text("💾 Сохранить резервную копию прогресса")} }
+       item { OutlinedButton(onClick={importProgress.launch(arrayOf("application/json","text/plain"))},modifier=Modifier.fillMaxWidth()){Text("📂 Восстановить прогресс из файла")} }
+       item { Text("Восстановление заменит сохранённые значения. Перед ним сделай резервную копию. Файл хранится там, где ты выберешь.",fontSize=12.sp,color=ink) }
+       if(backupStatus.isNotBlank())item { Text(backupStatus,color=ink) }
+       item { OutlinedButton(onClick={try{startActivity(Intent("com.android.settings.TTS_SETTINGS"))}catch(_:Exception){startActivity(Intent(android.provider.Settings.ACTION_SETTINGS))}},modifier=Modifier.fillMaxWidth()){Text("⚙️ Настроить офлайн-голос Android")} }
+
        item { Text("Скорость английского",fontSize=16.sp,color=ink) }
        item { Row(horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf(0.80f,0.93f,1.08f).forEach{speed->OutlinedButton(onClick={voiceSpeed=speed;prefs.edit().putFloat("voiceSpeed",speed).apply();sayEnglish("Hello! Welcome to LinguaFree!")},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(voiceSpeed==speed)green else panel)){Text(when(speed){0.80f->"Медленно";0.93f->"Обычно";else->"Быстро"},fontSize=12.sp,color=if(voiceSpeed==speed)dark else ink)}}} }
        item { Button(onClick={sayEnglish("Hello! Let's learn English together!")},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать голос лисички")} }
