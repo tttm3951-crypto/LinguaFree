@@ -140,9 +140,29 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var correctCount by remember { mutableIntStateOf(0) }
    var foxMessage by remember { mutableStateOf("Давай попробуем!") }
    var foxExcited by remember { mutableStateOf(false) }
+   var reviewLeft by remember { mutableStateOf<String?>(null) }
+   var reviewRight by remember { mutableStateOf<String?>(null) }
+   var reviewMatched by remember { mutableStateOf(setOf<String>()) }
+   val reviewSets=listOf(
+    listOf("please" to "пожалуйста","coffee" to "кофе","tea" to "чай","hot" to "горячий","or" to "или"),
+    listOf("hello" to "привет","thank you" to "спасибо","yes" to "да","no" to "нет","water" to "вода"),
+    listOf("cat" to "кот","dog" to "собака","book" to "книга","apple" to "яблоко","house" to "дом")
+   )
+   val reviewPairs=reviewSets[current%reviewSets.size]
+   fun checkPair(left:String?,right:String?){
+    if(left!=null && right!=null){
+     if(reviewPairs.any{it.first==left && it.second==right}){
+      reviewMatched=reviewMatched+left
+      sayEnglish(left)
+      if(reviewMatched.size==reviewPairs.size){foxExcited=true;sayEnglish("Ta-da! Amazing! You did it!",false)}
+     }else{sayEnglish("Try again!")}
+     reviewLeft=null;reviewRight=null
+    }
+   }
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
    fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();showTranslation=false;correctCount=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
+   LaunchedEffect(screen) { if(screen=="review"){reviewMatched=emptySet();reviewLeft=null;reviewRight=null;sayEnglish("Match the words!")} }
    LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true; sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false } }
    LaunchedEffect(screen,current,index) {
     if(screen=="lesson" || screen=="placement") {
@@ -212,6 +232,31 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("Опыт: $xp XP · Алмазы: $gems · Уроков: ${completed.size} · Ошибок: ${mistakes.size}") }
        item { Text("Для повторения ошибок открой соответствующий урок и пройди его снова.") }
        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
+      } else if(screen=="review") {
+       item { Text("🧠 Закрепляем слова",fontSize=29.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Text("Нажимай на пары: английское слово и его перевод",fontSize=17.sp,color=ink) }
+       item { LinearProgressIndicator(progress={reviewMatched.size/5f},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=green) }
+       item { Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+        Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+         reviewPairs.forEach { (en,_) ->
+          val matched=en in reviewMatched
+          OutlinedButton(onClick={reviewLeft=en;sayEnglish(en);checkPair(reviewLeft,reviewRight)},enabled=!matched,modifier=Modifier.fillMaxWidth().height(74.dp),shape=RoundedCornerShape(18.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(matched)Color(0xFF284F39) else if(reviewLeft==en)Color(0xFF3A4866) else panel),border=BorderStroke(2.dp,if(matched)green else if(reviewLeft==en)purple else Color(0xFF40565D))) { Text(if(matched)"✓ $en" else en,fontSize=18.sp,fontWeight=FontWeight.Bold,color=ink) }
+         }
+        }
+        Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+         reviewPairs.map{it.second}.reversed().forEach { ru ->
+          val matched=reviewPairs.any{it.second==ru && it.first in reviewMatched}
+          OutlinedButton(onClick={reviewRight=ru;checkPair(reviewLeft,reviewRight)},enabled=!matched,modifier=Modifier.fillMaxWidth().height(74.dp),shape=RoundedCornerShape(18.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(matched)Color(0xFF284F39) else if(reviewRight==ru)Color(0xFF3A4866) else panel),border=BorderStroke(2.dp,if(matched)green else if(reviewRight==ru)purple else Color(0xFF40565D))) { Text(if(matched)"✓ $ru" else ru,fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink) }
+         }
+        }
+       } }
+       if(reviewMatched.size==reviewPairs.size) item {
+        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally) {
+         Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка радуется",modifier=Modifier.size(110.dp).offset(y=bounce.dp).graphicsLayer{scaleX=foxScale;scaleY=foxScale})
+         Text("🎊 ТАДА-А-АМ! Все пары найдены!",fontSize=21.sp,fontWeight=FontWeight.Black,color=green)
+         Text("Ты отлично закрепил слова! ⭐",fontSize=17.sp,color=ink)
+        }
+       }
       } else if(screen=="done") {
        item { Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.fillMaxWidth()) {
         Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка празднует победу",modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f; scaleX=foxScale;scaleY=foxScale })
@@ -290,6 +335,9 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { TextButton(onClick={screen="home"},modifier=Modifier.height(34.dp)){Text("← К урокам",fontSize=13.sp)} }
       }
      }
+     if(screen=="review" && reviewMatched.size==reviewPairs.size) {
+      Button(onClick={screen="done";foxExcited=true},modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=32.dp).height(54.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark),shape=RoundedCornerShape(17.dp)) {Text("ЗАБРАТЬ ОПЫТ ⭐",fontSize=21.sp,fontWeight=FontWeight.Black)}
+     }
      if(screen=="onboarding" || ((screen=="lesson" || screen=="placement") && selected!=null)) {
       Button(onClick={
        if(screen=="onboarding") {
@@ -301,7 +349,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         if(screen=="placement" && selected==q.answer)placementScore++
         selected=null;bankWords=emptyList();showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
         if(screen=="placement") {if(index==2){current=if(placementScore>=2)8 else if(placementScore==1)3 else 0;index=0;screen="home";save()}else index++}
-        else if(index==lessons[current].questions.lastIndex){completed=completed+current;screen="done"}else index++
+        else if(index==lessons[current].questions.lastIndex){completed=completed+current;screen="review"}else index++
         save()
        }
       },modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=32.dp).height(54.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
