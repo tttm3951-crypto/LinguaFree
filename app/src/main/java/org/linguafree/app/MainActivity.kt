@@ -222,11 +222,18 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var rewardedStories by remember { mutableStateOf(prefs.getString("rewardedStories","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}.toSet()) }
    var speechTarget by remember { mutableStateOf("Hello") }
    var speechResult by remember { mutableStateOf("") }
-   val stories=listOf(
-    listOf(Triple("Hello! My name is Fox.","Привет! Меня зовут Лис.","Привет! Меня зовут Лис."),Triple("What is your name?","Как тебя зовут?","Как тебя зовут?"),Triple("Nice to meet you!","Рад познакомиться!","Рад познакомиться!")),
-    listOf(Triple("I would like some tea, please.","Я хотел бы чаю, пожалуйста.","Я хотел бы чаю, пожалуйста."),Triple("How much is it?","Сколько это стоит?","Сколько это стоит?"),Triple("Thank you very much!","Большое спасибо!","Большое спасибо!")),
-    listOf(Triple("Where is the bus stop?","Где автобусная остановка?","Где автобусная остановка?"),Triple("Go straight and turn left.","Идите прямо и поверните налево.","Идите прямо и поверните налево."),Triple("Have a nice day!","Хорошего дня!","Хорошего дня!"))
-   )
+   val storyData=remember {
+    val json=JSONArray(assets.open("stories.json").bufferedReader().use{it.readText()})
+    (0 until json.length()).map{n->
+     val lines=json.getJSONObject(n).getJSONArray("lines")
+     (0 until lines.length()).map{j->val line=lines.getJSONObject(j);Triple(line.getString("en"),line.getString("ru"),line.getString("ru"))}
+    }
+   }
+   val stories=storyData
+   var speedRound by remember { mutableIntStateOf(0) }
+   var speedCorrect by remember { mutableIntStateOf(0) }
+   var speedFinished by remember { mutableStateOf(false) }
+   var speedStartedAt by remember { mutableLongStateOf(0L) }
    var level by remember { mutableStateOf("Начинающий") }
    var dailyGoal by remember { mutableIntStateOf(10) }
    var streak by remember { mutableIntStateOf(prefs.getInt("dailyStreak",0)) }
@@ -380,7 +387,9 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Column(Modifier.padding(15.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
          Text("📖 Истории с лисичкой",fontSize=23.sp,fontWeight=FontWeight.Black,color=ink)
          Text("Слушай диалоги, отвечай и тренируй произношение.",color=ink)
+         Text("30 оригинальных историй · уровни A1–B1",color=ink)
          Button(onClick={storyIndex=0;storyStep=0;storyFeedback="";screen="story"},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("Начать историю",color=dark)}
+         OutlinedButton(onClick={screen="storyLibrary"},modifier=Modifier.fillMaxWidth()){Text("📚 Выбрать из 30 историй")}
          OutlinedButton(onClick={speechTarget="Hello!";storyFeedback="";screen="speaking"},modifier=Modifier.fillMaxWidth()){Text("🎙️ Тренировать произношение")}
         }
        }
@@ -394,6 +403,13 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          Text(if(completed.isNotEmpty())"✅ Пройти первый урок" else "⬜ Пройти первый урок",color=ink)
          Text(if(streak>=3)"✅ Заниматься 3 дня подряд" else "⬜ Заниматься 3 дня подряд",color=ink)
         }
+       }
+      }
+      if(screen=="storyLibrary"){
+       item { Text("‹  Библиотека историй",modifier=Modifier.clickable{screen="home"},fontSize=24.sp,fontWeight=FontWeight.Black,color=purple) }
+       items(30){n->
+        val title=listOf("Приветствие","Знакомство","Дружба","Домашние животные","Игрушки","Прогулка","Еда","В кафе","Книги","Библиотека","Школа","Время","Автобус","Билет","Магазин","Подарок","День рождения","Велосипед","Дождь","Отдых","Помощь","Мотивация","На вокзале","Чаепитие","Цвета","Музыка","Птицы","Сад","Вопрос","Ошибки")[n]
+        OutlinedButton(onClick={storyIndex=n;storyStep=0;storyFeedback="";screen="story"},modifier=Modifier.fillMaxWidth()){Text("${n+1}. $title · ${if(n<10)"A1" else if(n<20)"A2" else "B1"} ${if(n in rewardedStories)"✓" else ""}",color=ink)}
        }
       }
       if(screen=="story") {
