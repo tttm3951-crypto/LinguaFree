@@ -3,6 +3,7 @@ set -u
 adb shell wm size 1080x1920
 adb shell wm density 480
 adb shell settings put system font_scale 1.3
+adb shell settings put secure show_ime_with_hard_keyboard 1
 gradle --no-daemon connectedDebugAndroidTest
 test_result=$?
 mkdir -p device-artifacts

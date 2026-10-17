@@ -13,6 +13,9 @@ import org.junit.runner.RunWith
 import java.io.File
 import android.graphics.Bitmap
 import org.json.JSONObject
+import org.json.JSONArray
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 @RunWith(AndroidJUnit4::class)
 class ProgressAndLayoutTest {
@@ -77,6 +80,27 @@ class ProgressAndLayoutTest {
         compose.onNodeWithText("Pre-A1").assertIsDisplayed()
         val p=compose.activity.getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
         assertEquals(123,p.getInt("xp",0));assertEquals("Тест",p.getString("learnerName",""))
+    }
+
+    @Test fun lateWritingExerciseRemainsReachableWithKeyboard(){
+        val p=compose.activity.getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
+        p.edit().putInt("lesson",50).putBoolean("showWelcome",true).putString("reviewStages","50002:2").commit()
+        compose.activityRule.scenario.recreate();compose.waitForIdle()
+        compose.onNodeWithText("Продолжить обучение 🚀").performScrollTo().performClick()
+        val lesson=JSONArray(compose.activity.assets.open("lessons.json").bufferedReader().use{it.readText()}).getJSONObject(50)
+        for(i in 0..5){
+            val q=lesson.getJSONArray("questions").getJSONObject(i)
+            compose.onNodeWithText(q.getJSONArray("choices").getString(q.getInt("answer")),substring=false).performScrollTo().performClick()
+            compose.onNodeWithText("ПРОДОЛЖИТЬ 🚀").performClick()
+        }
+        compose.onNode(hasSetTextAction()).performScrollTo().performClick().performTextInput("a")
+        compose.waitUntil(10000){ViewCompat.getRootWindowInsets(compose.activity.window.decorView)?.isVisible(WindowInsetsCompat.Type.ime())==true}
+        val field=compose.onNode(hasSetTextAction()).performScrollTo().assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        val root=compose.onRoot().fetchSemanticsNode().boundsInRoot
+        assertTrue(field.top>=root.top&&field.bottom<=root.bottom+1f)
+        compose.onNodeWithText("Проверить",substring=false).performScrollTo().assertIsDisplayed().performClick()
+        compose.onNodeWithText("ПРОДОЛЖИТЬ 🚀").assertIsDisplayed()
+        assertEquals(123,p.getInt("xp",0))
     }
 
     @Test fun lessonAnswersAndContinueStayInsideTheAvailableWindow(){

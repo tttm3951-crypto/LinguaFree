@@ -65,7 +65,7 @@ object ClassroomSync {
             .put("generatedAt",OffsetDateTime.now().toString())
             .put("student",p.getString("learnerName","").orEmpty().trim().ifBlank{"Ученик"})
             .put("learnerId",learnerId(context)).put("completedLessons",completed.size).put("totalLessons",300)
-            .put("xp",p.getInt("xp",0)).put("grammarTopicsCompleted",p.getStringSet("grammarMastered",emptySet())?.size?:0)
+            .put("xp",p.getInt("xp",0)).put("grammarTopicsCompleted",(p.getStringSet("grammarMastered",emptySet())?.size?:0)+(p.getStringSet("beginnerMastered",emptySet())?.size?:0))
             .put("studyDaysLast7",dates.count{!it.isBefore(today.minusDays(6))})
             .put("studyDaysLast30",dates.count{!it.isBefore(today.minusDays(29))})
             .put("lastStudyDate",dates.maxOrNull()?.toString()?:"")
