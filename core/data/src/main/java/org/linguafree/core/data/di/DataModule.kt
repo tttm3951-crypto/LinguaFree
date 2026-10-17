@@ -107,4 +107,7 @@ object DataModule {
 
     @Provides @Singleton
     fun bootstrapper(c: ContentRepository, m: LegacyMigration, d: DailyMaintenanceUseCase) = AppBootstrapper(c, m, d)
+
+    @Provides @Singleton
+    fun library(@ApplicationContext context: Context) = org.linguafree.core.data.library.LibraryRepository(context)
 }
