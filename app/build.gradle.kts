@@ -10,8 +10,26 @@ android {
         applicationId = "org.linguafree.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 3
-        versionName = "0.3"
+        versionCode = 4
+        versionName = "0.4"
+    }
+    signingConfigs {
+        if (!System.getenv("LINGUAFREE_KEYSTORE_PATH").isNullOrBlank()) {
+            create("linguafreeRelease") {
+                storeFile = file(System.getenv("LINGUAFREE_KEYSTORE_PATH"))
+                storePassword = System.getenv("LINGUAFREE_STORE_PASSWORD")
+                keyAlias = System.getenv("LINGUAFREE_KEY_ALIAS")
+                keyPassword = System.getenv("LINGUAFREE_KEY_PASSWORD")
+            }
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            if (!System.getenv("LINGUAFREE_KEYSTORE_PATH").isNullOrBlank()) {
+                signingConfig = signingConfigs.getByName("linguafreeRelease")
+            }
+            isMinifyEnabled = false
+        }
     }
     buildFeatures { compose = true }
     compileOptions {
