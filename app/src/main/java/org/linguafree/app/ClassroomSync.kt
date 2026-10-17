@@ -108,6 +108,23 @@ object ClassroomSync {
         async({ request("/teacher/reports?classroomId=$id", "GET", token = token) }, callback)
     }
 
+    fun revoke(context: Context, callback: (Result<JSONObject>) -> Unit) {
+        val p=context.getSharedPreferences("linguafree_sync",Context.MODE_PRIVATE)
+        val id=p.getString("studentId","").orEmpty()
+        val token=p.getString("studentToken","").orEmpty()
+        if(!configured||id.isBlank()||token.isBlank()){
+            disable(context)
+            callback(Result.success(JSONObject().put("ok",true)))
+            return
+        }
+        async({request("/student/revoke","POST",JSONObject().put("studentId",id),token)}){result->
+            result.onSuccess {
+                p.edit().remove("studentId").remove("studentToken").putBoolean("enabled",false).apply()
+            }
+            callback(result)
+        }
+    }
+
     fun disable(context: Context) {
         // Revocation is performed by the server on explicit request; clearing local credentials
         // only stops further automatic transmissions from this device.
