@@ -72,7 +72,10 @@ fun LinguaFreeRoot(root: RootViewModel) {
         ) { padding ->
             NavHost(nav, startDestination = MainTab.Learn.route, modifier = Modifier.padding(padding)) {
                 composable(MainTab.Learn.route) {
-                    LearnScreen(onStartSession = { kind, node, unit -> nav.navigate(LessonRoute.of(kind, node, unit)) })
+                    LearnScreen(
+                        onStartSession = { kind, node, unit -> nav.navigate(LessonRoute.of(kind, node, unit)) },
+                        onOpenShop = { nav.navigate(MainTab.Shop.route) { launchSingleTop = true } },
+                    )
                 }
                 lessonScreen(
                     onClose = { nav.popBackStack() },
