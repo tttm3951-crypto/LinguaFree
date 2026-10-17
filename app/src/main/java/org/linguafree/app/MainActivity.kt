@@ -6,6 +6,9 @@ import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -88,7 +91,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
-       Text("🦊",fontSize=50.sp,modifier=Modifier.offset(y=bounce.dp))
+       Image(painter=painterResource(R.drawable.fox_mascot),contentDescription="Весёлая лисичка LinguaFree",modifier=Modifier.size(92.dp).offset(y=bounce.dp))
       } }
       
       item { Card(shape=RoundedCornerShape(26.dp),modifier=Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=purple)) { Column(Modifier.padding(21.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
@@ -121,7 +124,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("Для повторения ошибок открой соответствующий урок и пройди его снова.") }
        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
       } else if(screen=="done") {
-       item { Text("🎉 УРА! УРОК ПРОЙДЕН!",fontSize=30.sp,fontWeight=FontWeight.Black,color=pink,modifier=Modifier.offset(y=bounce.dp)) }
+       item { Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.fillMaxWidth()) {
+        Image(painter=painterResource(R.drawable.fox_mascot),contentDescription="Лисичка празднует победу",modifier=Modifier.size(160.dp).graphicsLayer { rotationZ=bounce*1.2f })
+        Text("🎉 УРА! УРОК ПРОЙДЕН!",fontSize=30.sp,fontWeight=FontWeight.Black,color=pink)
+       } }
        item { Text("Верных ответов: $correctCount из ${lessons[current].questions.size}") }
        item { Button(onClick={start((current+1).coerceAtMost(lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("Следующий урок")} }
        item { OutlinedButton(onClick={start(current)},modifier=Modifier.fillMaxWidth()){Text("Повторить урок")} }
@@ -132,7 +138,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { LinearProgressIndicator(progress={(index+1).toFloat()/l.questions.size},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=green,trackColor=Color(0xFFE7DDF9)) }
        item { Text("⭐ ВОПРОС ${index+1} ИЗ ${l.questions.size}",fontSize=17.sp,fontWeight=FontWeight.Black,color=pink) }
        item { Card(shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFFFFE5F0))) { Column(Modifier.padding(21.dp)) {
-        Text("🦊 Давай попробуем!",fontSize=18.sp,fontWeight=FontWeight.Black,color=pink)
+        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(9.dp)) {
+         Image(painter=painterResource(R.drawable.fox_mascot),contentDescription=null,modifier=Modifier.size(56.dp).offset(y=bounce.dp))
+         Text("Давай попробуем!",fontSize=18.sp,fontWeight=FontWeight.Black,color=pink)
+        }
         Spacer(Modifier.height(12.dp))
         Text(q.prompt,fontSize=27.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=35.sp)
        } } }
@@ -146,7 +155,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         }
        } }
        if(selected!=null) {
-        item { AnimatedVisibility(visible=true,enter=fadeIn()+expandVertically()) { Text(if(selected==q.answer) "🎉 СУПЕР! ПРАВИЛЬНО!" else "💡 Правильный ответ: ${q.choices[q.answer]}",fontSize=21.sp,fontWeight=FontWeight.Black,color=if(selected==q.answer)green else pink) } }
+        item { AnimatedVisibility(visible=true,enter=fadeIn()+expandVertically()) { Row(verticalAlignment=Alignment.CenterVertically) {
+         Image(painter=painterResource(R.drawable.fox_mascot),contentDescription=null,modifier=Modifier.size(65.dp).offset(y=if(selected==q.answer)bounce.dp else 0.dp))
+         Text(if(selected==q.answer) "🎉 СУПЕР! ПРАВИЛЬНО!" else "💡 Попробуем запомнить!",fontSize=21.sp,fontWeight=FontWeight.Black,color=if(selected==q.answer)green else pink)
+        } } }
         item { Text(q.explanation,fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink) }
         item { Button(onClick={
          if(selected==q.answer){xp+=10;gems+=2;correctCount++;mistakes=mistakes-key}else{mistakes=mistakes+key}
