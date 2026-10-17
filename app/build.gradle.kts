@@ -10,8 +10,11 @@ android {
         applicationId = "org.linguafree.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 6
-        versionName = "0.6"
+        versionName = "0.7"
+        versionCode = 7
+        val classroomUrl = System.getenv("LINGUAFREE_CLASSROOM_URL").orEmpty().trimEnd('/')
+        require(classroomUrl.isEmpty() || classroomUrl.startsWith("https://")) { "Classroom server must use HTTPS" }
+        buildConfigField("String", "CLASSROOM_ENDPOINT", "\""+classroomUrl+"\"")
     }
     signingConfigs {
         if (!System.getenv("LINGUAFREE_KEYSTORE_PATH").isNullOrBlank()) {
@@ -31,7 +34,7 @@ android {
             isMinifyEnabled = false
         }
     }
-    buildFeatures { compose = true }
+    buildFeatures { compose = true; buildConfig = true }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
