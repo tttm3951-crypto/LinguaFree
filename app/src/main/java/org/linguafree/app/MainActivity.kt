@@ -336,7 +336,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE,true)
      }
      speechLauncher.launch(intent)
-    }catch(_:Exception){storyFeedback="На устройстве нет службы распознавания речи. Установи или включи голосовой ввод Android."}
+    }catch(_:Exception){storyFeedback="Офлайн-распознавание недоступно. Установи английский языковой пакет в настройках Android."}
    }
 
    var celebration by remember { mutableStateOf(false) }
@@ -554,7 +554,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Button(onClick={practiceSpeech(speechTarget)},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=purple)){Text("🎙️ Говорить")} }
        if(storyFeedback.isNotBlank())item { Text(storyFeedback,fontSize=18.sp,color=ink) }
        item { Button(onClick={speechTarget=listOf("Hello!","My name is Fox.","How are you?","I like learning English.","Where is the station?")[(listOf("Hello!","My name is Fox.","How are you?","I like learning English.","Where is the station?").indexOf(speechTarget)+1)%5];storyFeedback=""},modifier=Modifier.fillMaxWidth()){Text("Следующая фраза →")} }
-       item { Text("Распознавание зависит от голосовой службы Android и может потребовать интернет. Оценка основана на распознанных словах, а не на анализе акцента.",fontSize=13.sp,color=ink) }
+       item { Text("Для работы без интернета установи английский офлайн-пакет распознавания речи в настройках Android. Оценка показывает совпадение распознанных слов, а не качество акцента.",fontSize=13.sp,color=ink) }
       }
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
