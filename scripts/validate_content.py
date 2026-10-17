@@ -51,6 +51,22 @@ if duplicates:
     errors.append(f"Repeated full lesson sets: {len(duplicates)}")
 if len(unique) < 900:
     errors.append(f"Vocabulary diversity regression: only {len(unique)} distinct prompt-answer pairs; expected at least 900")
+dictionary = json.loads((root / "dictionary.json").read_text(encoding="utf-8"))
+seen_dictionary = set()
+with_examples = 0
+for i, entry in enumerate(dictionary, 1):
+    for field in ("en", "ru", "level", "source", "example_en", "example_ru"):
+        if not isinstance(entry.get(field), str) or not entry[field].strip():
+            errors.append(f"Dictionary {i}: missing {field}")
+    key = (entry.get("en", "").casefold(), entry.get("ru", "").casefold())
+    if key in seen_dictionary:
+        errors.append(f"Dictionary {i}: duplicate pair")
+    seen_dictionary.add(key)
+    if entry.get("example_en", "").casefold() != entry.get("en", "").casefold():
+        with_examples += 1
+if len(dictionary) < 600:
+    errors.append(f"Dictionary too small: {len(dictionary)}")
+print(f"Offline dictionary: {len(dictionary)} entries; {with_examples} contextual examples")
 if errors:
     print("\n".join("ERROR: " + error for error in errors))
     raise SystemExit(1)
