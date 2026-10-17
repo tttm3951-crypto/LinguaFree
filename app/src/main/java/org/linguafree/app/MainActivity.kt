@@ -345,7 +345,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("Опыт: $xp XP · Алмазы: $gems · Уроков: ${completed.size} · Ошибок: ${mistakes.size}") }
        item { Text("Слов для повторения: ${repeatQueue.size}. Ошибки сохраняются, чтобы можно было вернуться к сложным заданиям.") }
        item { Text("🧠 По расписанию на сегодня: ${reviewDue.values.count{it<=System.currentTimeMillis()}}. Интервалы 1, 3, 7, 14 и 30 дней.",fontSize=16.sp,color=ink) }
-       if(repeatQueue.isNotEmpty() || reviewDue.values.any{it<=System.currentTimeMillis()}) item { Button(onClick={start(((reviewDue.filterValues{it<=System.currentTimeMillis()}.keys.firstOrNull()?:repeatQueue.firstOrNull()?:0)/1000).coerceIn(0,lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("🧠 Повторить сложные слова")} }
+       if(repeatQueue.isNotEmpty() || reviewDue.values.any{it<=System.currentTimeMillis()}) item { Button(onClick={val key=reviewDue.filterValues{it<=System.currentTimeMillis()}.keys.firstOrNull()?:repeatQueue.firstOrNull()?:0;start((key/1000).coerceIn(0,lessons.lastIndex));index=(key%1000).coerceIn(0,lessons[current].questions.lastIndex)},modifier=Modifier.fillMaxWidth()){Text("🧠 Повторить сложные слова")} }
        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
       } else if(screen=="review") {
        item { Text("🧠 Закрепляем слова",fontSize=29.sp,fontWeight=FontWeight.Black,color=purple) }
@@ -385,7 +385,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       } else {
        val l=lessons[current];val q=activeQuestion();val key=current*1000+index
        val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ")
-       val typedMode=screen=="lesson" && (index%7==4 || index%7==5)
+       val typedMode=screen=="lesson" && (index%7==4 || index%7==5 || index%7==6) && q.prompt.startsWith("Как по-английски")
        val audioMode=screen=="lesson" && index%7==1
        val pictureMode=screen=="lesson" && index%7==0 && q.choices.all { it.lowercase(Locale.ROOT) in setOf("tea","coffee","milk","apple","cat","dog","water","book","house","hello") }
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
@@ -406,7 +406,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        if(selected!=null && showTranslation) item { Text(q.explanation,fontSize=14.sp,color=ink) }
        item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
        if(typedMode) item {
-        Text("✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
+        Text(if(index%7==6)"🔤 Восстанови слово по памяти" else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
         OutlinedTextField(value=typedAnswer,onValueChange={typedAnswer=it},label={Text("Твой ответ")},singleLine=true,modifier=Modifier.fillMaxWidth(),enabled=selected==null)
         Button(onClick={
          val right=typedAnswer.trim().equals(q.choices[q.answer],ignoreCase=true)
