@@ -36,7 +36,10 @@ checks={
     "goal units consistent": 'занятий в день' in src and 'минут в день' not in src,
     "intro respects effects setting": 'if(getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE).getBoolean("effectsEnabled",true))playWelcomeMelody()' in src,
 
-    "no network permission": 'android.permission.INTERNET' not in manifest,
+    "network permission for opt-in sync": 'android.permission.INTERNET' in manifest,
+    "opt-in sync default off": 'getBoolean("enabled", false)' in (root/"app/src/main/java/org/linguafree/app/ClassroomSync.kt").read_text(encoding="utf-8"),
+    "student revoke endpoint": '"/student/revoke"' in (root/"app/src/main/java/org/linguafree/app/ClassroomSync.kt").read_text(encoding="utf-8"),
+    "teacher notification": 'teacher_progress' in (root/"app/src/main/java/org/linguafree/app/ClassroomPanel.kt").read_text(encoding="utf-8"),
     "content files bundled": all((assets/x).is_file() for x in ["lessons.json","stories.json","dictionary.json"]),
 }
 for name,ok in checks.items():
