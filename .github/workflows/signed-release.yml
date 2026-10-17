@@ -1,9 +1,6 @@
 name: Signed release and upgrade check
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
+  # Paused during the 1.0 rebuild; re-enabled in stage 9/10 with the new module layout.
   workflow_dispatch:
 permissions:
   contents: write

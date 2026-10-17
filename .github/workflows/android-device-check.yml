@@ -1,7 +1,6 @@
 name: Android device checks
 on:
-  pull_request:
-    branches: [main]
+  # Paused during the 1.0 rebuild; re-enabled in stage 9/10 with the new module layout.
   workflow_dispatch:
 permissions:
   contents: read

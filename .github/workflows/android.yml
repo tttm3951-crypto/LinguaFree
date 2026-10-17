@@ -1,0 +1,83 @@
+name: Android CI
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch: {}
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  forbidden-dependencies:
+    name: No ads, billing, analytics, trackers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - name: Static check of version catalog and build scripts
+        run: bash scripts/ci/check_forbidden_deps.sh
+
+  build:
+    name: Lint, test, assemble
+    needs: forbidden-dependencies
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle with cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install Android platform 35
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDKMANAGER" ] || SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f | head -n 1)
+          yes | "$SDKMANAGER" --licenses > /dev/null || true
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0" > /dev/null
+
+      - name: Lint, unit tests and debug APK
+        run: |
+          set -o pipefail
+          ./gradlew --stacktrace --continue lint test assembleDebug 2>&1 | tee build.log
+
+      - name: Explain build failure
+        if: failure()
+        run: python3 scripts/ci/annotate_build_failure.py build.log
+
+      - name: Upload test and lint reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            **/build/reports/**
+            build.log
+          if-no-files-found: ignore
+
+      - name: Check resolved dependencies
+        run: |
+          ./gradlew -q :app:dependencies --configuration releaseRuntimeClasspath > deps.txt
+          bash scripts/ci/check_forbidden_deps.sh deps.txt
+
+      - name: Check APK permissions
+        run: bash scripts/ci/check_permissions.sh app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LinguaFree-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error

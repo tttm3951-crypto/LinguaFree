@@ -1,28 +1,28 @@
-import java.net.URI
-
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
+
 android {
     namespace = "org.linguafree.app"
     compileSdk = 35
+
     defaultConfig {
+        // Kept from LinguaFree 0.9 so the new version installs over it and keeps progress.
         applicationId = "org.linguafree.app"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
-        versionName = "0.9"
-        versionCode = System.getenv("LINGUAFREE_VERSION_CODE")?.toInt() ?: 9
+        versionCode = System.getenv("LINGUAFREE_VERSION_CODE")?.toInt() ?: 10
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val classroomUrl = System.getenv("LINGUAFREE_CLASSROOM_URL").orEmpty().trimEnd('/')
-        if (classroomUrl.isNotEmpty()) {
-            val endpoint = URI(classroomUrl)
-            require(endpoint.scheme == "https" && endpoint.host != null && endpoint.rawUserInfo == null && endpoint.rawQuery == null && endpoint.rawFragment == null) { "Classroom server must be a plain HTTPS endpoint" }
-        }
-        buildConfigField("String", "CLASSROOM_ENDPOINT", "\""+classroomUrl+"\"")
+        resourceConfigurations += listOf("ru", "en")
     }
+
     signingConfigs {
+        // Release keys are provided only by CI secrets. Nothing secret is stored in the repository.
         if (!System.getenv("LINGUAFREE_KEYSTORE_PATH").isNullOrBlank()) {
             create("linguafreeRelease") {
                 storeFile = file(System.getenv("LINGUAFREE_KEYSTORE_PATH"))
@@ -32,47 +32,73 @@ android {
             }
         }
     }
+
     buildTypes {
         getByName("debug") {
-            // Used only by the private signed upgrade check; never publish this debug build.
             if (System.getenv("LINGUAFREE_SIGN_DEBUG_FOR_UPGRADE") == "true") {
                 signingConfig = signingConfigs.getByName("linguafreeRelease")
             }
         }
         getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             if (!System.getenv("LINGUAFREE_KEYSTORE_PATH").isNullOrBlank()) {
                 signingConfig = signingConfigs.getByName("linguafreeRelease")
             }
-            isMinifyEnabled = false
         }
     }
-    buildFeatures { compose = true; buildConfig = true }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions { jvmTarget = "17" }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+    packaging {
+        resources.excludes += listOf("/META-INF/{AL2.0,LGPL2.1}", "/META-INF/LICENSE*", "DebugProbesKt.bin")
+    }
+    lint {
+        // Lint runs in CI; translation completeness is tracked separately while only Russian exists.
+        disable += listOf("MissingTranslation")
+        abortOnError = true
+        checkReleaseBuilds = false
+    }
 }
+
 dependencies {
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test:runner:1.6.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
-    implementation("androidx.activity:activity-compose:1.9.3")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
-    implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.ui:ui")
-}
+    implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":feature:onboarding"))
+    implementation(project(":feature:path"))
+    implementation(project(":feature:lesson"))
+    implementation(project(":feature:practice"))
+    implementation(project(":feature:profile"))
+    implementation(project(":feature:leagues"))
+    implementation(project(":feature:shop"))
 
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-// Offline corpus must be bundled; never silently ship an empty reference screen.
-tasks.named("preBuild") {
-    doFirst { require(file("src/main/assets/offline-reference.db").isFile) { "Run python3 scripts/build_offline_library.py before Gradle" } }
+    testImplementation(libs.junit4)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.runner)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

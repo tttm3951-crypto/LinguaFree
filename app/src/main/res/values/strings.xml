@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">LinguaFree</string>
+    <string name="notification_channel_reminders">Напоминания о занятиях</string>
+    <string name="notification_channel_reminders_desc">Дружелюбные напоминания от лисёнка в выбранное время</string>
+</resources>
