@@ -394,6 +394,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        val audioMode=screen=="lesson" && index%7==1 && mastery>=1 && !q.prompt.startsWith("Как по-английски")
        val pictureMode=screen=="lesson" && index%7==0 && q.choices.all { it.lowercase(Locale.ROOT) in setOf("tea","coffee","milk","apple","cat","dog","water","book","house","hello") }
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
+        Text("‹",modifier=Modifier.clickable{screen="home"}.padding(end=8.dp),fontSize=26.sp,fontWeight=FontWeight.Black,color=purple)
         Text(if(screen=="placement")"🎯 Проверка знаний" else "🎯 "+l.title,fontSize=if(compact)16.sp else 19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
         Text("⚡ $answerCombo  ⭐ ${index+1}/${if(screen=="placement")placementLessons.size else l.questions.size}",fontSize=if(compact)13.sp else 15.sp,fontWeight=FontWeight.Black,color=pink)
        } }
@@ -408,8 +409,6 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Spacer(Modifier.height(2.dp))
         Text(if(audioMode)"🎧 Прослушай слово и выбери перевод" else q.prompt,fontSize=if(compact)19.sp else 23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=if(compact)23.sp else 28.sp)
        } } }
-       if(selected!=null) item { Text(q.speech,modifier=Modifier.clickable {sayEnglish(q.speech)},fontSize=19.sp,fontWeight=FontWeight.Black,color=purple) }
-       if(selected!=null && showTranslation) item { Text(q.explanation,fontSize=14.sp,color=ink) }
        if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
        if(typedMode) item {
         Text(if(missingMode)"🔤 Впиши пропущенную букву: "+correctWord.replaceRange(missingIndex,missingIndex+1,"_") else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
@@ -443,7 +442,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          foxMessage=if(i==q.answer) when(answerCombo+1){3->"🔥 Три подряд! Great!";5->"🌟 Пять подряд! Excellent!";10->"🏆 Десять подряд! Amazing!";else->listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4]} else "Try again! 💪"
          sayEnglish(q.choices[q.answer])
          sayReaction(i==q.answer)
-        },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(if(pictureMode) 68.dp else 54.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFF40565D))) {
+        },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(if(compact) (if(pictureMode) 58.dp else 49.dp) else (if(pictureMode) 68.dp else 54.dp)),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFF40565D))) {
          Column(horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(1.dp)) {
           if(pictureMode) Text(when { choice.contains("Tea",true)->"🍵";choice.contains("Coffee",true)->"☕";choice.contains("Milk",true)->"🥛";choice.contains("Apple",true)->"🍎";choice.contains("Cat",true)->"🐈";choice.contains("Dog",true)->"🐕";choice.contains("Water",true)->"💧";choice.contains("Book",true)->"📚";choice.contains("House",true)->"🏠";choice.contains("Hello",true)->"👋";else->"🗂️" },fontSize=if(compact) 21.sp else 24.sp)
           Text(choice,fontSize=if(compact) 16.sp else 18.sp,fontWeight=FontWeight.ExtraBold,lineHeight=21.sp,maxLines=2)
@@ -452,7 +451,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        } }
        if(selected!=null) {
         if(selected==q.answer && (answerCombo+1)==5) item { Text("🔥 Пять ответов подряд! Бонус после продолжения",fontSize=15.sp,fontWeight=FontWeight.Black,color=green) }
-        item { Text(q.explanation,fontSize=14.sp,fontWeight=FontWeight.Bold,color=ink,maxLines=2) }
+        item { Text(q.explanation,fontSize=if(compact)12.sp else 14.sp,fontWeight=FontWeight.Bold,color=ink,maxLines=2) }
         /* fixed bottom action handles advancing */
        /* item { Button(onClick={
          if(selected==q.answer){xp+=10;gems+=2;correctCount++;mistakes=mistakes-key}else{mistakes=mistakes+key}
@@ -463,7 +462,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          save()
         },modifier=Modifier.fillMaxWidth().height(48.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОДОЛЖИТЬ 🚀",fontSize=17.sp,fontWeight=FontWeight.Black)} } */
        }
-       if(selected==null) item { TextButton(onClick={screen="home"},modifier=Modifier.height(30.dp)){Text("← К урокам",fontSize=13.sp)} }
+
       }
      }
      if(screen=="review" && reviewMatched.size==reviewPairs.size) {
