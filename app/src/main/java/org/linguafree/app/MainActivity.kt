@@ -207,6 +207,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    }
    var bankWords by remember { mutableStateOf(listOf<String>()) }
    var typedAnswer by remember { mutableStateOf("") }
+   var hintShown by remember { mutableStateOf(false) }
    var showTranslation by remember { mutableStateOf(false) }
    var placementScore by remember { mutableIntStateOf(0) }
    val placementLessons=listOf(0,2,4,6,8,12,16,25,40,55,75,100,135,185,245)
@@ -244,7 +245,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    }
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putString("repeatQueue",repeatQueue.joinToString(",")).putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
-   fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();typedAnswer="";showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
+   fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();typedAnswer="";hintShown=false;showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
    LaunchedEffect(screen) { if(screen=="review"){reviewMatched=emptySet();reviewLeft=null;reviewRight=null;sayEnglish("Match the words!")} }
    LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true;celebration=true;playMilestoneSound();sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false;celebration=false } }
    LaunchedEffect(screen,current,index) {
@@ -384,14 +385,16 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { TextButton(onClick={screen="home"}){Text("К карте уроков")} }
       } else {
        val l=lessons[current];val q=activeQuestion();val key=current*1000+index
-       val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ")
-       val typedMode=screen=="lesson" && (index%7==4 || index%7==5 || index%7==6) && q.prompt.startsWith("Как по-английски")
-       val audioMode=screen=="lesson" && index%7==1
+       val mastery=reviewStages[key]?:0
+       val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ") && mastery<2
+       val typedMode=screen=="lesson" && q.prompt.startsWith("Как по-английски") && (mastery>=2 || index%7==4 || index%7==5 || index%7==6)
+       val audioMode=screen=="lesson" && index%7==1 && mastery>=1
        val pictureMode=screen=="lesson" && index%7==0 && q.choices.all { it.lowercase(Locale.ROOT) in setOf("tea","coffee","milk","apple","cat","dog","water","book","house","hello") }
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
         Text("🎯 "+l.title,fontSize=19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
         Text("⚡ $answerCombo  ⭐ ${index+1}/${l.questions.size}",fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
        } }
+       item { Text("Уровень слова: ${when(mastery){0->"Изучаем";1->"Закрепляем";2->"Вспоминаем";else->"Уверенно знаем"}}",fontSize=12.sp,color=teal) }
        item { LinearProgressIndicator(progress={(index+1).toFloat()/l.questions.size},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=green,trackColor=Color(0xFFE7DDF9)) }
 
        item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFF3B2A45))) { Column(Modifier.padding(12.dp)) {
@@ -408,6 +411,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        if(typedMode) item {
         Text(if(index%7==6)"🔤 Восстанови слово по памяти" else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
         OutlinedTextField(value=typedAnswer,onValueChange={typedAnswer=it},label={Text("Твой ответ")},singleLine=true,modifier=Modifier.fillMaxWidth(),enabled=selected==null)
+        if(selected==null) TextButton(onClick={hintShown=true}){Text(if(hintShown)"Подсказка: первая буква — ${q.choices[q.answer].firstOrNull()?:'?'}" else "💡 Нужна подсказка?")}
         Button(onClick={
          val right=typedAnswer.trim().equals(q.choices[q.answer],ignoreCase=true)
          selected=if(right)q.answer else (q.answer+1)%q.choices.size
@@ -472,7 +476,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         if(selected==q.answer){xp+=10;gems+=2;correctCount++;answerCombo++;mistakes=mistakes-key}else{answerCombo=0;mistakes=mistakes+key}
         if(screen=="lesson")recordRecall(key,selected==q.answer)
         if(screen=="placement" && selected==q.answer)placementScore++
-        selected=null;bankWords=emptyList();typedAnswer="";showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
+        selected=null;bankWords=emptyList();typedAnswer="";hintShown=false;showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
         if(screen=="placement") {if(index==placementLessons.lastIndex){current=when{placementScore>=13->100;placementScore>=11->65;placementScore>=8->35;placementScore>=5->15;placementScore>=3->5;else->0};prefs.edit().putInt("placementScore",placementScore).apply();index=0;screen="home";save()}else index++}
         else if(index==lessons[current].questions.lastIndex){completed=completed+current;markStudyDay();screen="review"}else index++
         save()
