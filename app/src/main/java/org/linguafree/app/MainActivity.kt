@@ -301,8 +301,9 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     if(correct)skillCorrect=skillCorrect.mapIndexed{i,n->if(i==skill)n+1 else n}
     prefs.edit().putString("skillCorrect",skillCorrect.joinToString(",")).putString("skillTotal",skillTotal.joinToString(",")).apply()
    }
-   var level by remember { mutableStateOf("Начинающий") }
-   var dailyGoal by remember { mutableIntStateOf(10) }
+   var level by remember { mutableStateOf(prefs.getString("level","Начинающий")?:"Начинающий") }
+   var dailyGoal by remember { mutableIntStateOf(prefs.getInt("dailyGoal",10).coerceIn(5,30)) }
+   var todayCompleted by remember { mutableIntStateOf(if(prefs.getString("goalDate","")==LocalDate.now().toString())prefs.getInt("goalCount",0) else 0) }
    var streak by remember { mutableIntStateOf(prefs.getInt("dailyStreak",0)) }
    var answerCombo by remember { mutableIntStateOf(0) }
    var reminderCount by remember { mutableIntStateOf(prefs.getInt("reminders",3)) }
@@ -311,6 +312,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var studiedDates by remember { mutableStateOf(prefs.getString("studiedDates","")!!.split(",").filter{it.isNotBlank()}.toSet()) }
    fun markStudyDay(){
     val today=LocalDate.now();val key=today.toString()
+    todayCompleted=if(prefs.getString("goalDate","")==key)todayCompleted+1 else 1
+    prefs.edit().putString("goalDate",key).putInt("goalCount",todayCompleted).apply()
     if(key !in studiedDates){
      streak=if(today.minusDays(1).toString() in studiedDates)streak+1 else 1
      studiedDates=studiedDates+key
@@ -413,7 +416,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     }
    }
    LaunchedEffect(screen) { if(screen=="review"){reviewMatched=emptySet();reviewLeft=null;reviewRight=null;sayEnglish("Match the words!")} }
-   LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true;celebration=true;playMilestoneSound();sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false;celebration=false } }
+   LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true;celebration=true;if(effectsEnabled)playMilestoneSound();sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false;celebration=false } }
    LaunchedEffect(screen,current,index) {
     if(screen=="lesson" || screen=="placement") {
      kotlinx.coroutines.delay(380)
@@ -667,6 +670,19 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        Text("🎁 Без рекламы и подписок!",fontSize=13.sp,fontWeight=FontWeight.Bold,color=Color.White)
       } } }
       if(screen=="home") {
+       item {
+        Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
+         Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(7.dp)){
+          Text("🎯 Цель на сегодня: $todayCompleted / $dailyGoal занятий",fontSize=18.sp,fontWeight=FontWeight.Bold,color=ink)
+          LinearProgressIndicator(progress={(todayCompleted.toFloat()/dailyGoal).coerceIn(0f,1f)},modifier=Modifier.fillMaxWidth(),color=green)
+          Text(if(todayCompleted>=dailyGoal)"Цель выполнена! Продолжай в удобном темпе." else "До цели осталось ${dailyGoal-todayCompleted} занятий.",color=ink)
+          Text("🔥 Серия: $streak дн. · ⭐ $xp XP · 📚 ${completed.size}/300 уроков",color=ink)
+          if(reviewDue.values.any{it<=System.currentTimeMillis()}){
+           OutlinedButton(onClick={val key=reviewDue.filterValues{it<=System.currentTimeMillis()}.keys.first();start((key/1000).coerceIn(0,lessons.lastIndex));index=(key%1000).coerceIn(0,lessons[current].questions.lastIndex)},modifier=Modifier.fillMaxWidth()){Text("🧠 Повторить по расписанию")}
+          }
+         }
+        }
+       }
        item { Text("🚀 Путь приключений",fontSize=26.sp,fontWeight=FontWeight.Black,color=ink) }
        itemsIndexed(lessons) { n,l ->
         val done=n in completed
@@ -694,6 +710,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         } }
        }
        item { Text("⚡ Лучший результат в игре: $speedBest/10",color=ink) }
+       item { Text("🎯 Ежедневная цель: $todayCompleted/$dailyGoal занятий",color=ink) }
+       item { Row(horizontalArrangement=Arrangement.spacedBy(7.dp)){listOf(5,10,15,20).forEach{goal->
+        OutlinedButton(onClick={dailyGoal=goal;prefs.edit().putInt("dailyGoal",goal).apply()},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(dailyGoal==goal)green else panel)){Text("$goal",color=if(dailyGoal==goal)dark else ink)}
+       }} }
        item { Text("🗣️ Голос: ${selectedVoiceName?:"Системный английский голос"}",fontSize=13.sp,color=ink) }
        item { Text("📴 Без интернета: уроки, истории, словарь, прогресс, напоминания, анимации, звуки и вибрация. Для английской озвучки нужен установленный офлайн-голос Android, для распознавания — офлайн-языковой пакет.",fontSize=13.sp,color=ink) }
        item { OutlinedButton(onClick={exportProgress.launch("LinguaFree-progress.json")},modifier=Modifier.fillMaxWidth()){Text("💾 Сохранить резервную копию прогресса")} }
