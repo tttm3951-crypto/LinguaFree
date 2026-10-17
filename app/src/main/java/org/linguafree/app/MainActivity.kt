@@ -223,19 +223,23 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
      }
      data.put("preferences",values)
-     contentResolver.openOutputStream(uri)?.use{it.write(data.toString(2).toByteArray(Charsets.UTF_8))}
+     val stream=contentResolver.openOutputStream(uri)?:error("Не удалось открыть файл для записи")
+     stream.use{it.write(data.toString(2).toByteArray(Charsets.UTF_8))}
      backupStatus="Резервная копия сохранена."
     }catch(e:Exception){backupStatus="Ошибка экспорта: ${e.message}"}
    }
    val importProgress=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->
     if(uri!=null)try{
-     val json=JSONObject(contentResolver.openInputStream(uri)!!.bufferedReader().use{it.readText()})
+     val json=JSONObject(contentResolver.openInputStream(uri)!!.bufferedReader().use{
+      val content=it.readText();require(content.length<=2_000_000){"Слишком большой файл резервной копии"};content
+     })
      require(json.optString("format")=="LinguaFreeProgress" && json.optInt("version")==1){"Неверный формат резервной копии"}
      val values=json.getJSONObject("preferences")
      val editor=prefs.edit()
      val keys=values.keys()
      while(keys.hasNext()){
       val key=keys.next()
+      require(key.length<=120 && key.all{it.isLetterOrDigit()||it=='_'||it=='-'}){"Недопустимое имя параметра"}
       when(val value=values.get(key)){
        is String->editor.putString(key,value)
        is Boolean->editor.putBoolean(key,value)
