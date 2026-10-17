@@ -6,6 +6,18 @@ import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.core.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -63,54 +75,85 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var correctCount by remember { mutableIntStateOf(0) }
    fun save(){prefs.edit().putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
    fun start(n:Int){current=n;index=0;selected=null;correctCount=0;screen="lesson";save()}
-   MaterialTheme(colorScheme=lightColorScheme(primary=androidx.compose.ui.graphics.Color(0xFF48A52C),secondary=androidx.compose.ui.graphics.Color(0xFF1674CC))) {
-    Surface(Modifier.fillMaxSize()) {
-     LazyColumn(contentPadding=PaddingValues(20.dp),verticalArrangement=Arrangement.spacedBy(14.dp)) {
-      item { Text("LinguaFree 🌱",style=MaterialTheme.typography.headlineMedium) }
-      item { Text("Без рекламы · Без подписок · Без лимитов",style=MaterialTheme.typography.bodySmall) }
-      item { Card(shape=RoundedCornerShape(20.dp),modifier=Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp)) {
-       Text("⭐ $xp XP       💎 $gems",style=MaterialTheme.typography.titleLarge)
-       Text("Пройдено уроков: ${completed.size}/${lessons.size}",style=MaterialTheme.typography.bodyMedium)
+   val purple=Color(0xFF7444D5)
+   val pink=Color(0xFFFF5398)
+   val teal=Color(0xFF23B9BA)
+   val green=Color(0xFF26AD73)
+   val ink=Color(0xFF29213F)
+   val floating=rememberInfiniteTransition(label="mascot")
+   val bounce by floating.animateFloat(initialValue=0f,targetValue=-8f,animationSpec=infiniteRepeatable(tween(1300),RepeatMode.Reverse),label="bounce")
+   MaterialTheme(colorScheme=lightColorScheme(primary=purple,secondary=pink,background=Color(0xFFFFF7EF),surface=Color.White,onSurface=ink)) {
+    Surface(Modifier.fillMaxSize(),color=Color(0xFFFFF7EF)) {
+     LazyColumn(contentPadding=PaddingValues(start=18.dp,end=18.dp,top=24.dp,bottom=38.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
+      item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
+       Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
+        Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
+       Text("🦊",fontSize=50.sp,modifier=Modifier.offset(y=bounce.dp))
+      } }
+      
+      item { Card(shape=RoundedCornerShape(26.dp),modifier=Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=purple)) { Column(Modifier.padding(21.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
+       Text("⭐ $xp XP       💎 $gems",fontSize=24.sp,fontWeight=FontWeight.Black,color=Color.White)
+       Text("🏆 Пройдено уроков: ${completed.size}/${lessons.size}",fontSize=18.sp,fontWeight=FontWeight.Bold,color=Color.White)
+       LinearProgressIndicator(progress={completed.size.toFloat()/lessons.size},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=Color(0xFFFFC74A),trackColor=Color.White.copy(alpha=.3f))
+       Text("🎁 Без рекламы и подписок!",fontSize=13.sp,fontWeight=FontWeight.Bold,color=Color.White)
       } } }
       if(screen=="home") {
-       item { Text("Путь обучения",style=MaterialTheme.typography.titleLarge) }
-       lessons.forEachIndexed { n,l -> item {
+       item { Text("🚀 Путь приключений",fontSize=26.sp,fontWeight=FontWeight.Black,color=ink) }
+       itemsIndexed(lessons) { n,l ->
         val done=n in completed
-        FilledTonalButton(onClick={start(n)},modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(18.dp)) {
-         Text("${if(done) "✓" else "●"}  ${n+1}. ${l.title} · ${l.questions.size} заданий")
+        val accent=listOf(pink,teal,green,purple,Color(0xFFFF9A35))[n%5]
+        Card(onClick={start(n)},modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(22.dp),colors=CardDefaults.cardColors(containerColor=Color.White),elevation=CardDefaults.cardElevation(defaultElevation=3.dp)) {
+         Row(Modifier.padding(15.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+          Box(Modifier.size(56.dp).clip(RoundedCornerShape(17.dp)).background(accent.copy(alpha=.14f)),contentAlignment=Alignment.Center) { Text(if(done)"🏆" else listOf("🌈","🎯","🎨","🎵","🚀")[n%5],fontSize=29.sp) }
+          Column(Modifier.weight(1f)) {
+           Text("УРОК ${n+1}",fontSize=12.sp,fontWeight=FontWeight.Black,color=accent)
+           Text(l.title,fontSize=18.sp,fontWeight=FontWeight.ExtraBold,color=ink,lineHeight=23.sp)
+           Text(if(done)"✓ Пройден!" else "⚡ ${l.questions.size} заданий",fontSize=13.sp,fontWeight=FontWeight.Bold,color=if(done)green else Color.Gray)
+          }
+          Text("➜",fontSize=24.sp,color=accent,fontWeight=FontWeight.Black)
+         }
         }
-       } }
+       }
        item { OutlinedButton(onClick={screen="stats"},modifier=Modifier.fillMaxWidth()){Text("📊 Статистика и ошибки")} }
       } else if(screen=="stats") {
-       item { Text("Статистика",style=MaterialTheme.typography.headlineSmall) }
+       item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
        item { Text("Опыт: $xp XP · Алмазы: $gems · Уроков: ${completed.size} · Ошибок: ${mistakes.size}") }
        item { Text("Для повторения ошибок открой соответствующий урок и пройди его снова.") }
        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
       } else if(screen=="done") {
-       item { Text("🎉 Урок пройден!",style=MaterialTheme.typography.headlineMedium) }
+       item { Text("🎉 УРА! УРОК ПРОЙДЕН!",fontSize=30.sp,fontWeight=FontWeight.Black,color=pink,modifier=Modifier.offset(y=bounce.dp)) }
        item { Text("Верных ответов: $correctCount из ${lessons[current].questions.size}") }
        item { Button(onClick={start((current+1).coerceAtMost(lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("Следующий урок")} }
        item { OutlinedButton(onClick={start(current)},modifier=Modifier.fillMaxWidth()){Text("Повторить урок")} }
        item { TextButton(onClick={screen="home"}){Text("К карте уроков")} }
       } else {
        val l=lessons[current];val q=l.questions[index];val key=current*1000+index
-       item { Text(l.title,style=MaterialTheme.typography.titleLarge) }
-       item { LinearProgressIndicator(progress={(index+1).toFloat()/l.questions.size},modifier=Modifier.fillMaxWidth()) }
-       item { Text("Вопрос ${index+1} из ${l.questions.size}") }
-       item { Text(q.prompt,style=MaterialTheme.typography.headlineSmall) }
-       item { OutlinedButton(onClick={if(speechReady)tts?.speak(q.speech,TextToSpeech.QUEUE_FLUSH,null,"linguafree")}){Text("🔊 Пример произношения · английский голос")} }
+       item { Text("🎯 "+l.title,fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { LinearProgressIndicator(progress={(index+1).toFloat()/l.questions.size},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=green,trackColor=Color(0xFFE7DDF9)) }
+       item { Text("⭐ ВОПРОС ${index+1} ИЗ ${l.questions.size}",fontSize=17.sp,fontWeight=FontWeight.Black,color=pink) }
+       item { Card(shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFFFFE5F0))) { Column(Modifier.padding(21.dp)) {
+        Text("🦊 Давай попробуем!",fontSize=18.sp,fontWeight=FontWeight.Black,color=pink)
+        Spacer(Modifier.height(12.dp))
+        Text(q.prompt,fontSize=27.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=35.sp)
+       } } }
+       item { Button(onClick={if(speechReady)tts?.speak(q.speech,TextToSpeech.QUEUE_FLUSH,null,"linguafree")},modifier=Modifier.fillMaxWidth().heightIn(min=62.dp),shape=RoundedCornerShape(20.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ ПРОИЗНОШЕНИЕ",fontSize=16.sp,fontWeight=FontWeight.Black)} }
        q.choices.forEachIndexed { i,choice -> item {
-        OutlinedButton(onClick={selected=i},enabled=selected==null,modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(14.dp)){Text(choice)}
+        val right=selected!=null && i==q.answer
+        val chosen=selected==i
+        val bg=if(right)Color(0xFFD8F8E7) else if(chosen)Color(0xFFFFE0EA) else Color.White
+        OutlinedButton(onClick={selected=i},enabled=selected==null,modifier=Modifier.fillMaxWidth().heightIn(min=72.dp),shape=RoundedCornerShape(20.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFFE6DCF2))) {
+         Text(choice,fontSize=21.sp,fontWeight=FontWeight.ExtraBold,lineHeight=27.sp)
+        }
        } }
        if(selected!=null) {
-        item { Text(if(selected==q.answer) "✅ Верно!" else "Правильный ответ: ${q.choices[q.answer]}",style=MaterialTheme.typography.titleMedium) }
-        item { Text(q.explanation) }
+        item { AnimatedVisibility(visible=true,enter=fadeIn()+expandVertically()) { Text(if(selected==q.answer) "🎉 СУПЕР! ПРАВИЛЬНО!" else "💡 Правильный ответ: ${q.choices[q.answer]}",fontSize=21.sp,fontWeight=FontWeight.Black,color=if(selected==q.answer)green else pink) } }
+        item { Text(q.explanation,fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink) }
         item { Button(onClick={
          if(selected==q.answer){xp+=10;gems+=2;correctCount++;mistakes=mistakes-key}else{mistakes=mistakes+key}
          selected=null
          if(index==l.questions.lastIndex){completed=completed+current;screen="done"}else index++
          save()
-        },modifier=Modifier.fillMaxWidth()){Text("Продолжить →")} }
+        },modifier=Modifier.fillMaxWidth().height(62.dp),shape=RoundedCornerShape(20.dp),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОДОЛЖИТЬ 🚀",fontSize=19.sp,fontWeight=FontWeight.Black)} }
        }
        item { TextButton(onClick={screen="home"}){Text("Выйти к урокам")} }
       }
