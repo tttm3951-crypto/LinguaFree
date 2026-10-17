@@ -281,8 +281,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     val heard=result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.firstOrNull().orEmpty()
     speechResult=heard
     if(heard.isNotBlank() && heard.trim().lowercase(Locale.ROOT).replace(Regex("[^a-z ]"),"")==speechTarget.lowercase(Locale.ROOT).replace(Regex("[^a-z ]"),"")){
-     xp+=10;gems+=1;foxExcited=true;sayReaction(true);storyFeedback="Отличное произношение! +10 XP"
-    }else if(heard.isNotBlank()){sayReaction(false);storyFeedback="Распознано: $heard. Попробуй ещё раз!"}
+     xp+=10;gems+=1;foxExcited=true;trackSkill(3,true);sayReaction(true);storyFeedback="Отличное произношение! +10 XP"
+    }else if(heard.isNotBlank()){trackSkill(3,false);sayReaction(false);storyFeedback="Распознано: $heard. Попробуй ещё раз!"}
     else storyFeedback="Речь не распознана. Попробуй снова."
     prefs.edit().putInt("xp",xp).putInt("gems",gems).apply()
    }
@@ -381,7 +381,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home" && showHomeGreeting) item {
        Card(colors=CardDefaults.cardColors(containerColor=Color(0xFF2B3544)),shape=RoundedCornerShape(22.dp),modifier=Modifier.fillMaxWidth()) {
         Row(Modifier.padding(14.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-         Image(bitmap=foxTransparent,contentDescription="Лисичка приветствует тебя",modifier=Modifier.size(82.dp).offset(y=bounce.dp).graphicsLayer {rotationZ=foxTilt+foxWiggle})
+         AnimatedFox(modifier=Modifier.size(82.dp).offset(y=bounce.dp),happy=foxExcited)
          Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)) {
           Text("Привет! Я твоя лисичка! 🦊",fontSize=19.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=23.sp)
           Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=14.sp,color=pink,lineHeight=18.sp)
@@ -457,7 +457,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("‹  Истории с лисичкой",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
        item { LinearProgressIndicator(progress={(storyStep+1f)/stories[storyIndex].size},modifier=Modifier.fillMaxWidth(),color=green) }
        item { Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)){
-        Image(bitmap=foxTransparent,contentDescription="Лисичка рассказывает историю",modifier=Modifier.size(100.dp).offset(y=bounce.dp).graphicsLayer{rotationZ=foxWiggle})
+        AnimatedFox(modifier=Modifier.size(100.dp).offset(y=bounce.dp),happy=storyFeedback.startsWith("Правильно"))
         Text(phrase.first,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,modifier=Modifier.weight(1f))
        } }
        item { Button(onClick={sayEnglish(phrase.first)},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать диалог")} }
@@ -466,8 +466,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        val alternatives=listOf(phrase.second,"Я не понимаю.","До свидания, друг!")
        val ordered=if(storyStep%2==0)listOf(alternatives[1],alternatives[0],alternatives[2]) else listOf(alternatives[2],alternatives[1],alternatives[0])
        ordered.forEach{answer->item { OutlinedButton(onClick={
-        if(answer==phrase.second){storyFeedback="Правильно! "+phrase.second;sayReaction(true)}
-        else{storyFeedback="Не совсем. Послушай фразу ещё раз.";sayReaction(false)}
+        if(answer==phrase.second){trackSkill(0,true);storyFeedback="Правильно! "+phrase.second;sayReaction(true)}
+        else{trackSkill(0,false);storyFeedback="Не совсем. Послушай фразу ещё раз.";sayReaction(false)}
        },modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.outlinedButtonColors(containerColor=panel)){Text(answer,color=ink)} }}
 
        if(storyFeedback.isNotBlank()) item { Text(storyFeedback,fontSize=18.sp,fontWeight=FontWeight.Bold,color=green) }
@@ -481,7 +481,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
       if(screen=="speaking") {
        item { Text("‹  Говорим по-английски",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
-       item { Image(bitmap=foxTransparent,contentDescription="Лисичка слушает",modifier=Modifier.fillMaxWidth().height(155.dp).offset(y=bounce.dp).graphicsLayer{rotationZ=foxWiggle}) }
+       item { AnimatedFox(modifier=Modifier.size(155.dp).offset(y=bounce.dp),happy=foxExcited) }
        item { Text("Повтори за лисичкой",fontSize=22.sp,fontWeight=FontWeight.Bold,color=ink) }
        item { Text(speechTarget,fontSize=30.sp,fontWeight=FontWeight.Black,color=green) }
        item { Button(onClick={sayEnglish(speechTarget)},modifier=Modifier.fillMaxWidth()){Text("🔊 Слушать")} }
@@ -493,7 +493,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
-       Image(bitmap=foxTransparent,contentDescription="Весёлая лисичка LinguaFree",modifier=Modifier.size(92.dp).offset(y=bounce.dp))
+       AnimatedFox(modifier=Modifier.size(92.dp).offset(y=bounce.dp),happy=foxExcited)
       } }
       
       if(screen=="home") item {
@@ -641,6 +641,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          val right=typedAnswer.trim().equals(if(missingMode)correctWord[missingIndex].toString() else correctWord,ignoreCase=true)
          selected=if(right)q.answer else (q.answer+1)%q.choices.size
          foxExcited=right;foxMessage=if(right)when(answerCombo+1){3->"🔥 Три подряд!";5->"🌟 Пять подряд!";10->"🏆 Десять подряд!";else->"Отлично! 🌟"} else "Попробуй ещё! 💪"
+         trackSkill(2,right)
          sayEnglish(q.speech);sayReaction(right)
         },enabled=selected==null && typedAnswer.isNotBlank(),modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОВЕРИТЬ",fontWeight=FontWeight.Black)}
        }
@@ -664,6 +665,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          foxExcited=i==q.answer
          foxMessage=if(i==q.answer) when(answerCombo+1){3->"🔥 Три подряд! Great!";5->"🌟 Пять подряд! Excellent!";10->"🏆 Десять подряд! Amazing!";else->listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4]} else "Try again! 💪"
          sayEnglish(q.choices[q.answer])
+         trackSkill(if(audioMode)1 else 0,i==q.answer)
          sayReaction(i==q.answer)
         },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(if(compact) (if(pictureMode) 58.dp else 49.dp) else (if(pictureMode) 68.dp else 54.dp)),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFF40565D))) {
          Column(horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(1.dp)) {
