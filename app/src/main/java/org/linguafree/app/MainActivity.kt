@@ -388,7 +388,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        val mastery=reviewStages[key]?:0
        val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ") && mastery<2
        val typedMode=screen=="lesson" && q.prompt.startsWith("Как по-английски") && (mastery>=2 || index%7==4 || index%7==5 || index%7==6)
-       val audioMode=screen=="lesson" && index%7==1 && mastery>=1
+       val audioMode=screen=="lesson" && index%7==1 && mastery>=1 && !q.prompt.startsWith("Как по-английски")
        val pictureMode=screen=="lesson" && index%7==0 && q.choices.all { it.lowercase(Locale.ROOT) in setOf("tea","coffee","milk","apple","cat","dog","water","book","house","hello") }
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
         Text("🎯 "+l.title,fontSize=19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
