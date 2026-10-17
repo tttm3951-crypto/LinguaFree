@@ -1,0 +1,542 @@
+[
+  {
+    "title": "Приветствие",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "Good morning!",
+        "ru": "Доброе утро!"
+      },
+      {
+        "en": "How are you today?",
+        "ru": "Как ты сегодня?"
+      },
+      {
+        "en": "I am very happy.",
+        "ru": "Я очень рад."
+      }
+    ]
+  },
+  {
+    "title": "Знакомство",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "My name is Fox.",
+        "ru": "Меня зовут Лис."
+      },
+      {
+        "en": "What is your name?",
+        "ru": "Как тебя зовут?"
+      },
+      {
+        "en": "Nice to meet you.",
+        "ru": "Приятно познакомиться."
+      }
+    ]
+  },
+  {
+    "title": "Дружба",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "This is my friend.",
+        "ru": "Это мой друг."
+      },
+      {
+        "en": "We play together.",
+        "ru": "Мы играем вместе."
+      },
+      {
+        "en": "We are a team.",
+        "ru": "Мы команда."
+      }
+    ]
+  },
+  {
+    "title": "Домашние животные",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "I have a small cat.",
+        "ru": "У меня есть маленький кот."
+      },
+      {
+        "en": "The cat is sleeping.",
+        "ru": "Кот спит."
+      },
+      {
+        "en": "I love my cat.",
+        "ru": "Я люблю своего кота."
+      }
+    ]
+  },
+  {
+    "title": "Игрушки",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "I have a red ball.",
+        "ru": "У меня есть красный мяч."
+      },
+      {
+        "en": "The ball is under the table.",
+        "ru": "Мяч под столом."
+      },
+      {
+        "en": "Where is my ball?",
+        "ru": "Где мой мяч?"
+      }
+    ]
+  },
+  {
+    "title": "Прогулка",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "It is a sunny day.",
+        "ru": "Сегодня солнечный день."
+      },
+      {
+        "en": "Let's go to the park.",
+        "ru": "Пойдём в парк."
+      },
+      {
+        "en": "The park is beautiful.",
+        "ru": "Парк красивый."
+      }
+    ]
+  },
+  {
+    "title": "Еда",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "I am hungry.",
+        "ru": "Я голоден."
+      },
+      {
+        "en": "I want an apple.",
+        "ru": "Я хочу яблоко."
+      },
+      {
+        "en": "The apple is sweet.",
+        "ru": "Яблоко сладкое."
+      }
+    ]
+  },
+  {
+    "title": "В кафе",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "Can I have some water?",
+        "ru": "Можно мне воды?"
+      },
+      {
+        "en": "Here you are.",
+        "ru": "Вот, держи."
+      },
+      {
+        "en": "Thank you very much.",
+        "ru": "Большое спасибо."
+      }
+    ]
+  },
+  {
+    "title": "Книги",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "I like reading books.",
+        "ru": "Я люблю читать книги."
+      },
+      {
+        "en": "This book is funny.",
+        "ru": "Эта книга смешная."
+      },
+      {
+        "en": "Let's read together.",
+        "ru": "Давай почитаем вместе."
+      }
+    ]
+  },
+  {
+    "title": "Библиотека",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "Where is the library?",
+        "ru": "Где библиотека?"
+      },
+      {
+        "en": "It is next to the school.",
+        "ru": "Она рядом со школой."
+      },
+      {
+        "en": "Thank you for your help.",
+        "ru": "Спасибо за помощь."
+      }
+    ]
+  },
+  {
+    "title": "Школа",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I go to school every day.",
+        "ru": "Я хожу в школу каждый день."
+      },
+      {
+        "en": "My teacher is kind.",
+        "ru": "Мой учитель добрый."
+      },
+      {
+        "en": "I learn new words.",
+        "ru": "Я учу новые слова."
+      }
+    ]
+  },
+  {
+    "title": "Время",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "What time is it?",
+        "ru": "Который час?"
+      },
+      {
+        "en": "It is three o'clock.",
+        "ru": "Сейчас три часа."
+      },
+      {
+        "en": "It is time to go.",
+        "ru": "Пора идти."
+      }
+    ]
+  },
+  {
+    "title": "Автобус",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "The bus is coming.",
+        "ru": "Автобус подъезжает."
+      },
+      {
+        "en": "Where is the bus stop?",
+        "ru": "Где автобусная остановка?"
+      },
+      {
+        "en": "Let's wait here.",
+        "ru": "Давай подождём здесь."
+      }
+    ]
+  },
+  {
+    "title": "Билет",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I need a ticket.",
+        "ru": "Мне нужен билет."
+      },
+      {
+        "en": "One ticket, please.",
+        "ru": "Один билет, пожалуйста."
+      },
+      {
+        "en": "Have a nice trip.",
+        "ru": "Счастливого пути."
+      }
+    ]
+  },
+  {
+    "title": "Магазин",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I am at the market.",
+        "ru": "Я на рынке."
+      },
+      {
+        "en": "How much is this?",
+        "ru": "Сколько это стоит?"
+      },
+      {
+        "en": "That is a good price.",
+        "ru": "Это хорошая цена."
+      }
+    ]
+  },
+  {
+    "title": "Подарок",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I want to buy a gift.",
+        "ru": "Я хочу купить подарок."
+      },
+      {
+        "en": "This gift is for my friend.",
+        "ru": "Этот подарок для моего друга."
+      },
+      {
+        "en": "I hope they like it.",
+        "ru": "Надеюсь, подарок понравится."
+      }
+    ]
+  },
+  {
+    "title": "День рождения",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "Today is my birthday.",
+        "ru": "Сегодня мой день рождения."
+      },
+      {
+        "en": "My friends are here.",
+        "ru": "Мои друзья здесь."
+      },
+      {
+        "en": "We are having fun.",
+        "ru": "Мы веселимся."
+      }
+    ]
+  },
+  {
+    "title": "Велосипед",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I can ride a bike.",
+        "ru": "Я умею кататься на велосипеде."
+      },
+      {
+        "en": "My bike is blue.",
+        "ru": "Мой велосипед синий."
+      },
+      {
+        "en": "Let's ride slowly.",
+        "ru": "Давай поедем медленно."
+      }
+    ]
+  },
+  {
+    "title": "Дождь",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "It is raining outside.",
+        "ru": "На улице идёт дождь."
+      },
+      {
+        "en": "Take your umbrella.",
+        "ru": "Возьми зонт."
+      },
+      {
+        "en": "Stay warm and dry.",
+        "ru": "Оставайся в тепле и сухости."
+      }
+    ]
+  },
+  {
+    "title": "Отдых",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I feel a little tired.",
+        "ru": "Я немного устал."
+      },
+      {
+        "en": "I need some rest.",
+        "ru": "Мне нужно отдохнуть."
+      },
+      {
+        "en": "Tomorrow is a new day.",
+        "ru": "Завтра новый день."
+      }
+    ]
+  },
+  {
+    "title": "Помощь",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "Can you help me?",
+        "ru": "Ты можешь мне помочь?"
+      },
+      {
+        "en": "Of course I can.",
+        "ru": "Конечно, могу."
+      },
+      {
+        "en": "We can do it together.",
+        "ru": "Мы можем сделать это вместе."
+      }
+    ]
+  },
+  {
+    "title": "Мотивация",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I am learning English.",
+        "ru": "Я изучаю английский."
+      },
+      {
+        "en": "Practice makes progress.",
+        "ru": "Практика помогает двигаться вперёд."
+      },
+      {
+        "en": "I am proud of myself.",
+        "ru": "Я горжусь собой."
+      }
+    ]
+  },
+  {
+    "title": "На вокзале",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "Where is the train station?",
+        "ru": "Где железнодорожная станция?"
+      },
+      {
+        "en": "Go straight ahead.",
+        "ru": "Идите прямо."
+      },
+      {
+        "en": "Turn right at the corner.",
+        "ru": "Поверните направо на углу."
+      }
+    ]
+  },
+  {
+    "title": "Чаепитие",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I would like some tea.",
+        "ru": "Я хотел бы чаю."
+      },
+      {
+        "en": "Do you want milk?",
+        "ru": "Ты хочешь молока?"
+      },
+      {
+        "en": "No, thank you.",
+        "ru": "Нет, спасибо."
+      }
+    ]
+  },
+  {
+    "title": "Цвета",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "What is your favorite color?",
+        "ru": "Какой твой любимый цвет?"
+      },
+      {
+        "en": "My favorite color is orange.",
+        "ru": "Мой любимый цвет — оранжевый."
+      },
+      {
+        "en": "Orange is a bright color.",
+        "ru": "Оранжевый — яркий цвет."
+      }
+    ]
+  },
+  {
+    "title": "Музыка",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "Do you like music?",
+        "ru": "Тебе нравится музыка?"
+      },
+      {
+        "en": "I play the piano.",
+        "ru": "Я играю на пианино."
+      },
+      {
+        "en": "Music makes me happy.",
+        "ru": "Музыка делает меня счастливым."
+      }
+    ]
+  },
+  {
+    "title": "Птицы",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I see a little bird.",
+        "ru": "Я вижу маленькую птицу."
+      },
+      {
+        "en": "The bird can fly.",
+        "ru": "Птица умеет летать."
+      },
+      {
+        "en": "It flies over the trees.",
+        "ru": "Она летит над деревьями."
+      }
+    ]
+  },
+  {
+    "title": "Сад",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "This is our garden.",
+        "ru": "Это наш сад."
+      },
+      {
+        "en": "The flowers are growing.",
+        "ru": "Цветы растут."
+      },
+      {
+        "en": "We water them every day.",
+        "ru": "Мы поливаем их каждый день."
+      }
+    ]
+  },
+  {
+    "title": "Вопрос",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I have a question.",
+        "ru": "У меня есть вопрос."
+      },
+      {
+        "en": "Can you explain it?",
+        "ru": "Ты можешь это объяснить?"
+      },
+      {
+        "en": "Now I understand.",
+        "ru": "Теперь я понимаю."
+      }
+    ]
+  },
+  {
+    "title": "Ошибки",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I made a mistake.",
+        "ru": "Я допустил ошибку."
+      },
+      {
+        "en": "I will try again.",
+        "ru": "Я попробую ещё раз."
+      },
+      {
+        "en": "I can learn from mistakes.",
+        "ru": "Я могу учиться на ошибках."
+      }
+    ]
+  }
+]
