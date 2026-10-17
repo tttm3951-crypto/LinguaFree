@@ -232,7 +232,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val importTeacherReport=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->
     if(uri!=null)try{
      val text=contentResolver.openInputStream(uri)?.bufferedReader()?.use{
-      val content=it.readText();require(content.length<=100_000){"Слишком большой файл отчёта"};content
+      it.readBounded(100_000)
      }?:error("Не удалось открыть отчёт")
      val report=JSONObject(text)
      require(report.optString("format")=="LinguaFreeStudyReport" && report.optInt("version")==1){"Это не отчёт ученика LinguaFree"}
@@ -302,26 +302,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    }
    val importProgress=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->
     if(uri!=null)try{
-     val json=JSONObject(contentResolver.openInputStream(uri)!!.bufferedReader().use{
-      val content=it.readText();require(content.length<=2_000_000){"Слишком большой файл резервной копии"};content
-     })
-     require(json.optString("format")=="LinguaFreeProgress" && json.optInt("version")==1){"Неверный формат резервной копии"}
-     val values=json.getJSONObject("preferences")
-     val editor=prefs.edit()
-     val keys=values.keys()
-     while(keys.hasNext()){
-      val key=keys.next()
-      require(key.length<=120 && key.all{it.isLetterOrDigit()||it=='_'||it=='-'}){"Недопустимое имя параметра"}
-      when(val value=values.get(key)){
-       is String->editor.putString(key,value)
-       is Boolean->editor.putBoolean(key,value)
-       is Int->editor.putInt(key,value)
-       is Long->editor.putLong(key,value)
-       is Double->editor.putFloat(key,value.toFloat())
-       is JSONArray->editor.putStringSet(key,(0 until value.length()).map{value.getString(it)}.toSet())
-      }
-     }
-     if(editor.commit()){ReminderReceiver.schedule(this@MainActivity);recreate()}
+     val json=JSONObject((contentResolver.openInputStream(uri)?:error("Не удалось открыть файл")).bufferedReader().use{it.readBounded(2_000_000)})
+     if(ProgressBackup.restore(prefs,json)){ReminderReceiver.schedule(this@MainActivity);recreate()}
      else backupStatus="Не удалось восстановить прогресс."
     }catch(e:Exception){backupStatus="Ошибка восстановления: ${e.message}"}
    }

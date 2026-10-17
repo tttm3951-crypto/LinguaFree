@@ -12,6 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import android.graphics.Bitmap
+import org.json.JSONObject
 
 @RunWith(AndroidJUnit4::class)
 class ProgressAndLayoutTest {
@@ -40,6 +41,19 @@ class ProgressAndLayoutTest {
         assertEquals("Тест",p.getString("learnerName",""))
         assertEquals(3,p.getInt("foxAvatar",0))
         assertTrue(p.getBoolean("onboarded",false))
+    }
+
+    @Test fun corruptedBackupCannotPartiallyOverwriteExistingProgress(){
+        val p=compose.activity.getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
+        val invalid=JSONObject().put("format","LinguaFreeProgress").put("version",1)
+            .put("preferences",JSONObject().put("xp",900).put("lesson","bad type"))
+        assertTrue(runCatching{ProgressBackup.restore(p,invalid)}.isFailure)
+        assertEquals(123,p.getInt("xp",0));assertEquals(0,p.getInt("lesson",0))
+        val old=JSONObject().put("format","LinguaFreeProgress").put("version",1)
+            .put("preferences",JSONObject().put("xp",77).put("lesson",2).put("completed","0,1"))
+        assertTrue(ProgressBackup.restore(p,old))
+        assertEquals(77,p.getInt("xp",0));assertTrue(p.getBoolean("onboarded",false))
+        assertEquals("Тест",p.getString("learnerName",""))
     }
 
     @Test fun lessonAnswersAndContinueStayInsideTheAvailableWindow(){
