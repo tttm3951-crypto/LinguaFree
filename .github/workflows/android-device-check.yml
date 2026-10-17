@@ -34,6 +34,9 @@ jobs:
           profile: pixel_2
           disable-animations: true
           script: bash scripts/device_checks.sh
+      - name: Explain test failures
+        if: failure()
+        run: python3 scripts/ci/annotate_test_failures.py
       - name: Save device test report
         if: always()
         uses: actions/upload-artifact@v4
