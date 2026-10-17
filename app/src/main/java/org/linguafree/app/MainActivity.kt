@@ -39,6 +39,15 @@ private data class Lesson(val title:String,val questions:List<Quiz>)
 class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
  private var tts:TextToSpeech?=null
  private var speechReady=false
+ private var reactionNumber=0
+ private fun sayReaction(correct:Boolean){
+  if(!speechReady)return
+  val phrases=if(correct) listOf("Great!","Well done!","Excellent!","Fantastic!","Amazing!","You did it!")
+   else listOf("Try again!","Keep going!","You can do it!","Nice try!")
+  val phrase=phrases[reactionNumber%phrases.size]
+  reactionNumber++
+  tts?.speak(phrase,TextToSpeech.QUEUE_FLUSH,null,"fox-reaction-$reactionNumber")
+ }
  override fun onInit(status:Int){
   if(status!=TextToSpeech.SUCCESS)return
   val engine=tts?:return
@@ -79,8 +88,11 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var selected by remember { mutableStateOf<Int?>(null) }
    var screen by remember { mutableStateOf("home") }
    var correctCount by remember { mutableIntStateOf(0) }
+   var foxMessage by remember { mutableStateOf("Давай попробуем!") }
+   var foxExcited by remember { mutableStateOf(false) }
+   val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
-   fun start(n:Int){current=n;index=0;selected=null;correctCount=0;screen="lesson";save()}
+   fun start(n:Int){current=n;index=0;selected=null;correctCount=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
    val purple=Color(0xFF7444D5)
    val pink=Color(0xFFFF5398)
    val teal=Color(0xFF23B9BA)
@@ -95,7 +107,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
-       Image(painter=painterResource(R.drawable.fox_mascot),contentDescription="Весёлая лисичка LinguaFree",modifier=Modifier.size(92.dp).offset(y=bounce.dp))
+       Image(painter=painterResource(R.drawable.fox_original),contentDescription="Весёлая лисичка LinguaFree",modifier=Modifier.size(92.dp).offset(y=bounce.dp))
       } }
       
       if(screen=="home") item { Card(shape=RoundedCornerShape(26.dp),modifier=Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=purple)) { Column(Modifier.padding(21.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
@@ -129,7 +141,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
       } else if(screen=="done") {
        item { Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.fillMaxWidth()) {
-        Image(painter=painterResource(R.drawable.fox_mascot),contentDescription="Лисичка празднует победу",modifier=Modifier.size(160.dp).graphicsLayer { rotationZ=bounce*1.2f })
+        Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка празднует победу",modifier=Modifier.size(160.dp).graphicsLayer { rotationZ=bounce*1.2f })
         Text("🎉 УРА! УРОК ПРОЙДЕН!",fontSize=30.sp,fontWeight=FontWeight.Black,color=pink)
        } }
        item { Text("Верных ответов: $correctCount из ${lessons[current].questions.size}") }
@@ -146,8 +158,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
 
        item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFFFFE5F0))) { Column(Modifier.padding(12.dp)) {
         Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(9.dp)) {
-         Image(painter=painterResource(R.drawable.fox_mascot),contentDescription=null,modifier=Modifier.size(40.dp).offset(y=bounce.dp))
-         Text("Давай попробуем!",fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
+         Image(painter=painterResource(R.drawable.fox_original),contentDescription=null,modifier=Modifier.size(40.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale })
+         Text(foxMessage,fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
         }
         Spacer(Modifier.height(4.dp))
         Text(q.prompt,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp)
@@ -157,19 +169,26 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         val right=selected!=null && i==q.answer
         val chosen=selected==i
         val bg=if(right)Color(0xFFD8F8E7) else if(chosen)Color(0xFFFFE0EA) else Color.White
-        OutlinedButton(onClick={selected=i},enabled=selected==null,modifier=Modifier.fillMaxWidth().height(55.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFFE6DCF2))) {
+        OutlinedButton(onClick={
+         selected=i
+         foxExcited=i==q.answer
+         foxMessage=if(i==q.answer) listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4] else "Try again! 💪"
+         sayReaction(i==q.answer)
+        },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(55.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFFE6DCF2))) {
          Text(choice,fontSize=19.sp,fontWeight=FontWeight.ExtraBold,lineHeight=23.sp)
         }
        } }
        if(selected!=null) {
         item { AnimatedVisibility(visible=true,enter=fadeIn()+expandVertically()) { Row(verticalAlignment=Alignment.CenterVertically) {
-         Image(painter=painterResource(R.drawable.fox_mascot),contentDescription=null,modifier=Modifier.size(36.dp).offset(y=if(selected==q.answer)bounce.dp else 0.dp))
+         Image(painter=painterResource(R.drawable.fox_original),contentDescription=null,modifier=Modifier.size(36.dp).offset(y=if(selected==q.answer)bounce.dp else 0.dp))
          Text(if(selected==q.answer) "🎉 СУПЕР! ПРАВИЛЬНО!" else "💡 Попробуем запомнить!",fontSize=17.sp,fontWeight=FontWeight.Black,color=if(selected==q.answer)green else pink)
         } } }
         item { Text(q.explanation,fontSize=14.sp,fontWeight=FontWeight.Bold,color=ink,maxLines=2) }
         item { Button(onClick={
          if(selected==q.answer){xp+=10;gems+=2;correctCount++;mistakes=mistakes-key}else{mistakes=mistakes+key}
          selected=null
+         foxMessage="Давай попробуем!"
+         foxExcited=false
          if(index==l.questions.lastIndex){completed=completed+current;screen="done"}else index++
          save()
         },modifier=Modifier.fillMaxWidth().height(48.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОДОЛЖИТЬ 🚀",fontSize=17.sp,fontWeight=FontWeight.Black)} }
