@@ -374,6 +374,60 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         }
        }
       }
+      if(screen=="home") item {
+       Card(colors=CardDefaults.cardColors(containerColor=Color(0xFF284349)),shape=RoundedCornerShape(22.dp)){
+        Column(Modifier.padding(15.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
+         Text("📖 Истории с лисичкой",fontSize=23.sp,fontWeight=FontWeight.Black,color=ink)
+         Text("Слушай диалоги, отвечай и тренируй произношение.",color=ink)
+         Button(onClick={storyIndex=0;storyStep=0;storyFeedback="";screen="story"},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("Начать историю",color=dark)}
+         OutlinedButton(onClick={speechTarget="Hello!";storyFeedback="";screen="speaking"},modifier=Modifier.fillMaxWidth()){Text("🎙️ Тренировать произношение")}
+        }
+       }
+      }
+      if(screen=="home") item {
+       Card(colors=CardDefaults.cardColors(containerColor=panel),shape=RoundedCornerShape(20.dp)){
+        Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(7.dp)){
+         Text("🎯 Задания на сегодня",fontSize=22.sp,fontWeight=FontWeight.Black,color=purple)
+         val practiced=LocalDate.now().toString() in studiedDates
+         Text(if(practiced)"✅ Позаниматься сегодня" else "⬜ Позаниматься сегодня",color=ink)
+         Text(if(completed.isNotEmpty())"✅ Пройти первый урок" else "⬜ Пройти первый урок",color=ink)
+         Text(if(streak>=3)"✅ Заниматься 3 дня подряд" else "⬜ Заниматься 3 дня подряд",color=ink)
+        }
+       }
+      }
+      if(screen=="story") {
+       val phrase=stories[storyIndex][storyStep]
+       item { Text("‹  Истории с лисичкой",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { LinearProgressIndicator(progress={(storyStep+1f)/stories[storyIndex].size},modifier=Modifier.fillMaxWidth(),color=green) }
+       item { Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)){
+        Image(bitmap=foxTransparent,contentDescription="Лисичка рассказывает историю",modifier=Modifier.size(100.dp).offset(y=bounce.dp).graphicsLayer{rotationZ=foxWiggle})
+        Text(phrase.first,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,modifier=Modifier.weight(1f))
+       } }
+       item { Button(onClick={sayEnglish(phrase.first)},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать диалог")} }
+       item { OutlinedButton(onClick={sayEnglish(phrase.first,slow=true)},modifier=Modifier.fillMaxWidth()){Text("🐢 Медленно")} }
+       item { Text("Как перевести фразу?",fontSize=20.sp,fontWeight=FontWeight.Bold,color=ink) }
+       item { Button(onClick={storyFeedback="Правильно! "+phrase.second;sayReaction(true)},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=panel)){Text(phrase.second,color=ink)} }
+       item { OutlinedButton(onClick={storyFeedback="Попробуй ещё раз!";sayReaction(false)},modifier=Modifier.fillMaxWidth()){Text("Я не знаю",color=ink)} }
+       if(storyFeedback.isNotBlank()) item { Text(storyFeedback,fontSize=18.sp,fontWeight=FontWeight.Bold,color=green) }
+       if(storyFeedback.startsWith("Правильно")) item { Button(onClick={
+        if(storyStep==stories[storyIndex].lastIndex){
+         xp+=30;gems+=5;markStudyDay();save();playMilestoneSound()
+         if(storyIndex==stories.lastIndex)screen="home" else {storyIndex++;storyStep=0}
+        }else storyStep++
+        storyFeedback=""
+       },modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text(if(storyStep==stories[storyIndex].lastIndex)"Завершить историю +30 XP" else "Продолжить",color=dark)} }
+      }
+      if(screen=="speaking") {
+       item { Text("‹  Говорим по-английски",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Image(bitmap=foxTransparent,contentDescription="Лисичка слушает",modifier=Modifier.fillMaxWidth().height(155.dp).offset(y=bounce.dp).graphicsLayer{rotationZ=foxWiggle}) }
+       item { Text("Повтори за лисичкой",fontSize=22.sp,fontWeight=FontWeight.Bold,color=ink) }
+       item { Text(speechTarget,fontSize=30.sp,fontWeight=FontWeight.Black,color=green) }
+       item { Button(onClick={sayEnglish(speechTarget)},modifier=Modifier.fillMaxWidth()){Text("🔊 Слушать")} }
+       item { Button(onClick={practiceSpeech(speechTarget)},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=purple)){Text("🎙️ Говорить")} }
+       if(storyFeedback.isNotBlank())item { Text(storyFeedback,fontSize=18.sp,color=ink) }
+       item { Button(onClick={speechTarget=listOf("Hello!","My name is Fox.","How are you?","I like learning English.","Where is the station?")[(listOf("Hello!","My name is Fox.","How are you?","I like learning English.","Where is the station?").indexOf(speechTarget)+1)%5];storyFeedback=""},modifier=Modifier.fillMaxWidth()){Text("Следующая фраза →")} }
+       item { Text("Распознавание зависит от голосовой службы Android и может потребовать интернет. Оценка основана на распознанных словах, а не на анализе акцента.",fontSize=13.sp,color=ink) }
+      }
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
