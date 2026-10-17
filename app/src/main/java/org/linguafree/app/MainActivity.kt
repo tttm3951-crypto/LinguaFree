@@ -279,17 +279,15 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     (0 until json.length()).map{n->json.getJSONObject(n).getString("title")}
    }
    var storyQuery by remember { mutableStateOf("") }
-   val vocabulary=remember {
-    (lessons.flatMap { lesson -> lesson.questions.map { q ->
-     val quoted=q.prompt.substringAfter("«","").substringBefore("»","")
-     if(q.prompt.startsWith("Как по-английски"))q.choices[q.answer] to quoted
-     else quoted to q.choices[q.answer]
-    } } + storyData.flatten().map { it.first to it.second })
-    .filter{it.first.isNotBlank() && it.second.isNotBlank()}
-    .distinctBy{it.first.lowercase(Locale.ROOT)+"|"+it.second.lowercase(Locale.ROOT)}
-    .sortedBy{it.first.lowercase(Locale.ROOT)}
+   val dictionary=remember {
+    val json=JSONArray(assets.open("dictionary.json").bufferedReader().use{it.readText()})
+    (0 until json.length()).map{n->json.getJSONObject(n)}
    }
+   val vocabulary=remember { dictionary.map{it.getString("en") to it.getString("ru")} }
    var vocabQuery by remember { mutableStateOf("") }
+   var vocabLevel by remember { mutableStateOf("Все") }
+   var vocabFavorites by remember { mutableStateOf(prefs.getStringSet("dictionaryFavorites",emptySet<String>())?.toSet()?:emptySet()) }
+   var vocabOnlyFavorites by remember { mutableStateOf(false) }
    var speedRound by remember { mutableIntStateOf(0) }
    var speedCorrect by remember { mutableIntStateOf(0) }
    var speedFinished by remember { mutableStateOf(false) }
@@ -539,14 +537,44 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        }
       }
       if(screen=="vocabulary"){
-       item { Text("‹  Словарь",modifier=Modifier.clickable{screen="home"},fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
-       item { Text("${vocabulary.size} уникальных пар «английский — перевод» из уроков и историй",color=ink) }
-       item { OutlinedTextField(value=vocabQuery,onValueChange={vocabQuery=it},label={Text("Поиск слова или выражения")},singleLine=true,modifier=Modifier.fillMaxWidth()) }
-       val filtered=vocabulary.filter{(en,ru)->vocabQuery.isBlank() || en.contains(vocabQuery,true)||ru.contains(vocabQuery,true)}
+       item { Text("‹  Офлайн-словарь",modifier=Modifier.clickable{screen="home"},fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Text("${dictionary.size} английских слов и выражений с русским переводом. Все данные встроены в APK.",color=ink) }
+       item { OutlinedTextField(value=vocabQuery,onValueChange={vocabQuery=it},label={Text("Поиск на английском или русском")},singleLine=true,modifier=Modifier.fillMaxWidth()) }
+       item { Row(horizontalArrangement=Arrangement.spacedBy(5.dp)){listOf("Все","A1","A2","B1").forEach{level->
+        OutlinedButton(onClick={vocabLevel=level},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(vocabLevel==level)green else panel)){Text(level,color=if(vocabLevel==level)dark else ink)}
+       }} }
+       item { OutlinedButton(onClick={vocabOnlyFavorites=!vocabOnlyFavorites},modifier=Modifier.fillMaxWidth()){Text(if(vocabOnlyFavorites)"★ Только избранное" else "☆ Показать избранное")} }
+       val filtered=dictionary.filter{entry->
+        (vocabLevel=="Все"||entry.getString("level")==vocabLevel) &&
+        (!vocabOnlyFavorites||entry.getString("en") in vocabFavorites) &&
+        (vocabQuery.isBlank()||entry.getString("en").contains(vocabQuery,true)||entry.getString("ru").contains(vocabQuery,true)||entry.getString("example_en").contains(vocabQuery,true)||entry.getString("example_ru").contains(vocabQuery,true))
+       }
        item { Text("Найдено: ${filtered.size}. Показаны первые 100.",color=ink) }
-       items(filtered.take(100)){pair->
-        OutlinedButton(onClick={sayEnglish(pair.first)},modifier=Modifier.fillMaxWidth()){
-         Column(Modifier.fillMaxWidth()){Text("🔊 "+pair.first,fontSize=17.sp,color=ink);Text(pair.second,fontSize=14.sp,color=pink)}
+       items(filtered.take(100)){entry->
+        val en=entry.getString("en")
+        val ru=entry.getString("ru")
+        val exampleEn=entry.getString("example_en")
+        val exampleRu=entry.getString("example_ru")
+        Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
+         Column(Modifier.padding(12.dp),verticalArrangement=Arrangement.spacedBy(5.dp)){
+          Text(en,fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)
+          Text(ru,fontSize=15.sp,color=pink)
+          Text("Уровень ${entry.getString("level")} · ${entry.getString("source")}",fontSize=11.sp,color=ink)
+          if(!exampleEn.equals(en,true)){
+           Text("Пример: $exampleEn",fontSize=14.sp,color=ink)
+           Text(exampleRu,fontSize=13.sp,color=ink)
+          }else{
+           Text("Пример употребления пока не добавлен",fontSize=12.sp,color=ink)
+          }
+          Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
+           OutlinedButton(onClick={sayEnglish(en)}){Text("🔊 Слово")}
+           if(!exampleEn.equals(en,true))OutlinedButton(onClick={sayEnglish(exampleEn)}){Text("▶ Пример")}
+           OutlinedButton(onClick={
+            vocabFavorites=if(en in vocabFavorites)vocabFavorites-en else vocabFavorites+en
+            prefs.edit().putStringSet("dictionaryFavorites",vocabFavorites).apply()
+           }){Text(if(en in vocabFavorites)"★" else "☆")}
+          }
+         }
         }
        }
       }
