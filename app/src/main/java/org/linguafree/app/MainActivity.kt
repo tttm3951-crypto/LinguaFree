@@ -206,6 +206,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     }
    }
    var bankWords by remember { mutableStateOf(listOf<String>()) }
+   var typedAnswer by remember { mutableStateOf("") }
    var showTranslation by remember { mutableStateOf(false) }
    var placementScore by remember { mutableIntStateOf(0) }
    val placementLessons=listOf(0,2,4,6,8,12,16,25,40,55,75,100,135,185,245)
@@ -242,7 +243,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    }
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putString("repeatQueue",repeatQueue.joinToString(",")).putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
-   fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
+   fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();typedAnswer="";showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
    LaunchedEffect(screen) { if(screen=="review"){reviewMatched=emptySet();reviewLeft=null;reviewRight=null;sayEnglish("Match the words!")} }
    LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true; sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false } }
    LaunchedEffect(screen,current,index) {
@@ -380,8 +381,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { TextButton(onClick={screen="home"}){Text("К карте уроков")} }
       } else {
        val l=lessons[current];val q=activeQuestion();val key=current*1000+index
-       val wordBank=screen=="lesson" && index%3==2 && q.choices[q.answer].contains(" ")
-       val pictureMode=screen=="lesson" && index%3==0
+       val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ")
+       val typedMode=screen=="lesson" && (index%7==4 || index%7==5)
+       val audioMode=screen=="lesson" && index%7==1
+       val pictureMode=screen=="lesson" && index%7==0 && q.choices.all { it.lowercase(Locale.ROOT) in setOf("tea","coffee","milk","apple","cat","dog","water","book","house","hello") }
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
         Text("🎯 "+l.title,fontSize=19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
         Text("⚡ $answerCombo  ⭐ ${index+1}/${l.questions.size}",fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
@@ -394,11 +397,21 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          Text(foxMessage,fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
         }
         Spacer(Modifier.height(4.dp))
-        Text(q.prompt,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp)
+        Text(if(audioMode)"🎧 Прослушай слово и выбери перевод" else q.prompt,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp)
        } } }
        if(selected!=null) item { Text(q.speech,modifier=Modifier.clickable {sayEnglish(q.speech)},fontSize=19.sp,fontWeight=FontWeight.Black,color=purple) }
        if(selected!=null && showTranslation) item { Text(q.explanation,fontSize=14.sp,color=ink) }
        item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
+       if(typedMode) item {
+        Text("✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
+        OutlinedTextField(value=typedAnswer,onValueChange={typedAnswer=it},label={Text("Твой ответ")},singleLine=true,modifier=Modifier.fillMaxWidth(),enabled=selected==null)
+        Button(onClick={
+         val right=typedAnswer.trim().equals(q.choices[q.answer],ignoreCase=true)
+         selected=if(right)q.answer else (q.answer+1)%q.choices.size
+         foxExcited=right;foxMessage=if(right)"Отлично! 🌟" else "Попробуй ещё! 💪"
+         sayEnglish(q.speech);sayReaction(right)
+        },enabled=selected==null && typedAnswer.isNotBlank(),modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОВЕРИТЬ",fontWeight=FontWeight.Black)}
+       }
        if(wordBank) item {
         Text("Составьте перевод из слов:",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)
         Text(bankWords.joinToString("  ").ifBlank { "Нажимайте на слова ниже ↓" },modifier=Modifier.fillMaxWidth().padding(vertical=12.dp),fontSize=23.sp,fontWeight=FontWeight.Bold,color=green)
@@ -410,7 +423,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         TextButton(onClick={bankWords=emptyList()},enabled=selected==null){Text("Очистить")}
         Button(onClick={val right=bankWords.joinToString(" ").equals(q.choices[q.answer],ignoreCase=true);selected=if(right)q.answer else (q.answer+1)%q.choices.size;foxExcited=right;foxMessage=if(right)"Отлично! 🦊" else "Потренируемся ещё!";sayEnglish(q.speech);sayReaction(right)},enabled=selected==null && bankWords.isNotEmpty(),modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОВЕРИТЬ")}
        }
-       if(!wordBank) q.choices.forEachIndexed { i,choice -> item {
+       if(!wordBank && !typedMode) q.choices.forEachIndexed { i,choice -> item {
         val right=selected!=null && i==q.answer
         val chosen=selected==i
         val bg=if(right)Color(0xFFD8F8E7) else if(chosen)Color(0xFFFFE0EA) else panel
@@ -456,7 +469,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         if(selected==q.answer){xp+=10;gems+=2;correctCount++;answerCombo++;mistakes=mistakes-key}else{answerCombo=0;mistakes=mistakes+key}
         if(screen=="lesson")recordRecall(key,selected==q.answer)
         if(screen=="placement" && selected==q.answer)placementScore++
-        selected=null;bankWords=emptyList();showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
+        selected=null;bankWords=emptyList();typedAnswer="";showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
         if(screen=="placement") {if(index==placementLessons.lastIndex){current=when{placementScore>=13->100;placementScore>=11->65;placementScore>=8->35;placementScore>=5->15;placementScore>=3->5;else->0};prefs.edit().putInt("placementScore",placementScore).apply();index=0;screen="home";save()}else index++}
         else if(index==lessons[current].questions.lastIndex){completed=completed+current;markStudyDay();screen="review"}else index++
         save()
