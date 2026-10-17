@@ -4,7 +4,7 @@ from pathlib import Path
 from build_beginner import build
 
 root=Path(__file__).resolve().parents[1]
-data=json.loads((root/'app/src/main/assets/beginner.json').read_text(encoding='utf-8'))
+data=json.loads((root/'core/data/src/main/assets/library/beginner.json').read_text(encoding='utf-8'))
 assert data==build(), 'Run build_beginner.py after editing course sources'
 assert len(data)==24 and sum(len(t['questions']) for t in data)==120
 assert len({t['id'] for t in data})==len(data)
@@ -21,7 +21,7 @@ for topic in data:
 from collections import Counter
 targets=Counter()
 for name in ['lessons.json','grammar.json','beginner.json']:
-    content=json.loads((root/'app/src/main/assets'/name).read_text(encoding='utf-8'))
+    content=json.loads((root/'core/data/src/main/assets/library'/name).read_text(encoding='utf-8'))
     for topic in content:
         for q in topic['questions']:
             value=q.get('speech','').strip().casefold().strip('.!?')

@@ -13,7 +13,7 @@ def build(archive, output):
     request=urllib.request.Request(URL,headers={'User-Agent':'Mozilla/5.0 LinguaFree-offline-build/0.9','Accept':'application/zip,*/*'})
     raw = Path(archive).read_bytes() if archive else urllib.request.urlopen(request, timeout=120).read()
     assert hashlib.sha256(raw).hexdigest() == SHA256, 'Source changed: review before updating pinned checksum'
-    core = json.loads((ROOT/'app/src/main/assets/dictionary.json').read_text(encoding='utf-8'))
+    core = json.loads((ROOT/'core/data/src/main/assets/library/dictionary.json').read_text(encoding='utf-8'))
     rows = []; seen = set()
     for item in core:
         key = (item['en'].casefold(), item['ru'].casefold())
@@ -53,5 +53,5 @@ def build(archive, output):
     print(f'Offline library: {len(core)} core + {TOTAL-len(core)} corpus = {TOTAL}; {size} bytes; integrity and EN/RU search passed')
 
 if __name__ == '__main__':
-    p=argparse.ArgumentParser(); p.add_argument('--archive'); p.add_argument('--output',default=str(ROOT/'app/src/main/assets/offline-reference.db'))
+    p=argparse.ArgumentParser(); p.add_argument('--archive'); p.add_argument('--output',default=str(ROOT/'core/data/src/main/assets/offline-reference.db'))
     a=p.parse_args(); build(a.archive,a.output)

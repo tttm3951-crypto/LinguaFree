@@ -5,7 +5,7 @@ import hashlib
 from pathlib import Path
 from collections import defaultdict
 
-root = Path(__file__).resolve().parents[1] / "app/src/main/assets"
+root = Path(__file__).resolve().parents[1] / "core/data/src/main/assets/library"
 lessons = json.loads((root / "lessons.json").read_text(encoding="utf-8"))
 stories = json.loads((root / "stories.json").read_text(encoding="utf-8"))
 errors = []

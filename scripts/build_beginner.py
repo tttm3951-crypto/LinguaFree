@@ -165,6 +165,6 @@ def build():
     return result
 
 if __name__=='__main__':
-    path=Path(__file__).resolve().parents[1]/'app/src/main/assets/beginner.json'
+    path=Path(__file__).resolve().parents[1]/'core/data/src/main/assets/library/beginner.json'
     path.write_text(json.dumps(build(),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(f'{len(UNITS)} original beginner topics / {len(UNITS)*5} exercises')

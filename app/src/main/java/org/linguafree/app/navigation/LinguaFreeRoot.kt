@@ -1,6 +1,13 @@
 package org.linguafree.app.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.linguafree.app.RootViewModel
+import org.linguafree.app.StartupState
+import org.linguafree.core.ui.theme.DarkMode
+import org.linguafree.core.ui.theme.ThemeAccent
+import org.linguafree.feature.path.LearnScreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Column
@@ -34,8 +41,17 @@ import org.linguafree.core.ui.theme.LfTheme
 import org.linguafree.core.ui.theme.LinguaFreeTheme
 
 @Composable
-fun LinguaFreeRoot() {
-    LinguaFreeTheme {
+fun LinguaFreeRoot(root: RootViewModel) {
+    val settings by root.settings.collectAsStateWithLifecycle()
+    val startup by root.state.collectAsStateWithLifecycle()
+    val darkMode = when (settings?.darkMode) { 1 -> DarkMode.Light; 2 -> DarkMode.Dark; else -> DarkMode.System }
+    val accent = ThemeAccent.entries.firstOrNull { it.name == settings?.accent } ?: ThemeAccent.Forest
+    LinguaFreeTheme(darkMode = darkMode, accent = accent) {
+        when (val s = startup) {
+            StartupState.Loading -> { Box(Modifier.fillMaxSize().background(LfTheme.colors.background)); return@LinguaFreeTheme }
+            is StartupState.Failed -> { ContentError(s.errors); return@LinguaFreeTheme }
+            StartupState.Ready -> Unit
+        }
         val nav = rememberNavController()
         val entry by nav.currentBackStackEntryAsState()
         val currentTab = MainTab.entries.firstOrNull { it.route == entry?.destination?.route }
@@ -53,11 +69,26 @@ fun LinguaFreeRoot() {
             },
         ) { padding ->
             NavHost(nav, startDestination = MainTab.Learn.route, modifier = Modifier.padding(padding)) {
-                MainTab.entries.forEach { tab ->
+                composable(MainTab.Learn.route) { LearnScreen() }
+                MainTab.entries.filter { it != MainTab.Learn }.forEach { tab ->
                     composable(tab.route) { TabIntro(tab) }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ContentError(errors: List<String>) {
+    Column(
+        Modifier.fillMaxSize().background(LfTheme.colors.background).statusBarsPadding().padding(24.dp).verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        FoxMascot(FoxEmotion.TryAgain, Modifier.width(180.dp))
+        Text("Не удалось загрузить уроки", style = MaterialTheme.typography.headlineSmall, color = LfTheme.colors.text)
+        Text("Файлы курса повреждены. Переустановите приложение. Подробности:", color = LfTheme.colors.textMuted)
+        errors.take(10).forEach { Text(it, style = MaterialTheme.typography.bodySmall, color = LfTheme.colors.textMuted) }
     }
 }
 

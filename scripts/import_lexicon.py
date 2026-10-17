@@ -18,7 +18,7 @@ def main():
     p.add_argument("csv",type=Path)
     p.add_argument("--license",required=True)
     p.add_argument("--source-name",required=True)
-    p.add_argument("--output",type=Path,default=Path("app/src/main/assets/lexicon"))
+    p.add_argument("--output",type=Path,default=Path("core/data/src/main/assets/library/lexicon"))
     args=p.parse_args()
     if args.license.upper() not in {"CC0","CC-BY-4.0","CC-BY-SA-4.0","PUBLIC-DOMAIN"}:
         p.error("Review redistribution rights and explicitly allow the source license first")

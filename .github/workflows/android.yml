@@ -48,6 +48,17 @@ jobs:
           yes | "$SDKMANAGER" --licenses > /dev/null || true
           "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0" > /dev/null
 
+      - name: Validate course content
+        run: |
+          python3 scripts/content/validate_content.py
+          python3 scripts/validate_library.py
+          python3 scripts/validate_curriculum.py
+          python3 scripts/validate_beginner.py
+          python3 -m unittest discover -s scripts -p 'test_curriculum.py'
+
+      - name: Build offline reference (Tatoeba, checksum-pinned)
+        run: python3 scripts/build_offline_library.py
+
       - name: Lint, unit tests and debug APK
         run: |
           set -o pipefail

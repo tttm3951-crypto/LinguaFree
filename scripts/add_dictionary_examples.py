@@ -30,5 +30,5 @@ def fill_examples(dictionary):
     return dictionary
 
 if __name__=='__main__':
-    original=json.loads((ROOT/'app/src/main/assets/dictionary.json').read_text(encoding='utf-8'))
+    original=json.loads((ROOT/'core/data/src/main/assets/library/dictionary.json').read_text(encoding='utf-8'))
     print(json.dumps(fill_examples(original),ensure_ascii=False,indent=2))
