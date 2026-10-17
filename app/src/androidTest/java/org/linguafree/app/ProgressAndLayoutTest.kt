@@ -90,7 +90,10 @@ class ProgressAndLayoutTest {
         compose.onNodeWithText("📚 Большой офлайн-справочник · 150 000").performScrollTo().performClick()
         compose.onNode(hasSetTextAction()).performScrollTo().performTextInput("hello")
         compose.waitUntil(15000){compose.onAllNodesWithText("🔊 Послушать",substring=false).fetchSemanticsNodes().isNotEmpty()}
-        androidx.test.espresso.Espresso.closeSoftKeyboard()
+        compose.runOnUiThread {
+            androidx.core.view.WindowCompat.getInsetsController(compose.activity.window,compose.activity.window.decorView).hide(WindowInsetsCompat.Type.ime())
+        }
+        compose.waitUntil(10000){ViewCompat.getRootWindowInsets(compose.activity.window.decorView)?.isVisible(WindowInsetsCompat.Type.ime())!=true}
         compose.onAllNodesWithText("🔊 Послушать",substring=false).onFirst().performScrollTo().assertIsDisplayed()
         screenshot("offline-reference-search.png")
     }
