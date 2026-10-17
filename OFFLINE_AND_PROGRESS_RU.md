@@ -13,7 +13,7 @@
 
 ## Updating without losing existing progress
 1. Install the new APK **over** the old one, never uninstall the old app first.
-2. Keep applicationId `org.linguafree.app`, signing certificate, and preference file `linguafree_progress` unchanged.
+2. Keep applicationId `org.linguafree.app`, signing certificate, and preference file `linguafree_progress` unchanged. **CRITICAL: Current GitHub Actions builds a debug APK on a fresh runner, where the default Android debug signing key may change between runs. Different certificates prevent installing an update over the old APK.** Set up a persistent, privately stored signing key in GitHub Actions secrets before relying on seamless updates. Never commit a private signing key into the repository.
 3. Keep versionCode monotonically increasing (2 for this release).
 4. Do not use Clear Storage/Clear Data. Uninstalling can delete local progress; AndroidManifest currently has allowBackup=false, so cloud restore is not provided.
 5. All progress fields remain in the same preferences; lessons are still indexed 0–299.
