@@ -557,6 +557,13 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     Surface(Modifier.fillMaxSize(),color=dark) {
      Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
      LazyColumn(modifier=Modifier.weight(1f),userScrollEnabled=screen!="lesson" && screen!="placement",contentPadding=PaddingValues(start=14.dp,end=14.dp,top=if(screen=="lesson" || screen=="placement") 4.dp else 16.dp,bottom=if(screen=="lesson" || screen=="placement") 0.dp else 8.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson" || screen=="placement") 4.dp else 12.dp)) {
+      if(screen=="grammar") {
+       item {
+        GrammarCourse(this@MainActivity,
+         recommendedLevel=when { current>=200->"B1"; current>=100->"A2"; else->"A1" },
+         onSpeak={sayEnglish(it)},onSessionFinished={markStudyDay()},onBack={screen="home"})
+       }
+      }
       if(screen=="onboarding") {
        item { LinearProgressIndicator(progress={(onboardStep+1)/3f},modifier=Modifier.fillMaxWidth().height(10.dp),color=green) }
        item { Row(verticalAlignment=Alignment.CenterVertically) { Image(bitmap=foxTransparent,contentDescription="Лисичка",modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько занятий будем проходить каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
@@ -855,6 +862,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          }
         }
        }
+       item { Button(onClick={screen="grammar"},modifier=Modifier.fillMaxWidth()){Text("🧩 Грамматика: местоимения, глаголы, времена")} }
        item { Text("🚀 Путь приключений",fontSize=26.sp,fontWeight=FontWeight.Black,color=ink) }
        itemsIndexed(lessons) { n,l ->
         val done=n in completed
@@ -1071,3 +1079,4 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   }
  }
 }
+

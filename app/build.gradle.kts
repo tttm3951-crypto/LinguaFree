@@ -10,8 +10,8 @@ android {
         applicationId = "org.linguafree.app"
         minSdk = 24
         targetSdk = 35
-        versionName = "0.7"
-        versionCode = 7
+        versionName = "0.8"
+        versionCode = 8
         val classroomUrl = System.getenv("LINGUAFREE_CLASSROOM_URL").orEmpty().trimEnd('/')
         require(classroomUrl.isEmpty() || classroomUrl.startsWith("https://")) { "Classroom server must use HTTPS" }
         buildConfigField("String", "CLASSROOM_ENDPOINT", "\""+classroomUrl+"\"")
@@ -51,3 +51,4 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.ui:ui")
 }
+
