@@ -208,6 +208,17 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var bankWords by remember { mutableStateOf(listOf<String>()) }
    var showTranslation by remember { mutableStateOf(false) }
    var placementScore by remember { mutableIntStateOf(0) }
+   val placementLessons=listOf(0,2,4,6,8,12,16,25,40,55,75,100,135,185,245)
+   fun activeQuestion():Quiz=if(screen=="placement")lessons[placementLessons[index]].questions[index%7] else lessons[current].questions[index]
+   var reviewStages by remember { mutableStateOf(prefs.getString("reviewStages","")!!.split(";").mapNotNull { entry -> val p=entry.split(":");if(p.size==2) p[0].toIntOrNull()?.let { key -> p[1].toIntOrNull()?.let { key to it } } else null }.toMap()) }
+   var reviewDue by remember { mutableStateOf(prefs.getString("reviewDue","")!!.split(";").mapNotNull { entry -> val p=entry.split(":");if(p.size==2) p[0].toIntOrNull()?.let { key -> p[1].toLongOrNull()?.let { key to it } } else null }.toMap()) }
+   fun recordRecall(key:Int,correct:Boolean){
+    val stage=if(correct)((reviewStages[key]?:0)+1).coerceAtMost(5) else 0
+    reviewStages=reviewStages+(key to stage)
+    reviewDue=reviewDue+(key to (System.currentTimeMillis()+listOf(0L,1L,3L,7L,14L,30L)[stage]*86400000L))
+    prefs.edit().putString("reviewStages",reviewStages.entries.joinToString(";"){"${it.key}:${it.value}"}).putString("reviewDue",reviewDue.entries.joinToString(";"){"${it.key}:${it.value}"}).apply()
+   }
+
    var correctCount by remember { mutableIntStateOf(0) }
    var foxMessage by remember { mutableStateOf("Давай попробуем!") }
    var foxExcited by remember { mutableStateOf(false) }
@@ -241,7 +252,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(speechReady)return@repeat
       kotlinx.coroutines.delay(160)
      }
-     val question=lessons[current].questions[index]
+     val question=activeQuestion()
      sayEnglish(question.speech)
     }
    }
@@ -267,7 +278,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        if(onboardStep==1) { item { Text("Выбери свой уровень",fontSize=21.sp,fontWeight=FontWeight.Black,color=ink) }; listOf("Начинающий","Знаю несколько слов","Могу говорить").forEach { option -> item { OutlinedButton(onClick={level=option},modifier=Modifier.fillMaxWidth().height(70.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(level==option)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(level==option)green else Color(0xFF3B5057))) {Text(option,fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
        if(onboardStep==2) { listOf(3,10,15,30).forEach { minutes -> item { OutlinedButton(onClick={dailyGoal=minutes},modifier=Modifier.fillMaxWidth().height(65.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(dailyGoal==minutes)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(dailyGoal==minutes)green else Color(0xFF3B5057))) {Text("$minutes минут в день",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
       }
-      if(screen=="placement") item { Text("🎯 Короткая проверка знаний · ${index+1}/3",fontSize=24.sp,fontWeight=FontWeight.Black,color=ink) }
+      if(screen=="placement") item { Text("🎯 Короткая проверка знаний · ${index+1}/${placementLessons.size}",fontSize=24.sp,fontWeight=FontWeight.Black,color=ink) }
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
@@ -329,7 +340,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
        item { Text("Опыт: $xp XP · Алмазы: $gems · Уроков: ${completed.size} · Ошибок: ${mistakes.size}") }
        item { Text("Слов для повторения: ${repeatQueue.size}. Ошибки сохраняются, чтобы можно было вернуться к сложным заданиям.") }
-       if(repeatQueue.isNotEmpty()) item { Button(onClick={start((repeatQueue.first()/1000).coerceIn(0,lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("🧠 Повторить сложные слова")} }
+       item { Text("🧠 По расписанию на сегодня: ${reviewDue.values.count{it<=System.currentTimeMillis()}}. Интервалы 1, 3, 7, 14 и 30 дней.",fontSize=16.sp,color=ink) }
+       if(repeatQueue.isNotEmpty() || reviewDue.values.any{it<=System.currentTimeMillis()}) item { Button(onClick={start(((reviewDue.filterValues{it<=System.currentTimeMillis()}.keys.firstOrNull()?:repeatQueue.firstOrNull()?:0)/1000).coerceIn(0,lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("🧠 Повторить сложные слова")} }
        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
       } else if(screen=="review") {
        item { Text("🧠 Закрепляем слова",fontSize=29.sp,fontWeight=FontWeight.Black,color=purple) }
@@ -367,7 +379,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { OutlinedButton(onClick={start(current)},modifier=Modifier.fillMaxWidth()){Text("Повторить урок")} }
        item { TextButton(onClick={screen="home"}){Text("К карте уроков")} }
       } else {
-       val l=lessons[current];val q=l.questions[index];val key=current*1000+index
+       val l=lessons[current];val q=activeQuestion();val key=current*1000+index
        val wordBank=screen=="lesson" && index%3==2 && q.choices[q.answer].contains(" ")
        val pictureMode=screen=="lesson" && index%3==0
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
@@ -437,14 +449,15 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      if(screen=="onboarding" || ((screen=="lesson" || screen=="placement") && selected!=null)) {
       Button(onClick={
        if(screen=="onboarding") {
-        if(onboardStep<2)onboardStep++ else {prefs.edit().putBoolean("onboarded",true).putString("level",level).putInt("dailyGoal",dailyGoal).apply();if(Build.VERSION.SDK_INT>=33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED)askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS);if(level=="Начинающий")screen="home" else {current=0;index=0;screen="placement"}}
+        if(onboardStep<2)onboardStep++ else {prefs.edit().putBoolean("onboarded",true).putString("level",level).putInt("dailyGoal",dailyGoal).apply();if(Build.VERSION.SDK_INT>=33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED)askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS);if(level=="Начинающий")screen="home" else {current=0;index=0;placementScore=0;screen="placement"}}
        } else {
-        val q=lessons[current].questions[index]
+        val q=activeQuestion()
         val key=current*1000+index
         if(selected==q.answer){xp+=10;gems+=2;correctCount++;answerCombo++;mistakes=mistakes-key}else{answerCombo=0;mistakes=mistakes+key}
+        if(screen=="lesson")recordRecall(key,selected==q.answer)
         if(screen=="placement" && selected==q.answer)placementScore++
         selected=null;bankWords=emptyList();showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
-        if(screen=="placement") {if(index==2){current=if(placementScore>=2)8 else if(placementScore==1)3 else 0;index=0;screen="home";save()}else index++}
+        if(screen=="placement") {if(index==placementLessons.lastIndex){current=when{placementScore>=13->100;placementScore>=11->65;placementScore>=8->35;placementScore>=5->15;placementScore>=3->5;else->0};prefs.edit().putInt("placementScore",placementScore).apply();index=0;screen="home";save()}else index++}
         else if(index==lessons[current].questions.lastIndex){completed=completed+current;markStudyDay();screen="review"}else index++
         save()
        }
