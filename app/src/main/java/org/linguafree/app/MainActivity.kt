@@ -63,6 +63,11 @@ private data class Quiz(val prompt:String,val choices:List<String>,val answer:In
 private data class Lesson(val title:String,val questions:List<Quiz>)
 
 class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
+ override fun onStart(){
+  super.onStart()
+  ClassroomSync.syncOnOpen(this)
+ }
+
  private var tts:TextToSpeech?=null
  private var speechReady=false
  private var selectedVoiceName:String?=null
@@ -794,6 +799,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        Text("🎁 Без рекламы и подписок!",fontSize=13.sp,fontWeight=FontWeight.Bold,color=Color.White)
       } } }
       if(screen=="teacher"){
+       item { TeacherSyncPanel(this@MainActivity) }
        item { Text("‹  Кабинет преподавателя",modifier=Modifier.clickable{screen="home"},fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
        item { Text("Отчёты добавляются вручную с разрешения ученика. Никакого скрытого отслеживания и сервера нет.",fontSize=14.sp,color=ink) }
        item { Button(onClick={importTeacherReport.launch(arrayOf("application/json"))},modifier=Modifier.fillMaxWidth()){Text("📂 Загрузить отчёт ученика")} }
@@ -869,6 +875,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       } else if(screen=="stats") {
        item { OutlinedButton(onClick={screen="teacher"},modifier=Modifier.fillMaxWidth()){Text("👩‍🏫 Кабинет преподавателя")} }
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { StudentSyncPanel(this@MainActivity) }
        item {
         Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
          Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(9.dp)){
