@@ -398,6 +398,11 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { OutlinedButton(onClick={screen="stats"},modifier=Modifier.fillMaxWidth()){Text("📊 Статистика и ошибки")} }
       } else if(screen=="stats") {
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Text("🗣️ Голос: ${selectedVoiceName?:"Системный английский голос"}",fontSize=13.sp,color=ink) }
+       item { Text("Скорость английского",fontSize=16.sp,color=ink) }
+       item { Row(horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf(0.80f,0.93f,1.08f).forEach{speed->OutlinedButton(onClick={voiceSpeed=speed;prefs.edit().putFloat("voiceSpeed",speed).apply();sayEnglish("Hello! Welcome to LinguaFree!")},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(voiceSpeed==speed)green else panel)){Text(when(speed){0.80f->"Медленно";0.93f->"Обычно";else->"Быстро"},fontSize=12.sp,color=if(voiceSpeed==speed)dark else ink)}}} }
+       item { Button(onClick={sayEnglish("Hello! Let's learn English together!")},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать голос лисички")} }
+
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){Text("🔊 Звуки и вибрация ответов",color=ink);Switch(checked=effectsEnabled,onCheckedChange={effectsEnabled=it;prefs.edit().putBoolean("effectsEnabled",it).apply()})} }
        item { Text("Опыт: $xp XP · Алмазы: $gems · Уроков: ${completed.size} · Ошибок: ${mistakes.size}") }
        item { Text("Слов для повторения: ${repeatQueue.size}. Ошибки сохраняются, чтобы можно было вернуться к сложным заданиям.") }
@@ -465,7 +470,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Spacer(Modifier.height(2.dp))
         Text(if(audioMode)"🎧 Прослушай слово и выбери перевод" else q.prompt,fontSize=if(compact)19.sp else 23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=if(compact)23.sp else 28.sp)
        } } }
-       if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
+       if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(6.dp)){Button(onClick={sayEnglish(q.speech)},modifier=Modifier.weight(1f).height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=if(compact)12.sp else 15.sp,fontWeight=FontWeight.Black)};OutlinedButton(onClick={sayEnglish(q.speech,slow=true)},modifier=Modifier.weight(1f).height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp)){Text("🐢 МЕДЛЕННО",fontSize=if(compact)12.sp else 15.sp,fontWeight=FontWeight.Black)}} }
        if(typedMode) item {
         Text(if(missingMode)"🔤 Впиши пропущенную букву: "+correctWord.replaceRange(missingIndex,missingIndex+1,"_") else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
         OutlinedTextField(value=typedAnswer,onValueChange={typedAnswer=it},label={Text("Твой ответ")},singleLine=true,modifier=Modifier.fillMaxWidth(),enabled=selected==null)
