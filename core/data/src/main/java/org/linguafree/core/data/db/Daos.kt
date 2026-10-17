@@ -54,6 +54,9 @@ interface ContentDao {
 
     @Upsert suspend fun upsertLexemes(items: List<LexemeEntity>)
 
+    @Query("UPDATE lexemes SET strength = :strength, lastSeen = :lastSeen, halfLife = :halfLife, rightCount = :right, errorCount = :error WHERE id = :id")
+    suspend fun updateMemory(id: String, strength: Double, lastSeen: Long, halfLife: Double, right: Int, error: Int)
+
     /** Replaces all course content in one transaction; learner memory in `lexemes` is kept. */
     @Transaction
     suspend fun replaceContent(

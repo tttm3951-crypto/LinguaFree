@@ -54,6 +54,7 @@ import org.linguafree.core.ui.components.LfButton
 import org.linguafree.core.ui.components.LfButtonStyle
 import org.linguafree.core.ui.components.LfIcon
 import org.linguafree.core.ui.components.LfProgressBar
+import org.linguafree.core.ui.components.StreakCalendar
 import org.linguafree.core.ui.mascot.FoxEmotion
 import org.linguafree.core.ui.mascot.FoxMascot
 import org.linguafree.core.ui.mascot.rememberReduceMotion
@@ -164,7 +165,7 @@ fun StreakSheet(state: PathUiState, onShop: () -> Unit, onDismiss: () -> Unit) {
                 style = MaterialTheme.typography.bodyLarge, color = c.text, textAlign = TextAlign.Center,
             )
             Text("Лучшая серия: ${maxOf(st.longest, state.stats.streak)} дн.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
-            MonthCalendar(YearMonth.from(today), st.studyDays, st.frozenDays, today)
+            StreakCalendar(YearMonth.from(today), st.studyDays, st.frozenDays, today)
             Row(
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).border(2.dp, c.border, RoundedCornerShape(16.dp)).padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -180,62 +181,6 @@ fun StreakSheet(state: PathUiState, onShop: () -> Unit, onDismiss: () -> Unit) {
                 LfButton("Заморозка за ${ShopItem.StreakFreeze.price} 💎 — в магазине", onClick = onShop, style = LfButtonStyle.Secondary, modifier = Modifier.fillMaxWidth())
             }
         }
-    }
-}
-
-@Composable
-private fun MonthCalendar(month: YearMonth, study: Set<LocalDate>, frozen: Set<LocalDate>, today: LocalDate) {
-    val c = LfTheme.colors
-    val first = month.atDay(1)
-    val offset = first.dayOfWeek.value - 1
-    val days = month.lengthOfMonth()
-    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(
-            month.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale("ru")).replaceFirstChar { it.uppercase() } + " ${month.year}",
-            style = MaterialTheme.typography.titleMedium, color = c.text,
-        )
-        Row(Modifier.fillMaxWidth()) {
-            listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс").forEach {
-                Text(it, Modifier.weight(1f), style = MaterialTheme.typography.labelSmall, color = c.textMuted, textAlign = TextAlign.Center)
-            }
-        }
-        val cells = offset + days
-        for (week in 0 until (cells + 6) / 7) {
-            Row(Modifier.fillMaxWidth()) {
-                for (d in 0 until 7) {
-                    val dayNo = week * 7 + d - offset + 1
-                    Box(Modifier.weight(1f).aspectRatio(1f).padding(3.dp), contentAlignment = Alignment.Center) {
-                        if (dayNo in 1..days) {
-                            val date = month.atDay(dayNo)
-                            val bg = when {
-                                date in study -> c.streak
-                                date in frozen -> c.gems
-                                else -> Color.Transparent
-                            }
-                            Box(
-                                Modifier.fillMaxWidth().aspectRatio(1f).clip(CircleShape).background(bg)
-                                    .border(if (date == today) 2.dp else 0.dp, if (date == today) c.streak else Color.Transparent, CircleShape)
-                                    .semantics { contentDescription = "$dayNo: " + when { date in study -> "занятие"; date in frozen -> "заморозка"; else -> "нет занятия" } },
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text("$dayNo", style = MaterialTheme.typography.labelMedium, color = if (bg == Color.Transparent) c.text else Color.White)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            Legend(c.streak, "занятие"); Legend(c.gems, "заморозка")
-        }
-    }
-}
-
-@Composable
-private fun Legend(color: Color, label: String) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Box(Modifier.size(12.dp).clip(CircleShape).background(color))
-        Text(label, style = MaterialTheme.typography.bodySmall, color = LfTheme.colors.textMuted)
     }
 }
 
