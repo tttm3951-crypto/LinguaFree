@@ -288,6 +288,27 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var vocabLevel by remember { mutableStateOf("Все") }
    var vocabFavorites by remember { mutableStateOf(prefs.getStringSet("dictionaryFavorites",emptySet<String>())?.toSet()?:emptySet()) }
    var vocabOnlyFavorites by remember { mutableStateOf(false) }
+   var cardIndex by remember { mutableIntStateOf(prefs.getInt("cardIndex",0)) }
+   var cardRevealed by remember { mutableStateOf(false) }
+   var cardMastered by remember { mutableStateOf(prefs.getStringSet("cardMastered",emptySet<String>())?.toSet()?:emptySet()) }
+   var cardDue by remember {
+    mutableStateOf(prefs.getString("cardDue","")!!.split(";").mapNotNull{entry->
+     val parts=entry.split(":");if(parts.size==2)parts[0].toIntOrNull()?.let{key->parts[1].toLongOrNull()?.let{key to it}} else null
+    }.toMap())
+   }
+   fun nextCard(remembered:Boolean){
+    val n=cardIndex.coerceIn(0,dictionary.lastIndex)
+    val due=System.currentTimeMillis()+(if(remembered)3L else 0L)*86400000L
+    cardDue=cardDue+(n to due)
+    if(remembered)cardMastered=cardMastered+dictionary[n].getString("en")
+    else cardMastered=cardMastered-dictionary[n].getString("en")
+    prefs.edit().putStringSet("cardMastered",cardMastered).putString("cardDue",cardDue.entries.joinToString(";"){"${it.key}:${it.value}"}).apply()
+    val next=(1..dictionary.size).map{(n+it)%dictionary.size}.firstOrNull{cardDue[it]==null || cardDue[it]!!<=System.currentTimeMillis()}
+    cardIndex=next?:((n+1)%dictionary.size)
+    prefs.edit().putInt("cardIndex",cardIndex).apply()
+    cardRevealed=false
+   }
+
    var speedRound by remember { mutableIntStateOf(0) }
    var speedCorrect by remember { mutableIntStateOf(0) }
    var speedFinished by remember { mutableStateOf(false) }
@@ -492,6 +513,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          Button(onClick={storyIndex=0;storyStep=0;storyFeedback="";screen="story"},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("Начать историю",color=dark)}
          OutlinedButton(onClick={screen="storyLibrary"},modifier=Modifier.fillMaxWidth()){Text("📚 Выбрать из ${stories.size} историй")}
          OutlinedButton(onClick={screen="vocabulary"},modifier=Modifier.fillMaxWidth()){Text("📗 Словарь · ${vocabulary.size} выражений")}
+         OutlinedButton(onClick={cardRevealed=false;screen="wordPractice"},modifier=Modifier.fillMaxWidth()){Text("🧠 Карточки слов · выучено ${cardMastered.size}")}
+
          OutlinedButton(onClick={speechTarget="Hello!";storyFeedback="";screen="speaking"},modifier=Modifier.fillMaxWidth()){Text("🎙️ Тренировать произношение")}
         }
        }
@@ -538,6 +561,36 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          }
         },modifier=Modifier.fillMaxWidth()){Text(choice,color=ink)} }}
        }
+      }
+      if(screen=="wordPractice"){
+       item { Text("‹  Тренировка слов",modifier=Modifier.clickable{screen="home"},fontSize=24.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Text("Карточки для запоминания · ${cardMastered.size} изучено · работают без интернета",color=ink) }
+       val card=dictionary[cardIndex.coerceIn(0,dictionary.lastIndex)]
+       item {
+        Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
+         Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(14.dp)){
+          Text("Уровень ${card.getString("level")}",fontSize=13.sp,color=green)
+          Text(card.getString("en"),fontSize=28.sp,fontWeight=FontWeight.Black,color=ink)
+          OutlinedButton(onClick={sayEnglish(card.getString("en"))}){Text("🔊 Послушать")}
+          if(cardRevealed){
+           Text(card.getString("ru"),fontSize=22.sp,color=pink)
+           if(card.getString("example_en")!=card.getString("en")){
+            Text(card.getString("example_en"),fontSize=16.sp,color=ink)
+            Text(card.getString("example_ru"),fontSize=14.sp,color=ink)
+            OutlinedButton(onClick={sayEnglish(card.getString("example_en"))}){Text("▶ Пример")}
+           }
+           Text("Вспомнил перевод самостоятельно?",color=ink)
+           Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
+            Button(onClick={nextCard(false)},modifier=Modifier.weight(1f)){Text("Ещё раз")}
+            Button(onClick={nextCard(true)},modifier=Modifier.weight(1f),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("Помню",color=dark)}
+           }
+          }else{
+           Button(onClick={cardRevealed=true},modifier=Modifier.fillMaxWidth()){Text("Показать перевод")}
+          }
+         }
+        }
+       }
+       item { Text("Слова, отмеченные «Помню», возвращаются к повторению через 3 дня. «Ещё раз» — при следующем круге. Это самостоятельная оценка памяти, не проверка знания.",fontSize=12.sp,color=ink) }
       }
       if(screen=="vocabulary"){
        item { Text("‹  Офлайн-словарь",modifier=Modifier.clickable{screen="home"},fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
