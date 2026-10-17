@@ -53,6 +53,9 @@ jobs:
       - name: Validate all 300 lessons and 30 stories
         run: python3 scripts/validate_content.py
 
+      - name: Check offline features and progress compatibility
+        run: python3 scripts/validate_app_contract.py
+
       - name: Compile debug APK
         run: gradle --no-daemon --stacktrace assembleDebug
 
