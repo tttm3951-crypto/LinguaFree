@@ -1,3 +1,5 @@
+import java.net.URI
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -15,7 +17,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val classroomUrl = System.getenv("LINGUAFREE_CLASSROOM_URL").orEmpty().trimEnd('/')
         if (classroomUrl.isNotEmpty()) {
-            val endpoint = java.net.URI(classroomUrl)
+            val endpoint = URI(classroomUrl)
             require(endpoint.scheme == "https" && endpoint.host != null && endpoint.rawUserInfo == null && endpoint.rawQuery == null && endpoint.rawFragment == null) { "Classroom server must be a plain HTTPS endpoint" }
         }
         buildConfigField("String", "CLASSROOM_ENDPOINT", "\""+classroomUrl+"\"")
