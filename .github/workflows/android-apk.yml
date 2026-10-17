@@ -59,6 +59,31 @@ jobs:
       - name: Compile debug APK
         run: gradle --no-daemon --stacktrace assembleDebug
 
+      - name: Build persistently signed release when signing secrets exist
+        env:
+          LINGUAFREE_KEYSTORE_B64: ${{ secrets.LINGUAFREE_KEYSTORE_B64 }}
+          LINGUAFREE_STORE_PASSWORD: ${{ secrets.LINGUAFREE_STORE_PASSWORD }}
+          LINGUAFREE_KEY_ALIAS: ${{ secrets.LINGUAFREE_KEY_ALIAS }}
+          LINGUAFREE_KEY_PASSWORD: ${{ secrets.LINGUAFREE_KEY_PASSWORD }}
+        run: |
+          if [ -z "$LINGUAFREE_KEYSTORE_B64" ] || [ -z "$LINGUAFREE_STORE_PASSWORD" ] || [ -z "$LINGUAFREE_KEY_ALIAS" ] || [ -z "$LINGUAFREE_KEY_PASSWORD" ]; then
+            echo "Release signing secrets missing: skipping signed APK."
+            exit 0
+          fi
+          export LINGUAFREE_KEYSTORE_PATH="$RUNNER_TEMP/linguafree-release.jks"
+          printf '%s' "$LINGUAFREE_KEYSTORE_B64" | base64 --decode > "$LINGUAFREE_KEYSTORE_PATH"
+          chmod 600 "$LINGUAFREE_KEYSTORE_PATH"
+          gradle --no-daemon assembleRelease
+          mkdir -p signed-release
+          cp app/build/outputs/apk/release/*-release.apk signed-release/
+
+      - name: Upload signed release APK (if configured)
+        uses: actions/upload-artifact@v4
+        with:
+          name: LinguaFree-signed-release-apk
+          path: signed-release/*.apk
+          if-no-files-found: ignore
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
