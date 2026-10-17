@@ -624,6 +624,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        }
        item { Text("⚡ Лучший результат в игре: $speedBest/10",color=ink) }
        item { Text("🗣️ Голос: ${selectedVoiceName?:"Системный английский голос"}",fontSize=13.sp,color=ink) }
+       item { Text("📴 Без интернета: уроки, истории, словарь, прогресс, напоминания, анимации, звуки и вибрация. Для английской озвучки нужен установленный офлайн-голос Android, для распознавания — офлайн-языковой пакет.",fontSize=13.sp,color=ink) }
        item { Text("Скорость английского",fontSize=16.sp,color=ink) }
        item { Row(horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf(0.80f,0.93f,1.08f).forEach{speed->OutlinedButton(onClick={voiceSpeed=speed;prefs.edit().putFloat("voiceSpeed",speed).apply();sayEnglish("Hello! Welcome to LinguaFree!")},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(voiceSpeed==speed)green else panel)){Text(when(speed){0.80f->"Медленно";0.93f->"Обычно";else->"Быстро"},fontSize=12.sp,color=if(voiceSpeed==speed)dark else ink)}}} }
        item { Button(onClick={sayEnglish("Hello! Let's learn English together!")},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать голос лисички")} }
