@@ -191,6 +191,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var selected by remember { mutableStateOf<Int?>(null) }
    var screen by remember { mutableStateOf(if(prefs.getBoolean("onboarded",false))"home" else "onboarding") }
    var onboardStep by remember { mutableIntStateOf(0) }
+   var showHomeGreeting by remember { mutableStateOf(true) }
    var level by remember { mutableStateOf("Начинающий") }
    var dailyGoal by remember { mutableIntStateOf(10) }
    var streak by remember { mutableIntStateOf(prefs.getInt("dailyStreak",0)) }
@@ -267,7 +268,25 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val dark=Color(0xFF102124)
    val panel=Color(0xFF1E3338)
    val compact=LocalConfiguration.current.screenHeightDp<850
-   val foxTransparent=remember { val source=BitmapFactory.decodeResource(resources,R.drawable.fox_original); val bitmap=source.copy(Bitmap.Config.ARGB_8888,true); val pixels=IntArray(bitmap.width*bitmap.height);bitmap.getPixels(pixels,0,bitmap.width,0,0,bitmap.width,bitmap.height); for(i in pixels.indices){val c=pixels[i];val rr=android.graphics.Color.red(c);val gg=android.graphics.Color.green(c);val bb=android.graphics.Color.blue(c);if(rr>235 && gg>235 && bb>235){pixels[i]=c and 0x00FFFFFF}else if(rr>215 && gg>215 && bb>215 && kotlin.math.abs(rr-gg)<15 && kotlin.math.abs(gg-bb)<15){pixels[i]=(c and 0x00FFFFFF) or ((255-(minOf(rr,gg,bb)-215)*6).coerceIn(0,255) shl 24)}};bitmap.setPixels(pixels,0,bitmap.width,0,0,bitmap.width,bitmap.height);bitmap.asImageBitmap() }
+   val foxTransparent=remember {
+    val source=BitmapFactory.decodeResource(resources,R.drawable.fox_original)
+    val side=minOf(source.width,source.height)
+    // Crop into the mascot's face rather than displaying the square logo and its white border.
+    val cropSize=(side*0.66f).toInt().coerceAtLeast(1)
+    val centerX=(source.width*0.48f).toInt()
+    val centerY=(source.height*0.52f).toInt()
+    val left=(centerX-cropSize/2).coerceIn(0,source.width-cropSize)
+    val top=(centerY-cropSize/2).coerceIn(0,source.height-cropSize)
+    val crop=Bitmap.createBitmap(source,left,top,cropSize,cropSize)
+    val output=Bitmap.createBitmap(cropSize,cropSize,Bitmap.Config.ARGB_8888)
+    val canvas=android.graphics.Canvas(output)
+    val paint=android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+    val radius=cropSize*0.49f
+    val path=android.graphics.Path().apply { addCircle(cropSize/2f,cropSize/2f,radius,android.graphics.Path.Direction.CW) }
+    canvas.clipPath(path)
+    canvas.drawBitmap(crop,0f,0f,paint)
+    output.asImageBitmap()
+   }
    val floating=rememberInfiniteTransition(label="mascot")
    val bounce by floating.animateFloat(initialValue=0f,targetValue=-8f,animationSpec=infiniteRepeatable(tween(1300),RepeatMode.Reverse),label="bounce")
    val foxTilt by animateFloatAsState(targetValue=if(foxExcited)12f else 0f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy),label="foxTilt")
@@ -284,6 +303,18 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        if(onboardStep==2) { listOf(3,10,15,30).forEach { minutes -> item { OutlinedButton(onClick={dailyGoal=minutes},modifier=Modifier.fillMaxWidth().height(65.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(dailyGoal==minutes)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(dailyGoal==minutes)green else Color(0xFF3B5057))) {Text("$minutes минут в день",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
       }
 
+      if(screen=="home" && showHomeGreeting) item {
+       Card(colors=CardDefaults.cardColors(containerColor=Color(0xFF2B3544)),shape=RoundedCornerShape(22.dp),modifier=Modifier.fillMaxWidth()) {
+        Row(Modifier.padding(14.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+         Image(bitmap=foxTransparent,contentDescription="Лисичка приветствует тебя",modifier=Modifier.size(82.dp).offset(y=bounce.dp).graphicsLayer {rotationZ=foxTilt+foxWiggle})
+         Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)) {
+          Text("Привет! Я твоя лисичка! 🦊",fontSize=19.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=23.sp)
+          Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=14.sp,color=pink,lineHeight=18.sp)
+         }
+         Text("×",modifier=Modifier.clickable{showHomeGreeting=false}.padding(4.dp),fontSize=25.sp,color=ink)
+        }
+       }
+      }
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
