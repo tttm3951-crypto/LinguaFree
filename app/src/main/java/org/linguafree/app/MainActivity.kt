@@ -2,6 +2,12 @@ package org.linguafree.app
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.media.AudioAttributes
+import android.media.AudioFormat
+import android.media.AudioTrack
+import kotlin.math.sin
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,13 +46,47 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
  private var tts:TextToSpeech?=null
  private var speechReady=false
  private var reactionNumber=0
+ private val uiHandler=Handler(Looper.getMainLooper())
+ private var introPlayed=false
+ private fun playWelcomeMelody(){
+  if(introPlayed)return
+  introPlayed=true
+  Thread {
+   try {
+    val rate=22050
+    val notes=listOf(523.25,659.25,783.99,1046.5,783.99,880.0,1046.5)
+    val durations=listOf(140,140,140,250,130,130,340)
+    val total=durations.sum()*rate/1000
+    val samples=ShortArray(total)
+    var offset=0
+    for(j in notes.indices){
+     val count=durations[j]*rate/1000
+     for(i in 0 until count){
+      val envelope=minOf(1.0,i/250.0,(count-i)/500.0).coerceAtLeast(0.0)
+      val wave=sin(2.0*Math.PI*notes[j]*i/rate)+0.20*sin(4.0*Math.PI*notes[j]*i/rate)
+      samples[offset+i]=(wave*envelope*7000).toInt().toShort()
+     }
+     offset+=count
+    }
+    val track=AudioTrack.Builder().setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()).setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(rate).setChannelMask(AudioFormat.CHANNEL_OUT_MONO).build()).setBufferSizeInBytes(samples.size*2).setTransferMode(AudioTrack.MODE_STATIC).build()
+    track.write(samples,0,samples.size)
+    track.play()
+    Thread.sleep(durations.sum().toLong()+120)
+    track.stop();track.release()
+   }catch(_:Exception){}
+  }.start()
+ }
+ private fun sayEnglish(value:String,flush:Boolean=true){
+  if(!speechReady)return
+  tts?.speak(value,if(flush)TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD,null,"english-"+System.nanoTime())
+ }
  private fun sayReaction(correct:Boolean){
   if(!speechReady)return
   val phrases=if(correct) listOf("Great!","Well done!","Excellent!","Fantastic!","Amazing!","You did it!")
    else listOf("Try again!","Keep going!","You can do it!","Nice try!")
   val phrase=phrases[reactionNumber%phrases.size]
   reactionNumber++
-  tts?.speak(phrase,TextToSpeech.QUEUE_FLUSH,null,"fox-reaction-$reactionNumber")
+  sayEnglish(phrase,false)
  }
  override fun onInit(status:Int){
   if(status!=TextToSpeech.SUCCESS)return
@@ -68,6 +108,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
  }
  override fun onDestroy(){tts?.stop();tts?.shutdown();super.onDestroy()}
  override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState)
+  playWelcomeMelody()
   tts=TextToSpeech(this,this)
   val raw=JSONArray(assets.open("lessons.json").bufferedReader().use{it.readText()})
   val lessons=(0 until raw.length()).map{n->
@@ -93,6 +134,17 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
    fun start(n:Int){current=n;index=0;selected=null;correctCount=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
+   LaunchedEffect(screen,current,index) {
+    if(screen=="lesson") {
+     kotlinx.coroutines.delay(380)
+     repeat(15) {
+      if(speechReady)return@repeat
+      kotlinx.coroutines.delay(160)
+     }
+     val question=lessons[current].questions[index]
+     sayEnglish(question.speech)
+    }
+   }
    val purple=Color(0xFF7444D5)
    val pink=Color(0xFFFF5398)
    val teal=Color(0xFF23B9BA)
@@ -164,7 +216,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Spacer(Modifier.height(4.dp))
         Text(q.prompt,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp)
        } } }
-       item { Button(onClick={if(speechReady)tts?.speak(q.speech,TextToSpeech.QUEUE_FLUSH,null,"linguafree")},modifier=Modifier.fillMaxWidth().height(46.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
+       item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(46.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
        q.choices.forEachIndexed { i,choice -> item {
         val right=selected!=null && i==q.answer
         val chosen=selected==i
@@ -173,6 +225,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          selected=i
          foxExcited=i==q.answer
          foxMessage=if(i==q.answer) listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4] else "Try again! 💪"
+         sayEnglish(q.choices[q.answer])
          sayReaction(i==q.answer)
         },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(55.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFFE6DCF2))) {
          Text(choice,fontSize=19.sp,fontWeight=FontWeight.ExtraBold,lineHeight=23.sp)
