@@ -238,7 +238,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      if(reviewPairs.any{it.first==left && it.second==right}){
       reviewMatched=reviewMatched+left
       sayEnglish(left)
-      if(reviewMatched.size==reviewPairs.size){foxExcited=true;sayEnglish("Ta-da! Amazing! You did it!",false)}
+      if(reviewMatched.size==reviewPairs.size){foxExcited=true;playMilestoneSound();sayEnglish("Ta-da! Amazing! You did it!",false)}
      }else{sayEnglish("Try again!")}
      reviewLeft=null;reviewRight=null
     }
@@ -415,7 +415,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Button(onClick={
          val right=typedAnswer.trim().equals(q.choices[q.answer],ignoreCase=true)
          selected=if(right)q.answer else (q.answer+1)%q.choices.size
-         foxExcited=right;foxMessage=if(right)"Отлично! 🌟" else "Попробуй ещё! 💪"
+         foxExcited=right;foxMessage=if(right)when(answerCombo+1){3->"🔥 Три подряд!";5->"🌟 Пять подряд!";10->"🏆 Десять подряд!";else->"Отлично! 🌟"} else "Попробуй ещё! 💪"
          sayEnglish(q.speech);sayReaction(right)
         },enabled=selected==null && typedAnswer.isNotBlank(),modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОВЕРИТЬ",fontWeight=FontWeight.Black)}
        }
@@ -437,7 +437,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         OutlinedButton(onClick={
          selected=i
          foxExcited=i==q.answer
-         foxMessage=if(i==q.answer) listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4] else "Try again! 💪"
+         foxMessage=if(i==q.answer) when(answerCombo+1){3->"🔥 Три подряд! Great!";5->"🌟 Пять подряд! Excellent!";10->"🏆 Десять подряд! Amazing!";else->listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4]} else "Try again! 💪"
          sayEnglish(q.choices[q.answer])
          sayReaction(i==q.answer)
         },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(if(pictureMode) 68.dp else 54.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFF40565D))) {
