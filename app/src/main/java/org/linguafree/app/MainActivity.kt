@@ -202,7 +202,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     Quiz(q.getString("prompt"),(0 until a.length()).map{a.getString(it)},q.getInt("answer"),q.getString("explanation"),q.getString("speech"))
    })
   }
-  val lessons=(0 until 300).map { n -> val original=baseLessons[n%baseLessons.size]; original.copy(title=if(n<baseLessons.size)original.title else "${original.title} · этап ${n/baseLessons.size+1}") }
+  val lessons=baseLessons
   val prefs=getSharedPreferences("linguafree_progress",Activity.MODE_PRIVATE)
   ReminderReceiver.schedule(this)
   setContent {
@@ -295,13 +295,34 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var correctCount by remember { mutableIntStateOf(0) }
    var foxMessage by remember { mutableStateOf("Давай попробуем!") }
    var foxExcited by remember { mutableStateOf(false) }
+   var foxMood by remember { mutableStateOf("curious") }
+   fun normalizeSpoken(value:String)=value.lowercase(Locale.US).replace(Regex("[^a-z' ]")," ").replace(Regex("\\s+")," ").trim()
+   fun speechSimilarity(expected:String,spoken:String):Int {
+    val a=normalizeSpoken(expected).split(" ").filter{it.isNotBlank()}
+    val b=normalizeSpoken(spoken).split(" ").filter{it.isNotBlank()}
+    if(a.isEmpty()||b.isEmpty())return 0
+    val row=IntArray(b.size+1){it}
+    for(i in a.indices){
+     var prev=row[0];row[0]=i+1
+     for(j in b.indices){
+      val old=row[j+1]
+      row[j+1]=minOf(row[j+1]+1,row[j]+1,prev+if(a[i]==b[j])0 else 1)
+      prev=old
+     }
+    }
+    return ((1.0-row[b.size].toDouble()/maxOf(a.size,b.size))*100).toInt().coerceIn(0,100)
+   }
    val speechLauncher=rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
     val heard=result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.firstOrNull().orEmpty()
     speechResult=heard
-    if(heard.isNotBlank() && heard.trim().lowercase(Locale.ROOT).replace(Regex("[^a-z ]"),"")==speechTarget.lowercase(Locale.ROOT).replace(Regex("[^a-z ]"),"")){
-     xp+=10;gems+=1;foxExcited=true;trackSkill(3,true);sayReaction(true);storyFeedback="Отличное произношение! +10 XP"
-    }else if(heard.isNotBlank()){trackSkill(3,false);sayReaction(false);storyFeedback="Распознано: $heard. Попробуй ещё раз!"}
-    else storyFeedback="Речь не распознана. Попробуй снова."
+    val score=speechSimilarity(speechTarget,heard)
+    if(heard.isNotBlank() && score>=85){
+     trackSkill(3,true);foxExcited=true;foxMood="happy";sayReaction(true)
+     storyFeedback="Хорошо распознано ($score%). Произнесено: $heard"
+    }else if(heard.isNotBlank()){
+     trackSkill(3,false);foxExcited=false;foxMood="support";sayReaction(false)
+     storyFeedback="Совпадение слов: $score%. Распознано: $heard. Послушай образец и повтори."
+    }else{foxMood="surprised";storyFeedback="Речь не распознана. Попробуй снова."}
     prefs.edit().putInt("xp",xp).putInt("gems",gems).apply()
    }
    fun practiceSpeech(phrase:String){
@@ -408,7 +429,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home" && showHomeGreeting) item {
        Card(colors=CardDefaults.cardColors(containerColor=Color(0xFF2B3544)),shape=RoundedCornerShape(22.dp),modifier=Modifier.fillMaxWidth()) {
         Row(Modifier.padding(14.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-         AnimatedFox(modifier=Modifier.size(82.dp).offset(y=bounce.dp),happy=foxExcited)
+         AnimatedFox(modifier=Modifier.size(82.dp).offset(y=bounce.dp),mood=foxMood)
          Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)) {
           Text("Привет! Я твоя лисичка! 🦊",fontSize=19.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=23.sp)
           Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=14.sp,color=pink,lineHeight=18.sp)
@@ -500,7 +521,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Text("‹  Истории с лисичкой",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
        item { LinearProgressIndicator(progress={(storyStep+1f)/stories[storyIndex].size},modifier=Modifier.fillMaxWidth(),color=green) }
        item { Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)){
-        AnimatedFox(modifier=Modifier.size(100.dp).offset(y=bounce.dp),happy=storyFeedback.startsWith("Правильно"))
+        AnimatedFox(modifier=Modifier.size(100.dp).offset(y=bounce.dp),mood=if(storyFeedback.startsWith("Правильно"))"happy" else if(storyFeedback.isNotBlank())"support" else "curious")
         Text(phrase.first,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,modifier=Modifier.weight(1f))
        } }
        item { Button(onClick={sayEnglish(phrase.first)},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать диалог")} }
@@ -524,7 +545,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
       if(screen=="speaking") {
        item { Text("‹  Говорим по-английски",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
-       item { AnimatedFox(modifier=Modifier.size(155.dp).offset(y=bounce.dp),happy=foxExcited) }
+       item { AnimatedFox(modifier=Modifier.size(155.dp).offset(y=bounce.dp),mood=foxMood) }
        item { Text("Повтори за лисичкой",fontSize=22.sp,fontWeight=FontWeight.Bold,color=ink) }
        item { Text(speechTarget,fontSize=30.sp,fontWeight=FontWeight.Black,color=green) }
        item { Button(onClick={sayEnglish(speechTarget)},modifier=Modifier.fillMaxWidth()){Text("🔊 Слушать")} }
@@ -536,7 +557,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
-       AnimatedFox(modifier=Modifier.size(92.dp).offset(y=bounce.dp),happy=foxExcited)
+       AnimatedFox(modifier=Modifier.size(92.dp).offset(y=bounce.dp),mood=foxMood)
       } }
       
       if(screen=="home") item {
@@ -683,7 +704,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Button(onClick={
          val right=typedAnswer.trim().equals(if(missingMode)correctWord[missingIndex].toString() else correctWord,ignoreCase=true)
          selected=if(right)q.answer else (q.answer+1)%q.choices.size
-         foxExcited=right;foxMessage=if(right)when(answerCombo+1){3->"🔥 Три подряд!";5->"🌟 Пять подряд!";10->"🏆 Десять подряд!";else->"Отлично! 🌟"} else "Попробуй ещё! 💪"
+         foxExcited=right;foxMood=if(right)"happy" else "support";foxMessage=if(right)when(answerCombo+1){3->"🔥 Три подряд!";5->"🌟 Пять подряд!";10->"🏆 Десять подряд!";else->"Отлично! 🌟"} else "Попробуй ещё! 💪"
          trackSkill(2,right)
          sayEnglish(q.speech);sayReaction(right)
         },enabled=selected==null && typedAnswer.isNotBlank(),modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОВЕРИТЬ",fontWeight=FontWeight.Black)}
@@ -705,7 +726,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         val bg=if(right)Color(0xFFD8F8E7) else if(chosen)Color(0xFFFFE0EA) else panel
         OutlinedButton(onClick={
          selected=i
-         foxExcited=i==q.answer
+         foxExcited=i==q.answer;foxMood=if(i==q.answer)if(answerCombo>=2)"celebrate" else "happy" else "support"
          foxMessage=if(i==q.answer) when(answerCombo+1){3->"🔥 Три подряд! Great!";5->"🌟 Пять подряд! Excellent!";10->"🏆 Десять подряд! Amazing!";else->listOf("Great! 🌟","Well done! 🎉","Excellent! 🏆","Amazing! ✨")[index%4]} else "Try again! 💪"
          sayEnglish(q.choices[q.answer])
          trackSkill(if(audioMode)1 else 0,i==q.answer)
