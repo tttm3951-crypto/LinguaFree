@@ -1,0 +1,1478 @@
+[
+  {
+    "title": "Приветствие",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Привет»?",
+        "choices": [
+          "Hello",
+          "Thank you",
+          "Please"
+        ],
+        "answer": 0,
+        "explanation": "«Привет» — «Hello».",
+        "speech": "Hello"
+      },
+      {
+        "prompt": "Как по-английски: «Спасибо»?",
+        "choices": [
+          "Thank you",
+          "Please",
+          "Goodbye"
+        ],
+        "answer": 0,
+        "explanation": "«Спасибо» — «Thank you».",
+        "speech": "Thank you"
+      },
+      {
+        "prompt": "Как по-английски: «Пожалуйста»?",
+        "choices": [
+          "Please",
+          "Goodbye",
+          "Good morning"
+        ],
+        "answer": 0,
+        "explanation": "«Пожалуйста» — «Please».",
+        "speech": "Please"
+      },
+      {
+        "prompt": "Как по-английски: «До свидания»?",
+        "choices": [
+          "Goodbye",
+          "Good morning",
+          "Good night"
+        ],
+        "answer": 0,
+        "explanation": "«До свидания» — «Goodbye».",
+        "speech": "Goodbye"
+      },
+      {
+        "prompt": "Как по-английски: «Доброе утро»?",
+        "choices": [
+          "Good morning",
+          "Good night",
+          "Sorry"
+        ],
+        "answer": 0,
+        "explanation": "«Доброе утро» — «Good morning».",
+        "speech": "Good morning"
+      },
+      {
+        "prompt": "Как по-английски: «Спокойной ночи»?",
+        "choices": [
+          "Good night",
+          "Sorry",
+          "Hello"
+        ],
+        "answer": 0,
+        "explanation": "«Спокойной ночи» — «Good night».",
+        "speech": "Good night"
+      },
+      {
+        "prompt": "Как по-английски: «Извините»?",
+        "choices": [
+          "Sorry",
+          "Hello",
+          "Thank you"
+        ],
+        "answer": 0,
+        "explanation": "«Извините» — «Sorry».",
+        "speech": "Sorry"
+      }
+    ]
+  },
+  {
+    "title": "Люди",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Мама»?",
+        "choices": [
+          "Mother",
+          "Father",
+          "Friend"
+        ],
+        "answer": 0,
+        "explanation": "«Мама» — «Mother».",
+        "speech": "Mother"
+      },
+      {
+        "prompt": "Как по-английски: «Папа»?",
+        "choices": [
+          "Father",
+          "Friend",
+          "Teacher"
+        ],
+        "answer": 0,
+        "explanation": "«Папа» — «Father».",
+        "speech": "Father"
+      },
+      {
+        "prompt": "Как по-английски: «Друг»?",
+        "choices": [
+          "Friend",
+          "Teacher",
+          "Child"
+        ],
+        "answer": 0,
+        "explanation": "«Друг» — «Friend».",
+        "speech": "Friend"
+      },
+      {
+        "prompt": "Как по-английски: «Учитель»?",
+        "choices": [
+          "Teacher",
+          "Child",
+          "Brother"
+        ],
+        "answer": 0,
+        "explanation": "«Учитель» — «Teacher».",
+        "speech": "Teacher"
+      },
+      {
+        "prompt": "Как по-английски: «Ребёнок»?",
+        "choices": [
+          "Child",
+          "Brother",
+          "Sister"
+        ],
+        "answer": 0,
+        "explanation": "«Ребёнок» — «Child».",
+        "speech": "Child"
+      },
+      {
+        "prompt": "Как по-английски: «Брат»?",
+        "choices": [
+          "Brother",
+          "Sister",
+          "Mother"
+        ],
+        "answer": 0,
+        "explanation": "«Брат» — «Brother».",
+        "speech": "Brother"
+      },
+      {
+        "prompt": "Как по-английски: «Сестра»?",
+        "choices": [
+          "Sister",
+          "Mother",
+          "Father"
+        ],
+        "answer": 0,
+        "explanation": "«Сестра» — «Sister».",
+        "speech": "Sister"
+      }
+    ]
+  },
+  {
+    "title": "Числа",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Один»?",
+        "choices": [
+          "One",
+          "Two",
+          "Three"
+        ],
+        "answer": 0,
+        "explanation": "«Один» — «One».",
+        "speech": "One"
+      },
+      {
+        "prompt": "Как по-английски: «Два»?",
+        "choices": [
+          "Two",
+          "Three",
+          "Four"
+        ],
+        "answer": 0,
+        "explanation": "«Два» — «Two».",
+        "speech": "Two"
+      },
+      {
+        "prompt": "Как по-английски: «Три»?",
+        "choices": [
+          "Three",
+          "Four",
+          "Five"
+        ],
+        "answer": 0,
+        "explanation": "«Три» — «Three».",
+        "speech": "Three"
+      },
+      {
+        "prompt": "Как по-английски: «Четыре»?",
+        "choices": [
+          "Four",
+          "Five",
+          "Six"
+        ],
+        "answer": 0,
+        "explanation": "«Четыре» — «Four».",
+        "speech": "Four"
+      },
+      {
+        "prompt": "Как по-английски: «Пять»?",
+        "choices": [
+          "Five",
+          "Six",
+          "Seven"
+        ],
+        "answer": 0,
+        "explanation": "«Пять» — «Five».",
+        "speech": "Five"
+      },
+      {
+        "prompt": "Как по-английски: «Шесть»?",
+        "choices": [
+          "Six",
+          "Seven",
+          "One"
+        ],
+        "answer": 0,
+        "explanation": "«Шесть» — «Six».",
+        "speech": "Six"
+      },
+      {
+        "prompt": "Как по-английски: «Семь»?",
+        "choices": [
+          "Seven",
+          "One",
+          "Two"
+        ],
+        "answer": 0,
+        "explanation": "«Семь» — «Seven».",
+        "speech": "Seven"
+      }
+    ]
+  },
+  {
+    "title": "Цвета",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Красный»?",
+        "choices": [
+          "Red",
+          "Blue",
+          "Green"
+        ],
+        "answer": 0,
+        "explanation": "«Красный» — «Red».",
+        "speech": "Red"
+      },
+      {
+        "prompt": "Как по-английски: «Синий»?",
+        "choices": [
+          "Blue",
+          "Green",
+          "Yellow"
+        ],
+        "answer": 0,
+        "explanation": "«Синий» — «Blue».",
+        "speech": "Blue"
+      },
+      {
+        "prompt": "Как по-английски: «Зелёный»?",
+        "choices": [
+          "Green",
+          "Yellow",
+          "White"
+        ],
+        "answer": 0,
+        "explanation": "«Зелёный» — «Green».",
+        "speech": "Green"
+      },
+      {
+        "prompt": "Как по-английски: «Жёлтый»?",
+        "choices": [
+          "Yellow",
+          "White",
+          "Black"
+        ],
+        "answer": 0,
+        "explanation": "«Жёлтый» — «Yellow».",
+        "speech": "Yellow"
+      },
+      {
+        "prompt": "Как по-английски: «Белый»?",
+        "choices": [
+          "White",
+          "Black",
+          "Pink"
+        ],
+        "answer": 0,
+        "explanation": "«Белый» — «White».",
+        "speech": "White"
+      },
+      {
+        "prompt": "Как по-английски: «Чёрный»?",
+        "choices": [
+          "Black",
+          "Pink",
+          "Red"
+        ],
+        "answer": 0,
+        "explanation": "«Чёрный» — «Black».",
+        "speech": "Black"
+      },
+      {
+        "prompt": "Как по-английски: «Розовый»?",
+        "choices": [
+          "Pink",
+          "Red",
+          "Blue"
+        ],
+        "answer": 0,
+        "explanation": "«Розовый» — «Pink».",
+        "speech": "Pink"
+      }
+    ]
+  },
+  {
+    "title": "Еда",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Хлеб»?",
+        "choices": [
+          "Bread",
+          "Water",
+          "Apple"
+        ],
+        "answer": 0,
+        "explanation": "«Хлеб» — «Bread».",
+        "speech": "Bread"
+      },
+      {
+        "prompt": "Как по-английски: «Вода»?",
+        "choices": [
+          "Water",
+          "Apple",
+          "Milk"
+        ],
+        "answer": 0,
+        "explanation": "«Вода» — «Water».",
+        "speech": "Water"
+      },
+      {
+        "prompt": "Как по-английски: «Яблоко»?",
+        "choices": [
+          "Apple",
+          "Milk",
+          "Cheese"
+        ],
+        "answer": 0,
+        "explanation": "«Яблоко» — «Apple».",
+        "speech": "Apple"
+      },
+      {
+        "prompt": "Как по-английски: «Молоко»?",
+        "choices": [
+          "Milk",
+          "Cheese",
+          "Rice"
+        ],
+        "answer": 0,
+        "explanation": "«Молоко» — «Milk».",
+        "speech": "Milk"
+      },
+      {
+        "prompt": "Как по-английски: «Сыр»?",
+        "choices": [
+          "Cheese",
+          "Rice",
+          "Egg"
+        ],
+        "answer": 0,
+        "explanation": "«Сыр» — «Cheese».",
+        "speech": "Cheese"
+      },
+      {
+        "prompt": "Как по-английски: «Рис»?",
+        "choices": [
+          "Rice",
+          "Egg",
+          "Bread"
+        ],
+        "answer": 0,
+        "explanation": "«Рис» — «Rice».",
+        "speech": "Rice"
+      },
+      {
+        "prompt": "Как по-английски: «Яйцо»?",
+        "choices": [
+          "Egg",
+          "Bread",
+          "Water"
+        ],
+        "answer": 0,
+        "explanation": "«Яйцо» — «Egg».",
+        "speech": "Egg"
+      }
+    ]
+  },
+  {
+    "title": "Дом",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Дом»?",
+        "choices": [
+          "House",
+          "Room",
+          "Door"
+        ],
+        "answer": 0,
+        "explanation": "«Дом» — «House».",
+        "speech": "House"
+      },
+      {
+        "prompt": "Как по-английски: «Комната»?",
+        "choices": [
+          "Room",
+          "Door",
+          "Window"
+        ],
+        "answer": 0,
+        "explanation": "«Комната» — «Room».",
+        "speech": "Room"
+      },
+      {
+        "prompt": "Как по-английски: «Дверь»?",
+        "choices": [
+          "Door",
+          "Window",
+          "Table"
+        ],
+        "answer": 0,
+        "explanation": "«Дверь» — «Door».",
+        "speech": "Door"
+      },
+      {
+        "prompt": "Как по-английски: «Окно»?",
+        "choices": [
+          "Window",
+          "Table",
+          "Chair"
+        ],
+        "answer": 0,
+        "explanation": "«Окно» — «Window».",
+        "speech": "Window"
+      },
+      {
+        "prompt": "Как по-английски: «Стол»?",
+        "choices": [
+          "Table",
+          "Chair",
+          "Bed"
+        ],
+        "answer": 0,
+        "explanation": "«Стол» — «Table».",
+        "speech": "Table"
+      },
+      {
+        "prompt": "Как по-английски: «Стул»?",
+        "choices": [
+          "Chair",
+          "Bed",
+          "House"
+        ],
+        "answer": 0,
+        "explanation": "«Стул» — «Chair».",
+        "speech": "Chair"
+      },
+      {
+        "prompt": "Как по-английски: «Кровать»?",
+        "choices": [
+          "Bed",
+          "House",
+          "Room"
+        ],
+        "answer": 0,
+        "explanation": "«Кровать» — «Bed».",
+        "speech": "Bed"
+      }
+    ]
+  },
+  {
+    "title": "Школа",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Школа»?",
+        "choices": [
+          "School",
+          "Book",
+          "Pen"
+        ],
+        "answer": 0,
+        "explanation": "«Школа» — «School».",
+        "speech": "School"
+      },
+      {
+        "prompt": "Как по-английски: «Книга»?",
+        "choices": [
+          "Book",
+          "Pen",
+          "Lesson"
+        ],
+        "answer": 0,
+        "explanation": "«Книга» — «Book».",
+        "speech": "Book"
+      },
+      {
+        "prompt": "Как по-английски: «Ручка»?",
+        "choices": [
+          "Pen",
+          "Lesson",
+          "Question"
+        ],
+        "answer": 0,
+        "explanation": "«Ручка» — «Pen».",
+        "speech": "Pen"
+      },
+      {
+        "prompt": "Как по-английски: «Урок»?",
+        "choices": [
+          "Lesson",
+          "Question",
+          "Answer"
+        ],
+        "answer": 0,
+        "explanation": "«Урок» — «Lesson».",
+        "speech": "Lesson"
+      },
+      {
+        "prompt": "Как по-английски: «Вопрос»?",
+        "choices": [
+          "Question",
+          "Answer",
+          "Student"
+        ],
+        "answer": 0,
+        "explanation": "«Вопрос» — «Question».",
+        "speech": "Question"
+      },
+      {
+        "prompt": "Как по-английски: «Ответ»?",
+        "choices": [
+          "Answer",
+          "Student",
+          "School"
+        ],
+        "answer": 0,
+        "explanation": "«Ответ» — «Answer».",
+        "speech": "Answer"
+      },
+      {
+        "prompt": "Как по-английски: «Студент»?",
+        "choices": [
+          "Student",
+          "School",
+          "Book"
+        ],
+        "answer": 0,
+        "explanation": "«Студент» — «Student».",
+        "speech": "Student"
+      }
+    ]
+  },
+  {
+    "title": "Животные",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Кошка»?",
+        "choices": [
+          "Cat",
+          "Dog",
+          "Bird"
+        ],
+        "answer": 0,
+        "explanation": "«Кошка» — «Cat».",
+        "speech": "Cat"
+      },
+      {
+        "prompt": "Как по-английски: «Собака»?",
+        "choices": [
+          "Dog",
+          "Bird",
+          "Fish"
+        ],
+        "answer": 0,
+        "explanation": "«Собака» — «Dog».",
+        "speech": "Dog"
+      },
+      {
+        "prompt": "Как по-английски: «Птица»?",
+        "choices": [
+          "Bird",
+          "Fish",
+          "Horse"
+        ],
+        "answer": 0,
+        "explanation": "«Птица» — «Bird».",
+        "speech": "Bird"
+      },
+      {
+        "prompt": "Как по-английски: «Рыба»?",
+        "choices": [
+          "Fish",
+          "Horse",
+          "Cow"
+        ],
+        "answer": 0,
+        "explanation": "«Рыба» — «Fish».",
+        "speech": "Fish"
+      },
+      {
+        "prompt": "Как по-английски: «Лошадь»?",
+        "choices": [
+          "Horse",
+          "Cow",
+          "Mouse"
+        ],
+        "answer": 0,
+        "explanation": "«Лошадь» — «Horse».",
+        "speech": "Horse"
+      },
+      {
+        "prompt": "Как по-английски: «Корова»?",
+        "choices": [
+          "Cow",
+          "Mouse",
+          "Cat"
+        ],
+        "answer": 0,
+        "explanation": "«Корова» — «Cow».",
+        "speech": "Cow"
+      },
+      {
+        "prompt": "Как по-английски: «Мышь»?",
+        "choices": [
+          "Mouse",
+          "Cat",
+          "Dog"
+        ],
+        "answer": 0,
+        "explanation": "«Мышь» — «Mouse».",
+        "speech": "Mouse"
+      }
+    ]
+  },
+  {
+    "title": "Глаголы",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Идти»?",
+        "choices": [
+          "Go",
+          "Eat",
+          "Drink"
+        ],
+        "answer": 0,
+        "explanation": "«Идти» — «Go».",
+        "speech": "Go"
+      },
+      {
+        "prompt": "Как по-английски: «Есть»?",
+        "choices": [
+          "Eat",
+          "Drink",
+          "Read"
+        ],
+        "answer": 0,
+        "explanation": "«Есть» — «Eat».",
+        "speech": "Eat"
+      },
+      {
+        "prompt": "Как по-английски: «Пить»?",
+        "choices": [
+          "Drink",
+          "Read",
+          "Write"
+        ],
+        "answer": 0,
+        "explanation": "«Пить» — «Drink».",
+        "speech": "Drink"
+      },
+      {
+        "prompt": "Как по-английски: «Читать»?",
+        "choices": [
+          "Read",
+          "Write",
+          "Sleep"
+        ],
+        "answer": 0,
+        "explanation": "«Читать» — «Read».",
+        "speech": "Read"
+      },
+      {
+        "prompt": "Как по-английски: «Писать»?",
+        "choices": [
+          "Write",
+          "Sleep",
+          "Play"
+        ],
+        "answer": 0,
+        "explanation": "«Писать» — «Write».",
+        "speech": "Write"
+      },
+      {
+        "prompt": "Как по-английски: «Спать»?",
+        "choices": [
+          "Sleep",
+          "Play",
+          "Go"
+        ],
+        "answer": 0,
+        "explanation": "«Спать» — «Sleep».",
+        "speech": "Sleep"
+      },
+      {
+        "prompt": "Как по-английски: «Играть»?",
+        "choices": [
+          "Play",
+          "Go",
+          "Eat"
+        ],
+        "answer": 0,
+        "explanation": "«Играть» — «Play».",
+        "speech": "Play"
+      }
+    ]
+  },
+  {
+    "title": "Время",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Сегодня»?",
+        "choices": [
+          "Today",
+          "Tomorrow",
+          "Yesterday"
+        ],
+        "answer": 0,
+        "explanation": "«Сегодня» — «Today».",
+        "speech": "Today"
+      },
+      {
+        "prompt": "Как по-английски: «Завтра»?",
+        "choices": [
+          "Tomorrow",
+          "Yesterday",
+          "Morning"
+        ],
+        "answer": 0,
+        "explanation": "«Завтра» — «Tomorrow».",
+        "speech": "Tomorrow"
+      },
+      {
+        "prompt": "Как по-английски: «Вчера»?",
+        "choices": [
+          "Yesterday",
+          "Morning",
+          "Evening"
+        ],
+        "answer": 0,
+        "explanation": "«Вчера» — «Yesterday».",
+        "speech": "Yesterday"
+      },
+      {
+        "prompt": "Как по-английски: «Утро»?",
+        "choices": [
+          "Morning",
+          "Evening",
+          "Week"
+        ],
+        "answer": 0,
+        "explanation": "«Утро» — «Morning».",
+        "speech": "Morning"
+      },
+      {
+        "prompt": "Как по-английски: «Вечер»?",
+        "choices": [
+          "Evening",
+          "Week",
+          "Year"
+        ],
+        "answer": 0,
+        "explanation": "«Вечер» — «Evening».",
+        "speech": "Evening"
+      },
+      {
+        "prompt": "Как по-английски: «Неделя»?",
+        "choices": [
+          "Week",
+          "Year",
+          "Today"
+        ],
+        "answer": 0,
+        "explanation": "«Неделя» — «Week».",
+        "speech": "Week"
+      },
+      {
+        "prompt": "Как по-английски: «Год»?",
+        "choices": [
+          "Year",
+          "Today",
+          "Tomorrow"
+        ],
+        "answer": 0,
+        "explanation": "«Год» — «Year».",
+        "speech": "Year"
+      }
+    ]
+  },
+  {
+    "title": "Погода",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Солнце»?",
+        "choices": [
+          "Sun",
+          "Rain",
+          "Snow"
+        ],
+        "answer": 0,
+        "explanation": "«Солнце» — «Sun».",
+        "speech": "Sun"
+      },
+      {
+        "prompt": "Как по-английски: «Дождь»?",
+        "choices": [
+          "Rain",
+          "Snow",
+          "Wind"
+        ],
+        "answer": 0,
+        "explanation": "«Дождь» — «Rain».",
+        "speech": "Rain"
+      },
+      {
+        "prompt": "Как по-английски: «Снег»?",
+        "choices": [
+          "Snow",
+          "Wind",
+          "Cold"
+        ],
+        "answer": 0,
+        "explanation": "«Снег» — «Snow».",
+        "speech": "Snow"
+      },
+      {
+        "prompt": "Как по-английски: «Ветер»?",
+        "choices": [
+          "Wind",
+          "Cold",
+          "Hot"
+        ],
+        "answer": 0,
+        "explanation": "«Ветер» — «Wind».",
+        "speech": "Wind"
+      },
+      {
+        "prompt": "Как по-английски: «Холодно»?",
+        "choices": [
+          "Cold",
+          "Hot",
+          "Cloud"
+        ],
+        "answer": 0,
+        "explanation": "«Холодно» — «Cold».",
+        "speech": "Cold"
+      },
+      {
+        "prompt": "Как по-английски: «Жарко»?",
+        "choices": [
+          "Hot",
+          "Cloud",
+          "Sun"
+        ],
+        "answer": 0,
+        "explanation": "«Жарко» — «Hot».",
+        "speech": "Hot"
+      },
+      {
+        "prompt": "Как по-английски: «Облако»?",
+        "choices": [
+          "Cloud",
+          "Sun",
+          "Rain"
+        ],
+        "answer": 0,
+        "explanation": "«Облако» — «Cloud».",
+        "speech": "Cloud"
+      }
+    ]
+  },
+  {
+    "title": "Одежда",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Рубашка»?",
+        "choices": [
+          "Shirt",
+          "Shoes",
+          "Hat"
+        ],
+        "answer": 0,
+        "explanation": "«Рубашка» — «Shirt».",
+        "speech": "Shirt"
+      },
+      {
+        "prompt": "Как по-английски: «Обувь»?",
+        "choices": [
+          "Shoes",
+          "Hat",
+          "Dress"
+        ],
+        "answer": 0,
+        "explanation": "«Обувь» — «Shoes».",
+        "speech": "Shoes"
+      },
+      {
+        "prompt": "Как по-английски: «Шапка»?",
+        "choices": [
+          "Hat",
+          "Dress",
+          "Jacket"
+        ],
+        "answer": 0,
+        "explanation": "«Шапка» — «Hat».",
+        "speech": "Hat"
+      },
+      {
+        "prompt": "Как по-английски: «Платье»?",
+        "choices": [
+          "Dress",
+          "Jacket",
+          "Socks"
+        ],
+        "answer": 0,
+        "explanation": "«Платье» — «Dress».",
+        "speech": "Dress"
+      },
+      {
+        "prompt": "Как по-английски: «Куртка»?",
+        "choices": [
+          "Jacket",
+          "Socks",
+          "Trousers"
+        ],
+        "answer": 0,
+        "explanation": "«Куртка» — «Jacket».",
+        "speech": "Jacket"
+      },
+      {
+        "prompt": "Как по-английски: «Носки»?",
+        "choices": [
+          "Socks",
+          "Trousers",
+          "Shirt"
+        ],
+        "answer": 0,
+        "explanation": "«Носки» — «Socks».",
+        "speech": "Socks"
+      },
+      {
+        "prompt": "Как по-английски: «Брюки»?",
+        "choices": [
+          "Trousers",
+          "Shirt",
+          "Shoes"
+        ],
+        "answer": 0,
+        "explanation": "«Брюки» — «Trousers».",
+        "speech": "Trousers"
+      }
+    ]
+  },
+  {
+    "title": "Город",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Улица»?",
+        "choices": [
+          "Street",
+          "Shop",
+          "Park"
+        ],
+        "answer": 0,
+        "explanation": "«Улица» — «Street».",
+        "speech": "Street"
+      },
+      {
+        "prompt": "Как по-английски: «Магазин»?",
+        "choices": [
+          "Shop",
+          "Park",
+          "Hospital"
+        ],
+        "answer": 0,
+        "explanation": "«Магазин» — «Shop».",
+        "speech": "Shop"
+      },
+      {
+        "prompt": "Как по-английски: «Парк»?",
+        "choices": [
+          "Park",
+          "Hospital",
+          "Station"
+        ],
+        "answer": 0,
+        "explanation": "«Парк» — «Park».",
+        "speech": "Park"
+      },
+      {
+        "prompt": "Как по-английски: «Больница»?",
+        "choices": [
+          "Hospital",
+          "Station",
+          "Road"
+        ],
+        "answer": 0,
+        "explanation": "«Больница» — «Hospital».",
+        "speech": "Hospital"
+      },
+      {
+        "prompt": "Как по-английски: «Станция»?",
+        "choices": [
+          "Station",
+          "Road",
+          "City"
+        ],
+        "answer": 0,
+        "explanation": "«Станция» — «Station».",
+        "speech": "Station"
+      },
+      {
+        "prompt": "Как по-английски: «Дорога»?",
+        "choices": [
+          "Road",
+          "City",
+          "Street"
+        ],
+        "answer": 0,
+        "explanation": "«Дорога» — «Road».",
+        "speech": "Road"
+      },
+      {
+        "prompt": "Как по-английски: «Город»?",
+        "choices": [
+          "City",
+          "Street",
+          "Shop"
+        ],
+        "answer": 0,
+        "explanation": "«Город» — «City».",
+        "speech": "City"
+      }
+    ]
+  },
+  {
+    "title": "Путешествие",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Билет»?",
+        "choices": [
+          "Ticket",
+          "Train",
+          "Plane"
+        ],
+        "answer": 0,
+        "explanation": "«Билет» — «Ticket».",
+        "speech": "Ticket"
+      },
+      {
+        "prompt": "Как по-английски: «Поезд»?",
+        "choices": [
+          "Train",
+          "Plane",
+          "Bus"
+        ],
+        "answer": 0,
+        "explanation": "«Поезд» — «Train».",
+        "speech": "Train"
+      },
+      {
+        "prompt": "Как по-английски: «Самолёт»?",
+        "choices": [
+          "Plane",
+          "Bus",
+          "Hotel"
+        ],
+        "answer": 0,
+        "explanation": "«Самолёт» — «Plane».",
+        "speech": "Plane"
+      },
+      {
+        "prompt": "Как по-английски: «Автобус»?",
+        "choices": [
+          "Bus",
+          "Hotel",
+          "Map"
+        ],
+        "answer": 0,
+        "explanation": "«Автобус» — «Bus».",
+        "speech": "Bus"
+      },
+      {
+        "prompt": "Как по-английски: «Отель»?",
+        "choices": [
+          "Hotel",
+          "Map",
+          "Passport"
+        ],
+        "answer": 0,
+        "explanation": "«Отель» — «Hotel».",
+        "speech": "Hotel"
+      },
+      {
+        "prompt": "Как по-английски: «Карта»?",
+        "choices": [
+          "Map",
+          "Passport",
+          "Ticket"
+        ],
+        "answer": 0,
+        "explanation": "«Карта» — «Map».",
+        "speech": "Map"
+      },
+      {
+        "prompt": "Как по-английски: «Паспорт»?",
+        "choices": [
+          "Passport",
+          "Ticket",
+          "Train"
+        ],
+        "answer": 0,
+        "explanation": "«Паспорт» — «Passport».",
+        "speech": "Passport"
+      }
+    ]
+  },
+  {
+    "title": "Работа",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Работа»?",
+        "choices": [
+          "Work",
+          "Office",
+          "Meeting"
+        ],
+        "answer": 0,
+        "explanation": "«Работа» — «Work».",
+        "speech": "Work"
+      },
+      {
+        "prompt": "Как по-английски: «Офис»?",
+        "choices": [
+          "Office",
+          "Meeting",
+          "Money"
+        ],
+        "answer": 0,
+        "explanation": "«Офис» — «Office».",
+        "speech": "Office"
+      },
+      {
+        "prompt": "Как по-английски: «Встреча»?",
+        "choices": [
+          "Meeting",
+          "Money",
+          "Project"
+        ],
+        "answer": 0,
+        "explanation": "«Встреча» — «Meeting».",
+        "speech": "Meeting"
+      },
+      {
+        "prompt": "Как по-английски: «Деньги»?",
+        "choices": [
+          "Money",
+          "Project",
+          "Team"
+        ],
+        "answer": 0,
+        "explanation": "«Деньги» — «Money».",
+        "speech": "Money"
+      },
+      {
+        "prompt": "Как по-английски: «Проект»?",
+        "choices": [
+          "Project",
+          "Team",
+          "Computer"
+        ],
+        "answer": 0,
+        "explanation": "«Проект» — «Project».",
+        "speech": "Project"
+      },
+      {
+        "prompt": "Как по-английски: «Команда»?",
+        "choices": [
+          "Team",
+          "Computer",
+          "Work"
+        ],
+        "answer": 0,
+        "explanation": "«Команда» — «Team».",
+        "speech": "Team"
+      },
+      {
+        "prompt": "Как по-английски: «Компьютер»?",
+        "choices": [
+          "Computer",
+          "Work",
+          "Office"
+        ],
+        "answer": 0,
+        "explanation": "«Компьютер» — «Computer».",
+        "speech": "Computer"
+      }
+    ]
+  },
+  {
+    "title": "Вопросы",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Кто»?",
+        "choices": [
+          "Who",
+          "What",
+          "Where"
+        ],
+        "answer": 0,
+        "explanation": "«Кто» — «Who».",
+        "speech": "Who"
+      },
+      {
+        "prompt": "Как по-английски: «Что»?",
+        "choices": [
+          "What",
+          "Where",
+          "When"
+        ],
+        "answer": 0,
+        "explanation": "«Что» — «What».",
+        "speech": "What"
+      },
+      {
+        "prompt": "Как по-английски: «Где»?",
+        "choices": [
+          "Where",
+          "When",
+          "Why"
+        ],
+        "answer": 0,
+        "explanation": "«Где» — «Where».",
+        "speech": "Where"
+      },
+      {
+        "prompt": "Как по-английски: «Когда»?",
+        "choices": [
+          "When",
+          "Why",
+          "How"
+        ],
+        "answer": 0,
+        "explanation": "«Когда» — «When».",
+        "speech": "When"
+      },
+      {
+        "prompt": "Как по-английски: «Почему»?",
+        "choices": [
+          "Why",
+          "How",
+          "Which"
+        ],
+        "answer": 0,
+        "explanation": "«Почему» — «Why».",
+        "speech": "Why"
+      },
+      {
+        "prompt": "Как по-английски: «Как»?",
+        "choices": [
+          "How",
+          "Which",
+          "Who"
+        ],
+        "answer": 0,
+        "explanation": "«Как» — «How».",
+        "speech": "How"
+      },
+      {
+        "prompt": "Как по-английски: «Который»?",
+        "choices": [
+          "Which",
+          "Who",
+          "What"
+        ],
+        "answer": 0,
+        "explanation": "«Который» — «Which».",
+        "speech": "Which"
+      }
+    ]
+  },
+  {
+    "title": "Чувства",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Счастливый»?",
+        "choices": [
+          "Happy",
+          "Sad",
+          "Tired"
+        ],
+        "answer": 0,
+        "explanation": "«Счастливый» — «Happy».",
+        "speech": "Happy"
+      },
+      {
+        "prompt": "Как по-английски: «Грустный»?",
+        "choices": [
+          "Sad",
+          "Tired",
+          "Hungry"
+        ],
+        "answer": 0,
+        "explanation": "«Грустный» — «Sad».",
+        "speech": "Sad"
+      },
+      {
+        "prompt": "Как по-английски: «Уставший»?",
+        "choices": [
+          "Tired",
+          "Hungry",
+          "Thirsty"
+        ],
+        "answer": 0,
+        "explanation": "«Уставший» — «Tired».",
+        "speech": "Tired"
+      },
+      {
+        "prompt": "Как по-английски: «Голодный»?",
+        "choices": [
+          "Hungry",
+          "Thirsty",
+          "Afraid"
+        ],
+        "answer": 0,
+        "explanation": "«Голодный» — «Hungry».",
+        "speech": "Hungry"
+      },
+      {
+        "prompt": "Как по-английски: «Жаждущий»?",
+        "choices": [
+          "Thirsty",
+          "Afraid",
+          "Angry"
+        ],
+        "answer": 0,
+        "explanation": "«Жаждущий» — «Thirsty».",
+        "speech": "Thirsty"
+      },
+      {
+        "prompt": "Как по-английски: «Испуганный»?",
+        "choices": [
+          "Afraid",
+          "Angry",
+          "Happy"
+        ],
+        "answer": 0,
+        "explanation": "«Испуганный» — «Afraid».",
+        "speech": "Afraid"
+      },
+      {
+        "prompt": "Как по-английски: «Злой»?",
+        "choices": [
+          "Angry",
+          "Happy",
+          "Sad"
+        ],
+        "answer": 0,
+        "explanation": "«Злой» — «Angry».",
+        "speech": "Angry"
+      }
+    ]
+  },
+  {
+    "title": "Общение",
+    "questions": [
+      {
+        "prompt": "Как по-английски: «Да»?",
+        "choices": [
+          "Yes",
+          "No",
+          "Maybe"
+        ],
+        "answer": 0,
+        "explanation": "«Да» — «Yes».",
+        "speech": "Yes"
+      },
+      {
+        "prompt": "Как по-английски: «Нет»?",
+        "choices": [
+          "No",
+          "Maybe",
+          "Of course"
+        ],
+        "answer": 0,
+        "explanation": "«Нет» — «No».",
+        "speech": "No"
+      },
+      {
+        "prompt": "Как по-английски: «Возможно»?",
+        "choices": [
+          "Maybe",
+          "Of course",
+          "I understand"
+        ],
+        "answer": 0,
+        "explanation": "«Возможно» — «Maybe».",
+        "speech": "Maybe"
+      },
+      {
+        "prompt": "Как по-английски: «Конечно»?",
+        "choices": [
+          "Of course",
+          "I understand",
+          "I don't know"
+        ],
+        "answer": 0,
+        "explanation": "«Конечно» — «Of course».",
+        "speech": "Of course"
+      },
+      {
+        "prompt": "Как по-английски: «Я понимаю»?",
+        "choices": [
+          "I understand",
+          "I don't know",
+          "Help"
+        ],
+        "answer": 0,
+        "explanation": "«Я понимаю» — «I understand».",
+        "speech": "I understand"
+      },
+      {
+        "prompt": "Как по-английски: «Я не знаю»?",
+        "choices": [
+          "I don't know",
+          "Help",
+          "Yes"
+        ],
+        "answer": 0,
+        "explanation": "«Я не знаю» — «I don't know».",
+        "speech": "I don't know"
+      },
+      {
+        "prompt": "Как по-английски: «Помогите»?",
+        "choices": [
+          "Help",
+          "Yes",
+          "No"
+        ],
+        "answer": 0,
+        "explanation": "«Помогите» — «Help».",
+        "speech": "Help"
+      }
+    ]
+  }
+]
