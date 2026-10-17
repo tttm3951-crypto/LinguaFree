@@ -25,6 +25,12 @@ checks={
     "offline speech preference": "EXTRA_PREFER_OFFLINE" in src,
     "fox animation": "rememberInfiniteTransition" in fox and 'mood=="celebrate"' in fox,
     "daily goals": '"goalDate"' in src and '"dailyGoal"' in src,
+    "learner name stored locally": '"learnerName"' in src and 'saveLearnerName' in src,
+    "learner name shown in exercises": 'твоё задание' in src and '$displayName' in src,
+    "learner name editable": 'label={Text("Имя ученика")}' in src,
+    "goal units consistent": 'занятий в день' in src and 'минут в день' not in src,
+    "intro respects effects setting": 'if(getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE).getBoolean("effectsEnabled",true))playWelcomeMelody()' in src,
+
     "no network permission": 'android.permission.INTERNET' not in manifest,
     "content files bundled": all((assets/x).is_file() for x in ["lessons.json","stories.json","dictionary.json"]),
 }
