@@ -12,6 +12,7 @@ import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.graphicsLayer
@@ -133,14 +134,17 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var level by remember { mutableStateOf("Начинающий") }
    var dailyGoal by remember { mutableIntStateOf(10) }
    var streak by remember { mutableIntStateOf(0) }
+   var bankWords by remember { mutableStateOf(listOf<String>()) }
+   var showTranslation by remember { mutableStateOf(false) }
+   var placementScore by remember { mutableIntStateOf(0) }
    var correctCount by remember { mutableIntStateOf(0) }
    var foxMessage by remember { mutableStateOf("Давай попробуем!") }
    var foxExcited by remember { mutableStateOf(false) }
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
-   fun start(n:Int){current=n;index=0;selected=null;correctCount=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
+   fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();showTranslation=false;correctCount=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
    LaunchedEffect(screen,current,index) {
-    if(screen=="lesson") {
+    if(screen=="lesson" || screen=="placement") {
      kotlinx.coroutines.delay(380)
      repeat(15) {
       if(speechReady)return@repeat
@@ -171,6 +175,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        if(onboardStep==1) { item { Text("Выбери свой уровень",fontSize=21.sp,fontWeight=FontWeight.Black,color=ink) }; listOf("Начинающий","Знаю несколько слов","Могу говорить").forEach { option -> item { OutlinedButton(onClick={level=option},modifier=Modifier.fillMaxWidth().height(70.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(level==option)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(level==option)green else Color(0xFF3B5057))) {Text(option,fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
        if(onboardStep==2) { listOf(3,10,15,30).forEach { minutes -> item { OutlinedButton(onClick={dailyGoal=minutes},modifier=Modifier.fillMaxWidth().height(65.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(dailyGoal==minutes)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(dailyGoal==minutes)green else Color(0xFF3B5057))) {Text("$minutes минут в день",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
       }
+      if(screen=="placement") item { Text("🎯 Короткая проверка знаний · ${index+1}/3",fontSize=24.sp,fontWeight=FontWeight.Black,color=ink) }
       if(screen=="home") item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
        Column { Text("LinguaFree",fontSize=35.sp,fontWeight=FontWeight.Black,color=purple)
         Text("ИГРАЙ • УЧИСЬ • ПОБЕЖДАЙ",fontSize=12.sp,fontWeight=FontWeight.ExtraBold,color=pink) }
@@ -217,6 +222,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { TextButton(onClick={screen="home"}){Text("К карте уроков")} }
       } else {
        val l=lessons[current];val q=l.questions[index];val key=current*1000+index
+       val wordBank=screen=="lesson" && index%3==2 && q.choices[q.answer].contains(" ")
+       val pictureMode=screen=="lesson" && index%3==0
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
         Text("🎯 "+l.title,fontSize=19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
         Text("🔥 $streak  ⭐ ${index+1}/${l.questions.size}",fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
@@ -231,8 +238,21 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Spacer(Modifier.height(4.dp))
         Text(q.prompt,fontSize=23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp)
        } } }
+       item { Text(q.speech,modifier=Modifier.clickable {showTranslation=!showTranslation;sayEnglish(q.speech)},fontSize=24.sp,fontWeight=FontWeight.Black,color=purple) }
+       if(showTranslation) item { Text(q.explanation,fontSize=16.sp,color=ink) }
        item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(46.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
-       q.choices.forEachIndexed { i,choice -> item {
+       if(wordBank) item {
+        Text("Составьте перевод из слов:",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)
+        Text(bankWords.joinToString("  ").ifBlank { "Нажимайте на слова ниже ↓" },modifier=Modifier.fillMaxWidth().padding(vertical=12.dp),fontSize=23.sp,fontWeight=FontWeight.Bold,color=green)
+        Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+         (q.choices[q.answer].split(" ").reversed()+listOf("the")).distinct().forEach { word ->
+          OutlinedButton(onClick={bankWords=bankWords+word;sayEnglish(word)},enabled=selected==null && word !in bankWords,contentPadding=PaddingValues(8.dp)) { Text(word,fontSize=16.sp) }
+         }
+        }
+        TextButton(onClick={bankWords=emptyList()},enabled=selected==null){Text("Очистить")}
+        Button(onClick={val right=bankWords.joinToString(" ").equals(q.choices[q.answer],ignoreCase=true);selected=if(right)q.answer else (q.answer+1)%q.choices.size;foxExcited=right;foxMessage=if(right)"Отлично! 🦊" else "Потренируемся ещё!";sayEnglish(q.speech);sayReaction(right)},enabled=selected==null && bankWords.isNotEmpty(),modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=green)){Text("ПРОВЕРИТЬ")}
+       }
+       if(!wordBank) q.choices.forEachIndexed { i,choice -> item {
         val right=selected!=null && i==q.answer
         val chosen=selected==i
         val bg=if(right)Color(0xFFD8F8E7) else if(chosen)Color(0xFFFFE0EA) else panel
@@ -243,7 +263,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          sayEnglish(q.choices[q.answer])
          sayReaction(i==q.answer)
         },enabled=selected==null,modifier=Modifier.fillMaxWidth().height(55.dp),shape=RoundedCornerShape(15.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=bg,disabledContainerColor=bg,contentColor=ink,disabledContentColor=ink),border=BorderStroke(3.dp,if(right)green else if(chosen)pink else Color(0xFF40565D))) {
-         Text(choice,fontSize=19.sp,fontWeight=FontWeight.ExtraBold,lineHeight=23.sp)
+         Column(horizontalAlignment=Alignment.CenterHorizontally) {
+          if(pictureMode) Text(when { choice.contains("Tea",true)->"🍵";choice.contains("Coffee",true)->"☕";choice.contains("Milk",true)->"🥛";choice.contains("Apple",true)->"🍎";choice.contains("Cat",true)->"🐈";choice.contains("Dog",true)->"🐕";choice.contains("Water",true)->"💧";choice.contains("Book",true)->"📚";choice.contains("House",true)->"🏠";choice.contains("Hello",true)->"👋";else->"🗂️" },fontSize=25.sp)
+          Text(choice,fontSize=19.sp,fontWeight=FontWeight.ExtraBold,lineHeight=23.sp)
+         }
         }
        } }
        if(selected!=null) {
@@ -265,16 +288,18 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { TextButton(onClick={screen="home"},modifier=Modifier.height(34.dp)){Text("← К урокам",fontSize=13.sp)} }
       }
      }
-     if(screen=="onboarding" || (screen=="lesson" && selected!=null)) {
+     if(screen=="onboarding" || ((screen=="lesson" || screen=="placement") && selected!=null)) {
       Button(onClick={
        if(screen=="onboarding") {
-        if(onboardStep<2)onboardStep++ else {prefs.edit().putBoolean("onboarded",true).putString("level",level).putInt("dailyGoal",dailyGoal).apply();screen="home"}
+        if(onboardStep<2)onboardStep++ else {prefs.edit().putBoolean("onboarded",true).putString("level",level).putInt("dailyGoal",dailyGoal).apply();if(level=="Начинающий")screen="home" else {current=0;index=0;screen="placement"}}
        } else {
         val q=lessons[current].questions[index]
         val key=current*1000+index
         if(selected==q.answer){xp+=10;gems+=2;correctCount++;streak++;mistakes=mistakes-key}else{streak=0;mistakes=mistakes+key}
-        selected=null;foxMessage="Давай попробуем!";foxExcited=false
-        if(index==lessons[current].questions.lastIndex){completed=completed+current;screen="done"}else index++
+        if(screen=="placement" && selected==q.answer)placementScore++
+        selected=null;bankWords=emptyList();showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
+        if(screen=="placement") {if(index==2){current=if(placementScore>=2)8 else if(placementScore==1)3 else 0;index=0;screen="home";save()}else index++}
+        else if(index==lessons[current].questions.lastIndex){completed=completed+current;screen="done"}else index++
         save()
        }
       },modifier=Modifier.fillMaxWidth().padding(horizontal=16.dp,vertical=10.dp).height(58.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
