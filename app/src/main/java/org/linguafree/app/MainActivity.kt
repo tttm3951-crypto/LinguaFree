@@ -155,7 +155,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   }.start()
  }
  private fun sayReaction(correct:Boolean){
-  if(correct)playCorrectFeedback() else playWrongFeedback()
+  if(getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE).getBoolean("effectsEnabled",true)){if(correct)playCorrectFeedback() else playWrongFeedback()}
   if(!speechReady)return
   val phrases=if(correct) listOf("Great!","Well done!","Excellent!","Fantastic!","Amazing!","You did it!")
    else listOf("Try again!","Keep going!","You can do it!","Nice try!")
@@ -213,6 +213,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var streak by remember { mutableIntStateOf(prefs.getInt("dailyStreak",0)) }
    var answerCombo by remember { mutableIntStateOf(0) }
    var reminderCount by remember { mutableIntStateOf(prefs.getInt("reminders",3)) }
+   var effectsEnabled by remember { mutableStateOf(prefs.getBoolean("effectsEnabled",true)) }
    var studiedDates by remember { mutableStateOf(prefs.getString("studiedDates","")!!.split(",").filter{it.isNotBlank()}.toSet()) }
    fun markStudyDay(){
     val today=LocalDate.now();val key=today.toString()
@@ -254,10 +255,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     if(left!=null && right!=null){
      if(reviewPairs.any{it.first==left && it.second==right}){
       reviewMatched=reviewMatched+left
-      playCorrectFeedback()
+      if(effectsEnabled)playCorrectFeedback()
       sayEnglish(left)
       if(reviewMatched.size==reviewPairs.size){foxExcited=true;playMilestoneSound();sayEnglish("Ta-da! Amazing! You did it!",false)}
-     }else{playWrongFeedback();sayEnglish("Try again!")}
+     }else{if(effectsEnabled)playWrongFeedback();sayEnglish("Try again!")}
      reviewLeft=null;reviewRight=null
     }
    }
@@ -391,6 +392,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { OutlinedButton(onClick={screen="stats"},modifier=Modifier.fillMaxWidth()){Text("📊 Статистика и ошибки")} }
       } else if(screen=="stats") {
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){Text("🔊 Звуки и вибрация ответов",color=ink);Switch(checked=effectsEnabled,onCheckedChange={effectsEnabled=it;prefs.edit().putBoolean("effectsEnabled",it).apply()})} }
        item { Text("Опыт: $xp XP · Алмазы: $gems · Уроков: ${completed.size} · Ошибок: ${mistakes.size}") }
        item { Text("Слов для повторения: ${repeatQueue.size}. Ошибки сохраняются, чтобы можно было вернуться к сложным заданиям.") }
        item { Text("🧠 По расписанию на сегодня: ${reviewDue.values.count{it<=System.currentTimeMillis()}}. Интервалы 1, 3, 7, 14 и 30 дней.",fontSize=16.sp,color=ink) }
