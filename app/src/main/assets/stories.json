@@ -538,5 +538,725 @@
         "ru": "Я могу учиться на ошибках."
       }
     ]
+  },
+  {
+    "title": "В пекарне",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "The bread smells wonderful.",
+        "ru": "Хлеб замечательно пахнет."
+      },
+      {
+        "en": "I'd like two rolls, please.",
+        "ru": "Мне две булочки, пожалуйста."
+      },
+      {
+        "en": "They are fresh from the oven.",
+        "ru": "Они только что из печи."
+      }
+    ]
+  },
+  {
+    "title": "Потерянный рюкзак",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "I cannot find my backpack.",
+        "ru": "Я не могу найти свой рюкзак."
+      },
+      {
+        "en": "Let's look near the door.",
+        "ru": "Давай поищем возле двери."
+      },
+      {
+        "en": "Here it is! What a relief.",
+        "ru": "Вот он! Какое облегчение."
+      }
+    ]
+  },
+  {
+    "title": "Новый сосед",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "Someone moved in next door.",
+        "ru": "Кто-то переехал в соседнюю квартиру."
+      },
+      {
+        "en": "Let's say hello to our neighbor.",
+        "ru": "Давай поздороваемся с соседом."
+      },
+      {
+        "en": "Welcome to our building!",
+        "ru": "Добро пожаловать в наш дом!"
+      }
+    ]
+  },
+  {
+    "title": "На площадке",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "May I join your game?",
+        "ru": "Можно присоединиться к вашей игре?"
+      },
+      {
+        "en": "Of course! We need one more player.",
+        "ru": "Конечно! Нам нужен ещё один игрок."
+      },
+      {
+        "en": "Let's take turns.",
+        "ru": "Давай играть по очереди."
+      }
+    ]
+  },
+  {
+    "title": "Дождливое утро",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "The sky is full of clouds.",
+        "ru": "Небо затянуто облаками."
+      },
+      {
+        "en": "I forgot my raincoat.",
+        "ru": "Я забыл дождевик."
+      },
+      {
+        "en": "You can borrow my umbrella.",
+        "ru": "Можешь взять мой зонт."
+      }
+    ]
+  },
+  {
+    "title": "Школьный проект",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "We need to make a poster.",
+        "ru": "Нам нужно сделать плакат."
+      },
+      {
+        "en": "I'll draw the pictures.",
+        "ru": "Я нарисую картинки."
+      },
+      {
+        "en": "I'll write the words.",
+        "ru": "А я напишу слова."
+      }
+    ]
+  },
+  {
+    "title": "В зоопарке",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "Look at the tall giraffe!",
+        "ru": "Посмотри на высокого жирафа!"
+      },
+      {
+        "en": "It is eating leaves.",
+        "ru": "Он ест листья."
+      },
+      {
+        "en": "Let's learn about the animals.",
+        "ru": "Давай узнаем о животных."
+      }
+    ]
+  },
+  {
+    "title": "Пикник",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "We packed sandwiches and fruit.",
+        "ru": "Мы взяли бутерброды и фрукты."
+      },
+      {
+        "en": "This spot looks perfect.",
+        "ru": "Это место выглядит идеальным."
+      },
+      {
+        "en": "Please put the rubbish in the bin.",
+        "ru": "Пожалуйста, выброси мусор в урну."
+      }
+    ]
+  },
+  {
+    "title": "Утренние дела",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "I wake up at seven.",
+        "ru": "Я просыпаюсь в семь."
+      },
+      {
+        "en": "First, I brush my teeth.",
+        "ru": "Сначала я чищу зубы."
+      },
+      {
+        "en": "Then I have breakfast.",
+        "ru": "Потом я завтракаю."
+      }
+    ]
+  },
+  {
+    "title": "Урок музыки",
+    "level": "A1",
+    "lines": [
+      {
+        "en": "Can you play this song?",
+        "ru": "Ты можешь сыграть эту песню?"
+      },
+      {
+        "en": "I need a little practice.",
+        "ru": "Мне нужно немного потренироваться."
+      },
+      {
+        "en": "You're getting better every day.",
+        "ru": "У тебя получается всё лучше с каждым днём."
+      }
+    ]
+  },
+  {
+    "title": "Строим планы",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "Are you free on Saturday?",
+        "ru": "Ты свободен в субботу?"
+      },
+      {
+        "en": "I have plans in the morning.",
+        "ru": "У меня есть планы на утро."
+      },
+      {
+        "en": "How about the afternoon instead?",
+        "ru": "Может, тогда после обеда?"
+      }
+    ]
+  },
+  {
+    "title": "У врача",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I've had a headache since yesterday.",
+        "ru": "У меня со вчерашнего дня болит голова."
+      },
+      {
+        "en": "Have you been drinking enough water?",
+        "ru": "Ты пьёшь достаточно воды?"
+      },
+      {
+        "en": "I'll take a rest and follow your advice.",
+        "ru": "Я отдохну и последую вашему совету."
+      }
+    ]
+  },
+  {
+    "title": "Поезд задерживается",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "Our train has been delayed.",
+        "ru": "Наш поезд задерживается."
+      },
+      {
+        "en": "Do you know when it will arrive?",
+        "ru": "Вы знаете, когда он прибудет?"
+      },
+      {
+        "en": "The announcement says twenty minutes.",
+        "ru": "В объявлении сказано: через двадцать минут."
+      }
+    ]
+  },
+  {
+    "title": "Возвращаем книгу",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I'd like to return this book.",
+        "ru": "Я хотел бы вернуть эту книгу."
+      },
+      {
+        "en": "Did you enjoy reading it?",
+        "ru": "Тебе понравилось её читать?"
+      },
+      {
+        "en": "Yes, especially the ending.",
+        "ru": "Да, особенно концовка."
+      }
+    ]
+  },
+  {
+    "title": "Недоразумение",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I thought we were meeting at five.",
+        "ru": "Я думал, мы встречаемся в пять."
+      },
+      {
+        "en": "Sorry, I meant half past five.",
+        "ru": "Извини, я имел в виду половину шестого."
+      },
+      {
+        "en": "No problem. I'll wait here.",
+        "ru": "Ничего страшного. Я подожду здесь."
+      }
+    ]
+  },
+  {
+    "title": "Заказываем обед",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "Could I see the menu, please?",
+        "ru": "Можно мне меню, пожалуйста?"
+      },
+      {
+        "en": "Does this dish contain nuts?",
+        "ru": "В этом блюде есть орехи?"
+      },
+      {
+        "en": "I'll choose the vegetable soup.",
+        "ru": "Я выберу овощной суп."
+      }
+    ]
+  },
+  {
+    "title": "Учимся готовить",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "First, chop the vegetables.",
+        "ru": "Сначала нарежь овощи."
+      },
+      {
+        "en": "Be careful with the hot pan.",
+        "ru": "Будь осторожен с горячей сковородой."
+      },
+      {
+        "en": "Let's taste the soup together.",
+        "ru": "Давай вместе попробуем суп."
+      }
+    ]
+  },
+  {
+    "title": "Поход выходного дня",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "The path looks a little steep.",
+        "ru": "Тропа кажется довольно крутой."
+      },
+      {
+        "en": "We should bring enough water.",
+        "ru": "Нам стоит взять достаточно воды."
+      },
+      {
+        "en": "The view from the top is amazing.",
+        "ru": "Вид с вершины потрясающий."
+      }
+    ]
+  },
+  {
+    "title": "В музее",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "This painting is over a hundred years old.",
+        "ru": "Этой картине больше ста лет."
+      },
+      {
+        "en": "What do you think it represents?",
+        "ru": "Как ты думаешь, что она изображает?"
+      },
+      {
+        "en": "It reminds me of my hometown.",
+        "ru": "Она напоминает мне родной город."
+      }
+    ]
+  },
+  {
+    "title": "Сломанный телефон",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "My phone won't turn on.",
+        "ru": "Мой телефон не включается."
+      },
+      {
+        "en": "Have you tried charging it?",
+        "ru": "Ты пробовал поставить его на зарядку?"
+      },
+      {
+        "en": "I'll ask a technician to check it.",
+        "ru": "Я попрошу мастера его проверить."
+      }
+    ]
+  },
+  {
+    "title": "Неожиданное приглашение",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I've been invited to a concert.",
+        "ru": "Меня пригласили на концерт."
+      },
+      {
+        "en": "Would you like to come along?",
+        "ru": "Хочешь пойти со мной?"
+      },
+      {
+        "en": "I'd love to, but I need to check my schedule.",
+        "ru": "С удовольствием, но мне нужно проверить расписание."
+      }
+    ]
+  },
+  {
+    "title": "Выбираем подарок",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "She prefers practical gifts.",
+        "ru": "Она предпочитает практичные подарки."
+      },
+      {
+        "en": "What about a notebook?",
+        "ru": "Как насчёт блокнота?"
+      },
+      {
+        "en": "That's a thoughtful idea.",
+        "ru": "Это продуманная идея."
+      }
+    ]
+  },
+  {
+    "title": "Экономим энергию",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "We should turn off unused lights.",
+        "ru": "Нам стоит выключать свет, когда он не нужен."
+      },
+      {
+        "en": "Small changes can make a difference.",
+        "ru": "Небольшие изменения могут многое изменить."
+      },
+      {
+        "en": "Let's start with our classroom.",
+        "ru": "Давай начнём с нашего класса."
+      }
+    ]
+  },
+  {
+    "title": "Новое увлечение",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "I've recently started painting.",
+        "ru": "Я недавно начал рисовать красками."
+      },
+      {
+        "en": "What inspired you to try it?",
+        "ru": "Что вдохновило тебя попробовать?"
+      },
+      {
+        "en": "I wanted to learn something creative.",
+        "ru": "Я хотел научиться чему-то творческому."
+      }
+    ]
+  },
+  {
+    "title": "Ищем дорогу",
+    "level": "A2",
+    "lines": [
+      {
+        "en": "Excuse me, is the station far from here?",
+        "ru": "Извините, станция далеко отсюда?"
+      },
+      {
+        "en": "It's about ten minutes on foot.",
+        "ru": "Это примерно десять минут пешком."
+      },
+      {
+        "en": "Take the second street on your left.",
+        "ru": "Сверните на вторую улицу слева."
+      }
+    ]
+  },
+  {
+    "title": "Трудный выбор",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I'm torn between two different courses.",
+        "ru": "Я не могу выбрать между двумя курсами."
+      },
+      {
+        "en": "Consider what interests you most.",
+        "ru": "Подумай, что интересует тебя больше всего."
+      },
+      {
+        "en": "That's a sensible way to decide.",
+        "ru": "Это разумный способ принять решение."
+      }
+    ]
+  },
+  {
+    "title": "Работаем вместе",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "We won't finish unless we share the tasks.",
+        "ru": "Мы не закончим, если не распределим задачи."
+      },
+      {
+        "en": "I'll handle the research if you prepare the slides.",
+        "ru": "Я займусь исследованием, если ты подготовишь слайды."
+      },
+      {
+        "en": "Let's review everything before presenting.",
+        "ru": "Давай всё проверим перед выступлением."
+      }
+    ]
+  },
+  {
+    "title": "Упущенная возможность",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I wish I had applied earlier.",
+        "ru": "Жаль, что я не подал заявку раньше."
+      },
+      {
+        "en": "There may be another opportunity next year.",
+        "ru": "Возможно, в следующем году появится ещё одна возможность."
+      },
+      {
+        "en": "I'll be better prepared next time.",
+        "ru": "В следующий раз я подготовлюсь лучше."
+      }
+    ]
+  },
+  {
+    "title": "Учимся на отзывах",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "The feedback was more helpful than I expected.",
+        "ru": "Отзыв оказался полезнее, чем я ожидал."
+      },
+      {
+        "en": "It highlighted areas I could improve.",
+        "ru": "Он указал на то, что я могу улучшить."
+      },
+      {
+        "en": "I'll use these suggestions in my next project.",
+        "ru": "Я учту эти предложения в следующем проекте."
+      }
+    ]
+  },
+  {
+    "title": "Общественный сад",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "Our neighbors decided to plant a garden.",
+        "ru": "Наши соседи решили разбить сад."
+      },
+      {
+        "en": "Everyone contributed whatever they could.",
+        "ru": "Каждый помог чем мог."
+      },
+      {
+        "en": "The project brought the neighborhood together.",
+        "ru": "Проект объединил соседей."
+      }
+    ]
+  },
+  {
+    "title": "Неожиданная находка",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "While cleaning the attic, I found an old map.",
+        "ru": "Убираясь на чердаке, я нашёл старую карту."
+      },
+      {
+        "en": "It appeared to show how the town used to look.",
+        "ru": "Похоже, на ней был изображён город в прошлом."
+      },
+      {
+        "en": "We decided to ask the local museum about it.",
+        "ru": "Мы решили спросить об этом в местном музее."
+      }
+    ]
+  },
+  {
+    "title": "Технологии и привычки",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "Technology makes some tasks much easier.",
+        "ru": "Технологии значительно упрощают некоторые задачи."
+      },
+      {
+        "en": "However, constant notifications can be distracting.",
+        "ru": "Однако постоянные уведомления могут отвлекать."
+      },
+      {
+        "en": "I try to set aside time without my phone.",
+        "ru": "Я стараюсь выделять время без телефона."
+      }
+    ]
+  },
+  {
+    "title": "День волонтёра",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "We volunteered to clean the riverside.",
+        "ru": "Мы вызвались помочь с уборкой берега реки."
+      },
+      {
+        "en": "The amount of litter surprised everyone.",
+        "ru": "Количество мусора удивило всех."
+      },
+      {
+        "en": "By the afternoon, the area looked completely different.",
+        "ru": "Ко второй половине дня место выглядело совсем иначе."
+      }
+    ]
+  },
+  {
+    "title": "Важная презентация",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I was nervous about speaking in public.",
+        "ru": "Я волновался из-за публичного выступления."
+      },
+      {
+        "en": "Practicing beforehand helped me feel confident.",
+        "ru": "Предварительная репетиция помогла мне почувствовать уверенность."
+      },
+      {
+        "en": "The audience asked some interesting questions.",
+        "ru": "Слушатели задали несколько интересных вопросов."
+      }
+    ]
+  },
+  {
+    "title": "Планы изменились",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "We had intended to travel by train.",
+        "ru": "Мы собирались поехать поездом."
+      },
+      {
+        "en": "Unfortunately, the service was cancelled.",
+        "ru": "К сожалению, рейс отменили."
+      },
+      {
+        "en": "We found another route that worked just as well.",
+        "ru": "Мы нашли другой маршрут, который подошёл не хуже."
+      }
+    ]
+  },
+  {
+    "title": "Понимаем мнения",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I see your point, although I disagree.",
+        "ru": "Я понимаю твою точку зрения, хотя и не согласен."
+      },
+      {
+        "en": "Could you explain why you feel that way?",
+        "ru": "Можешь объяснить, почему ты так считаешь?"
+      },
+      {
+        "en": "We don't have to agree to respect each other.",
+        "ru": "Необязательно соглашаться, чтобы уважать друг друга."
+      }
+    ]
+  },
+  {
+    "title": "Научный эксперимент",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "We predicted that the seeds would grow faster in sunlight.",
+        "ru": "Мы предположили, что семена быстрее прорастут на солнце."
+      },
+      {
+        "en": "The results were not exactly what we expected.",
+        "ru": "Результаты оказались не совсем такими, как мы ожидали."
+      },
+      {
+        "en": "Now we need to understand what influenced them.",
+        "ru": "Теперь нужно понять, что на них повлияло."
+      }
+    ]
+  },
+  {
+    "title": "Готовимся к собеседованию",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I researched the organization beforehand.",
+        "ru": "Я заранее изучил информацию об организации."
+      },
+      {
+        "en": "That helped me answer questions more clearly.",
+        "ru": "Это помогло мне яснее отвечать на вопросы."
+      },
+      {
+        "en": "Next time, I'll prepare a few questions of my own.",
+        "ru": "В следующий раз я подготовлю несколько своих вопросов."
+      }
+    ]
+  },
+  {
+    "title": "Польза практики",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "Progress is rarely noticeable from one day to the next.",
+        "ru": "Прогресс редко заметен день ото дня."
+      },
+      {
+        "en": "Looking back helps us recognize how far we've come.",
+        "ru": "Оглядываясь назад, мы видим, как далеко продвинулись."
+      },
+      {
+        "en": "Consistency matters more than perfection.",
+        "ru": "Постоянство важнее совершенства."
+      }
+    ]
+  },
+  {
+    "title": "Вежливая жалоба",
+    "level": "B1",
+    "lines": [
+      {
+        "en": "I'm afraid there seems to be a mistake with my order.",
+        "ru": "Боюсь, в моём заказе произошла ошибка."
+      },
+      {
+        "en": "Would it be possible to replace this item?",
+        "ru": "Можно ли заменить этот товар?"
+      },
+      {
+        "en": "Thank you for resolving the issue so quickly.",
+        "ru": "Спасибо, что так быстро решили проблему."
+      }
+    ]
   }
 ]
