@@ -333,6 +333,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US")
       putExtra(RecognizerIntent.EXTRA_PROMPT,"Скажи: $phrase")
       putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,3)
+      putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE,true)
      }
      speechLauncher.launch(intent)
     }catch(_:Exception){storyFeedback="На устройстве нет службы распознавания речи. Установи или включи голосовой ввод Android."}
