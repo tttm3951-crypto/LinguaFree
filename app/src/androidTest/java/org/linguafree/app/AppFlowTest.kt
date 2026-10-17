@@ -82,6 +82,8 @@ class AppFlowTest {
         waitTag("node-u01-l1", 5_000)
         compose.onNodeWithTag("node-u01-l1").performClick()
         waitTag("node-start", 5_000)
+        compose.onNodeWithTag("path").performScrollToNode(hasTestTag("node-start"))
+        compose.waitForIdle()
         compose.onNodeWithTag("node-start").performClick()
 
         // Exercise 1 of lesson 1 is «привет» → picture «hello».
