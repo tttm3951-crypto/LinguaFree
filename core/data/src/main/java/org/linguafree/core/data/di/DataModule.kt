@@ -11,6 +11,9 @@ import org.linguafree.core.data.AppBootstrapper
 import org.linguafree.core.data.content.ContentLoader
 import org.linguafree.core.data.db.LinguaFreeDatabase
 import org.linguafree.core.data.migration.LegacyMigration
+import org.linguafree.core.data.platform.Feedback
+import org.linguafree.core.data.platform.SpeechInput
+import org.linguafree.core.data.platform.SpeechOutput
 import org.linguafree.core.data.repository.ContentRepositoryImpl
 import org.linguafree.core.data.repository.GameRepositoryImpl
 import org.linguafree.core.data.repository.ProgressRepositoryImpl
@@ -83,6 +86,15 @@ object DataModule {
     fun legacyMigration(
         @ApplicationContext context: Context, c: ContentRepository, p: ProgressRepository, g: GameRepository, s: SettingsRepositoryImpl,
     ) = LegacyMigration(context, c, p, g, s)
+
+    @Provides @Singleton
+    fun speechOutput(@ApplicationContext context: Context) = SpeechOutput(context)
+
+    @Provides @Singleton
+    fun speechInput(@ApplicationContext context: Context) = SpeechInput(context)
+
+    @Provides @Singleton
+    fun feedback(@ApplicationContext context: Context) = Feedback(context)
 
     @Provides @Singleton
     fun bootstrapper(c: ContentRepository, m: LegacyMigration, d: DailyMaintenanceUseCase) = AppBootstrapper(c, m, d)
