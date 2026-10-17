@@ -6,5 +6,6 @@ version=re.search(r'versionName\s*=\s*"(\d+\.\d+(?:\.\d+)?)"',s).group(1)
 code=int(re.search(r'versionCode\s*=.*?\?:\s*(\d+)',s).group(1))
 assert code>1
 print(f'APP_VERSION={version}')
+print(f'APP_TAG=v{version}' + ('.0' if version.count('.')==1 else ''))
 print(f'APP_CODE={code}')
 print(f'PREVIOUS_CODE={code-1}')

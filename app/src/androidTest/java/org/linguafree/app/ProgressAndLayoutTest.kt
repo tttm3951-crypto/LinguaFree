@@ -35,6 +35,7 @@ class ProgressAndLayoutTest {
     @Test fun changingAvatarAndRecreatingPreservesOldProgress(){
         compose.onNodeWithTag("main-content").performScrollToNode(hasText("🦊 Моя лисичка: Моя первая лисичка"))
         compose.onNodeWithText("🦊 Моя лисичка: Моя первая лисичка").performScrollTo().performClick()
+        screenshot("fox-avatars.png")
         compose.onNodeWithText("Космос").performScrollTo().performClick()
         compose.activityRule.scenario.recreate()
         compose.waitForIdle()
@@ -78,8 +79,20 @@ class ProgressAndLayoutTest {
         compose.onNodeWithText("🌱 Английский с нуля: буквы → первые фразы").performClick()
         compose.onNodeWithText("🌱 Английский с нуля").assertIsDisplayed()
         compose.onNodeWithText("Pre-A1").assertIsDisplayed()
+        screenshot("beginner-route.png")
         val p=compose.activity.getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
         assertEquals(123,p.getInt("xp",0));assertEquals("Тест",p.getString("learnerName",""))
+    }
+
+    @Test fun offlineReferenceSearchReturnsVisibleRows(){
+        compose.onNodeWithTag("main-content").performScrollToNode(hasText("📗 Словарь · 635 выражений"))
+        compose.onNodeWithText("📗 Словарь · 635 выражений").performClick()
+        compose.onNodeWithText("📚 Большой офлайн-справочник · 150 000").performScrollTo().performClick()
+        compose.onNode(hasSetTextAction()).performScrollTo().performTextInput("hello")
+        compose.waitUntil(15000){compose.onAllNodesWithText("🔊 Послушать",substring=false).fetchSemanticsNodes().isNotEmpty()}
+        androidx.test.espresso.Espresso.closeSoftKeyboard()
+        compose.onAllNodesWithText("🔊 Послушать",substring=false).onFirst().performScrollTo().assertIsDisplayed()
+        screenshot("offline-reference-search.png")
     }
 
     @Test fun lateWritingExerciseRemainsReachableWithKeyboard(){
@@ -90,14 +103,21 @@ class ProgressAndLayoutTest {
         val lesson=JSONArray(compose.activity.assets.open("lessons.json").bufferedReader().use{it.readText()}).getJSONObject(50)
         for(i in 0..5){
             val q=lesson.getJSONArray("questions").getJSONObject(i)
-            compose.onNodeWithText(q.getJSONArray("choices").getString(q.getInt("answer")),substring=false).performScrollTo().performClick()
+            val answerNode=compose.onNodeWithText(q.getJSONArray("choices").getString(q.getInt("answer")),substring=false)
+            if(!answerNode.isDisplayed())answerNode.performScrollTo()
+            answerNode.performClick()
             compose.onNodeWithText("ПРОДОЛЖИТЬ 🚀").performClick()
         }
-        compose.onNode(hasSetTextAction()).performScrollTo().performClick().performTextInput("a")
+        val input=compose.onNode(hasSetTextAction())
+        if(!input.isDisplayed())input.performScrollTo()
+        input.performClick().performTextInput("a")
         compose.waitUntil(10000){ViewCompat.getRootWindowInsets(compose.activity.window.decorView)?.isVisible(WindowInsetsCompat.Type.ime())==true}
-        val field=compose.onNode(hasSetTextAction()).performScrollTo().assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        if(!input.isDisplayed())input.performScrollTo()
+        val field=input.assertIsDisplayed().fetchSemanticsNode().boundsInRoot
         val root=compose.onRoot().fetchSemanticsNode().boundsInRoot
-        assertTrue(field.top>=root.top&&field.bottom<=root.bottom+1f)
+        val imeHeight=ViewCompat.getRootWindowInsets(compose.activity.window.decorView)!!.getInsets(WindowInsetsCompat.Type.ime()).bottom
+        assertTrue(field.top>=root.top&&field.bottom<=root.bottom-imeHeight+1f)
+        screenshot("writing-with-keyboard.png")
         compose.onNodeWithText("Проверить",substring=false).performScrollTo().assertIsDisplayed().performClick()
         compose.onNodeWithText("ПРОДОЛЖИТЬ 🚀").assertIsDisplayed()
         assertEquals(123,p.getInt("xp",0))
@@ -117,7 +137,9 @@ class ProgressAndLayoutTest {
     }
 
     private fun screenshot(name:String){
-        val folder=File(compose.activity.filesDir,"screenshots").apply{mkdirs()}
-        File(folder,name).outputStream().use{compose.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG,100,it)}
+        val automation=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().uiAutomation
+        listOf("mkdir -p /sdcard/Download/LinguaFree-QA","screencap -p /sdcard/Download/LinguaFree-QA/$name").forEach { command ->
+            android.os.ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand(command)).use{it.readBytes()}
+        }
     }
 }

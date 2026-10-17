@@ -86,11 +86,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "v${APP_VERSION}.0" >/dev/null 2>&1; then
+          if gh release view "$APP_TAG" >/dev/null 2>&1; then
             echo 'Release already exists; do not replace immutable user downloads.'
             exit 0
           fi
-          gh release create "v${APP_VERSION}.0" "signed-release/LinguaFree-${APP_VERSION}.apk" signed-release/SHA256SUMS.txt signed-release/certificate.txt --target "$GITHUB_SHA" --title "LinguaFree ${APP_VERSION} — офлайн-обучение" --notes-file RELEASE_NOTES_RU.md
+          gh release create "$APP_TAG" "signed-release/LinguaFree-${APP_VERSION}.apk" signed-release/SHA256SUMS.txt signed-release/certificate.txt --target "$GITHUB_SHA" --title "LinguaFree ${APP_VERSION} — офлайн-обучение" --notes-file RELEASE_NOTES_RU.md
       - name: Remove private runner key
         if: always()
         run: rm -f -- "$LINGUAFREE_KEYSTORE_PATH"
