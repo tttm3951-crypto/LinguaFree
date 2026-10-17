@@ -71,7 +71,7 @@ data class Wallet(
     /** When the next heart arrives (epoch ms) or null when full. */
     val heartsRefillAt: Long?,
     val freezes: Int,
-    /** Double XP boost active until (epoch ms). */
+    /** Legacy double-XP boost (no longer sold); kept for storage compatibility. */
     val doubleXpUntil: Long,
 )
 

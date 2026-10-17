@@ -52,7 +52,7 @@ object Counters {
 /** What a session needs to start, or why it can't. */
 sealed interface SessionPlan {
     data class Ready(val kind: SessionKind, val exercises: List<Exercise>, val heartsEnabled: Boolean) : SessionPlan
-    /** No hearts left: offer free practice, gems or waiting. */
+    /** No hearts left: offer free practice or waiting. */
     data class NoHearts(val msToNextHeart: Long?) : SessionPlan
     data object Empty : SessionPlan
 }
@@ -101,7 +101,6 @@ data class SessionSummary(
     val passed: Boolean,
     val xp: Int,
     val bonusXp: Int,
-    val doubled: Boolean,
     val gems: Int,
     val accuracy: Int,
     val durationMs: Long,
@@ -137,9 +136,7 @@ class FinishSessionUseCase(
         val kind = session.kind
         val s = settings.current()
         val passed = if (kind == SessionKind.Placement) true else session.passed
-        val wallet0 = game.walletNow()
-        val doubled = wallet0.doubleXpUntil > now
-        val reward = Rewards.forSession(kind, session.mistakes, session.durationMs(now), passed, doubled, session.total)
+        val reward = Rewards.forSession(kind, session.mistakes, session.durationMs(now), passed, session.total)
         val result = LessonResult(
             nodeId = nodeId, kind = kind, xp = reward.totalXp, accuracy = session.accuracy,
             durationMs = session.durationMs(now), mistakes = session.mistakes, correct = session.correctFirstTry,
@@ -218,7 +215,7 @@ class FinishSessionUseCase(
 
         val todayXp = progress.resultsBetween(time.dayStart(today), time.dayStart(today.plusDays(1))).sumOf { it.xp }
         return SessionSummary(
-            passed = passed, xp = reward.totalXp, bonusXp = reward.bonusXp * reward.multiplier, doubled = doubled,
+            passed = passed, xp = reward.totalXp, bonusXp = reward.bonusXp,
             gems = reward.gems + questGems + achGems, accuracy = session.accuracy, durationMs = session.durationMs(now),
             mistakes = session.mistakes, streak = streakNow, streakExtended = streakExtended,
             dailyGoalXp = s.dailyGoalXp, todayXp = todayXp,
@@ -361,8 +358,6 @@ class ShopUseCase(private val game: GameRepository, private val settings: Settin
         when {
             item == ShopItem.StreakFreeze && w.freezes >= StreakRules.MAX_FREEZES ->
                 return Result.NotAvailable("У тебя уже ${StreakRules.MAX_FREEZES} заморозки — это максимум.")
-            item == ShopItem.HeartsRefill && w.hearts >= HeartsRules.MAX ->
-                return Result.NotAvailable("Все сердца и так на месте.")
             item.isCosmetic && item.name in owned -> return Result.NotAvailable("Уже куплено.")
         }
         if (w.gems < item.price) return Result.NotEnoughGems(item.price - w.gems)
@@ -370,8 +365,6 @@ class ShopUseCase(private val game: GameRepository, private val settings: Settin
             val base = HeartsRules.regenerate(cur, now).copy(gems = cur.gems - item.price)
             when (item) {
                 ShopItem.StreakFreeze -> base.copy(freezes = base.freezes + 1)
-                ShopItem.HeartsRefill -> HeartsRules.refillAll(base)
-                ShopItem.DoubleXp -> base.copy(doubleXpUntil = maxOf(base.doubleXpUntil, now) + ShopItem.DOUBLE_XP_MS)
                 else -> base
             }
         }

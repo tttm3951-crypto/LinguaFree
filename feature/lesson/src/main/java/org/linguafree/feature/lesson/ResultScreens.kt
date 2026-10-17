@@ -34,7 +34,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.delay
-import org.linguafree.core.domain.game.ShopItem
 import org.linguafree.core.domain.model.SessionKind
 import org.linguafree.core.ui.R
 import org.linguafree.core.ui.components.LfButton
@@ -73,12 +72,11 @@ fun SummaryScreen(state: LessonUiState, onContinue: () -> Unit) {
                 StatCard("Точность", "${s.accuracy}%", c.primary, R.drawable.ic_target, Modifier.weight(1f))
                 StatCard("Время", formatDuration(s.durationMs), c.gems, R.drawable.ic_calendar, Modifier.weight(1f))
             }
-            if (s.gems > 0 || s.doubled || s.bonusXp > 0) {
+            if (s.gems > 0 || s.bonusXp > 0) {
                 Text(
                     buildList {
                         if (s.gems > 0) add("+${s.gems} 💎")
                         if (s.bonusXp > 0) add("бонус +${s.bonusXp} XP")
-                        if (s.doubled) add("двойной XP ×2")
                     }.joinToString(" · "),
                     style = MaterialTheme.typography.titleMedium, color = c.gems,
                 )
@@ -129,12 +127,11 @@ internal fun formatDuration(ms: Long): String {
     return "%d:%02d".format(sec / 60, sec % 60)
 }
 
-/** Honest out-of-hearts screen: free practice first, gems second, waiting third. */
+/** Honest out-of-hearts screen: free practice or waiting — hearts are never sold. */
 @Composable
 fun OutOfHeartsScreen(
     state: LessonUiState,
     onPractice: () -> Unit,
-    onBuy: () -> Unit,
     onClose: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
@@ -153,11 +150,6 @@ fun OutOfHeartsScreen(
         Text("Сердца закончились", style = MaterialTheme.typography.headlineMedium, color = c.text, modifier = Modifier.testTag("no-hearts"))
         Text("Ничего страшного! Ошибки — часть учёбы. Выбери, как продолжить:", style = MaterialTheme.typography.bodyLarge, color = c.textMuted, textAlign = TextAlign.Center)
         LfButton("Тренировка: вернуть все сердца бесплатно", onClick = onPractice, modifier = Modifier.fillMaxWidth().testTag("hearts-practice"))
-        LfButton(
-            "Восстановить за ${ShopItem.HeartsRefill.price} 💎 (у тебя ${state.gems})",
-            onClick = onBuy, style = LfButtonStyle.Gems, enabled = state.gems >= ShopItem.HeartsRefill.price,
-            modifier = Modifier.fillMaxWidth(),
-        )
         Text(
             if (left > 0) "Или подожди: следующее сердце через ${formatDuration(left)}" else "Новое сердце уже появилось — можно продолжать!",
             style = MaterialTheme.typography.bodyMedium, color = c.textMuted, textAlign = TextAlign.Center,

@@ -122,27 +122,12 @@ fun ShopScreen(viewModel: ShopViewModel = hiltViewModel()) {
                 }
             }
         }
-        item { SectionTitle("Полезное") }
+        item { SectionTitle("Серия") }
         item {
             ShopRow(
                 ShopItem.StreakFreeze, R.drawable.ic_snowflake, state,
                 status = "У тебя ${w.freezes} из ${StreakRules.MAX_FREEZES}",
                 available = w.freezes < StreakRules.MAX_FREEZES, onBuy = viewModel::buy,
-            )
-        }
-        item {
-            ShopRow(
-                ShopItem.HeartsRefill, R.drawable.ic_heart, state,
-                status = if (state.settings.heartsDisabled) "Включён режим без сердец" else "Сердец: ${w.hearts} из ${HeartsRules.MAX}",
-                available = w.hearts < HeartsRules.MAX && !state.settings.heartsDisabled, onBuy = viewModel::buy,
-            )
-        }
-        item {
-            val active = w.doubleXpUntil > state.now
-            ShopRow(
-                ShopItem.DoubleXp, R.drawable.ic_double_xp, state,
-                status = if (active) "Активен ещё ${((w.doubleXpUntil - state.now) / 60000) + 1} мин" else null,
-                available = true, onBuy = viewModel::buy,
             )
         }
         item { SectionTitle("Наряды для лисёнка") }

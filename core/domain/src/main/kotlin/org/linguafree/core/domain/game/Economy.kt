@@ -7,7 +7,7 @@ import org.linguafree.core.domain.model.Wallet
 /**
  * Hearts: max 5, −1 per mistake in a lesson, +1 every 30 minutes.
  * At 0 hearts the learner can: (a) do a free practice that restores all hearts,
- * (b) spend gems, (c) wait. "Режим без сердец" switches hearts off entirely.
+ * (b) wait. Hearts are never sold for gems. "Режим без сердец" switches hearts off entirely.
  */
 object HeartsRules {
     const val MAX = 5
@@ -62,12 +62,12 @@ object Rewards {
     const val LEGENDARY_GEMS = 20
     val CHEST_GEMS = 15..30
 
-    data class Reward(val baseXp: Int, val bonusXp: Int, val multiplier: Int, val gems: Int) {
-        val totalXp: Int get() = (baseXp + bonusXp) * multiplier
+    data class Reward(val baseXp: Int, val bonusXp: Int, val gems: Int) {
+        val totalXp: Int get() = baseXp + bonusXp
     }
 
-    fun forSession(kind: SessionKind, mistakes: Int, durationMs: Long, passed: Boolean, doubleXp: Boolean, total: Int): Reward {
-        if (!passed || total == 0) return Reward(0, 0, 1, 0)
+    fun forSession(kind: SessionKind, mistakes: Int, durationMs: Long, passed: Boolean, total: Int): Reward {
+        if (!passed || total == 0) return Reward(0, 0, 0)
         val perfect = mistakes == 0
         val fast = durationMs in 1..FAST_LESSON_MS
         val base = when (kind) {
@@ -86,7 +86,7 @@ object Rewards {
             SessionKind.Placement -> 0
             else -> 2
         }
-        return Reward(base, bonus, if (doubleXp) 2 else 1, gems)
+        return Reward(base, bonus, gems)
     }
 
     /** Deterministic chest reward so re-opening after reinstall/import gives the same amount. */
@@ -99,11 +99,9 @@ object Rewards {
         results.filter { it.finishedAt in dayStart until dayEnd }.sumOf { it.xp }
 }
 
-/** Items in the gem shop. No real-money prices exist anywhere. */
+/** Items in the gem shop: streak freezes, fox outfits and themes. No real-money prices exist anywhere. */
 enum class ShopItem(val title: String, val description: String, val price: Int) {
     StreakFreeze("Заморозка серии", "Спасёт серию, если пропустишь день. Можно держать до 2.", 100),
-    HeartsRefill("Восстановить сердца", "Сразу все 5 сердец. Бесплатный способ — практика.", 50),
-    DoubleXp("Двойной XP на 15 минут", "Все уроки в ближайшие 15 минут дают вдвое больше XP.", 80),
     OutfitScarf("Наряд: шарф", "Уютный полосатый шарф для лисёнка.", 150),
     OutfitCap("Наряд: кепка", "Кепка исследователя.", 200),
     OutfitBow("Наряд: бантик", "Нарядный бантик.", 150),
@@ -113,8 +111,4 @@ enum class ShopItem(val title: String, val description: String, val price: Int) 
     ThemeLilac("Тема «Сирень»", "Сиреневая тема оформления.", 200);
 
     val isCosmetic: Boolean get() = name.startsWith("Outfit") || name.startsWith("Theme")
-
-    companion object {
-        const val DOUBLE_XP_MS = 15 * 60 * 1000L
-    }
 }

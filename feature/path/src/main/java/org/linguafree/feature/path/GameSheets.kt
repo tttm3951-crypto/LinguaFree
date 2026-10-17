@@ -184,10 +184,10 @@ fun StreakSheet(state: PathUiState, onShop: () -> Unit, onDismiss: () -> Unit) {
     }
 }
 
-/** Hearts: count, timer, free practice, gems, «Режим без сердец». */
+/** Hearts: count, timer, free practice, «Режим без сердец». Hearts are never sold. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeartsSheet(state: PathUiState, onPractice: () -> Unit, onBuy: () -> Unit, onToggleNoHearts: (Boolean) -> Unit, onDismiss: () -> Unit) {
+fun HeartsSheet(state: PathUiState, onPractice: () -> Unit, onToggleNoHearts: (Boolean) -> Unit, onDismiss: () -> Unit) {
     val c = LfTheme.colors
     var left by remember { mutableLongStateOf(0L) }
     LaunchedEffect(state.heartsRefillAt) {
@@ -218,10 +218,6 @@ fun HeartsSheet(state: PathUiState, onPractice: () -> Unit, onBuy: () -> Unit, o
             Text("Сердце тратится за ошибку в уроке и возвращается каждые 30 минут.", style = MaterialTheme.typography.bodySmall, color = c.textMuted, textAlign = TextAlign.Center)
             if (!state.heartsDisabled && state.stats.hearts < HeartsRules.MAX) {
                 LfButton("Тренировка — вернуть все бесплатно", onClick = onPractice, modifier = Modifier.fillMaxWidth())
-                LfButton(
-                    "Восстановить за ${ShopItem.HeartsRefill.price} 💎", onClick = onBuy, style = LfButtonStyle.Gems,
-                    enabled = state.stats.gems >= ShopItem.HeartsRefill.price, modifier = Modifier.fillMaxWidth(),
-                )
             }
             Row(
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).border(2.dp, c.border, RoundedCornerShape(16.dp)).padding(14.dp),

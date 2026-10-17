@@ -15,7 +15,6 @@ import org.linguafree.core.data.platform.Feedback
 import org.linguafree.core.data.platform.SpeechInput
 import org.linguafree.core.data.platform.SpeechOutput
 import org.linguafree.core.domain.game.HeartsRules
-import org.linguafree.core.domain.game.ShopItem
 import org.linguafree.core.domain.learning.ExerciseGrader
 import org.linguafree.core.domain.learning.LearnerAnswer
 import org.linguafree.core.domain.learning.LessonSession
@@ -29,7 +28,6 @@ import org.linguafree.core.domain.repository.SettingsRepository
 import org.linguafree.core.domain.usecase.FinishSessionUseCase
 import org.linguafree.core.domain.usecase.SessionPlan
 import org.linguafree.core.domain.usecase.SessionSummary
-import org.linguafree.core.domain.usecase.ShopUseCase
 import org.linguafree.core.domain.usecase.StartSessionUseCase
 import org.linguafree.core.domain.usecase.TimeProvider
 import org.linguafree.core.ui.mascot.FoxEmotion
@@ -77,7 +75,6 @@ class LessonViewModel @Inject constructor(
     private val content: ContentRepository,
     private val game: GameRepository,
     private val settings: SettingsRepository,
-    private val shop: ShopUseCase,
     private val time: TimeProvider,
     val speechOut: SpeechOutput,
     val speechIn: SpeechInput,
@@ -284,16 +281,6 @@ class LessonViewModel @Inject constructor(
 
     fun requestExit() { _state.update { it.copy(exitConfirm = true) } }
     fun dismissExit() { _state.update { it.copy(exitConfirm = false) } }
-
-    fun buyHearts() {
-        viewModelScope.launch {
-            when (val r = shop.buy(ShopItem.HeartsRefill)) {
-                ShopUseCase.Result.Ok -> { session = null; start() }
-                is ShopUseCase.Result.NotEnoughGems -> _state.update { it.copy(message = "Не хватает ${r.missing} 💎. Пройди бесплатную тренировку!") }
-                is ShopUseCase.Result.NotAvailable -> _state.update { it.copy(message = r.reason) }
-            }
-        }
-    }
 
     fun retry() {
         session = null
