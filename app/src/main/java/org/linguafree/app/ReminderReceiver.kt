@@ -16,6 +16,9 @@ class ReminderReceiver:BroadcastReceiver(){
   if(intent.action==Intent.ACTION_BOOT_COMPLETED){schedule(context);return}
   val prefs=context.getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
   if(prefs.getInt("reminders",3)==0)return
+  val today=java.time.LocalDate.now().toString()
+  val studied=prefs.getString("studiedDates","").orEmpty().split(",")
+  if(today in studied)return
   val slot=intent.getIntExtra("slot",0)
   if(prefs.getInt("reminders",3)==2 && slot==1)return
   val manager=context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
