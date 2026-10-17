@@ -48,7 +48,9 @@ print(f"Original stories: {len(stories)}")
 for group in duplicates[:12]:
     print("CONTENT WARNING: same question set in lessons", ", ".join(map(str, group)))
 if duplicates:
-    print("CONTENT WARNING: repeated lesson content requires editorial revision.")
+    errors.append(f"Repeated full lesson sets: {len(duplicates)}")
+if len(unique) < 900:
+    errors.append(f"Vocabulary diversity regression: only {len(unique)} distinct prompt-answer pairs; expected at least 900")
 if errors:
     print("\n".join("ERROR: " + error for error in errors))
     raise SystemExit(1)
