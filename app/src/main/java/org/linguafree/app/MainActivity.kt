@@ -208,6 +208,34 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   ReminderReceiver.schedule(this)
   setContent {
    var backupStatus by remember { mutableStateOf("") }
+   var reportStatus by remember { mutableStateOf("") }
+   val shareStudyReport=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")){uri->
+    if(uri!=null)try{
+     val dates=prefs.getString("studiedDates","").orEmpty().split(",").filter{it.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))}.sorted()
+     val today=LocalDate.now()
+     val completedLessons=prefs.getString("completed","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}.toSet()
+     val totals=prefs.getString("skillTotal","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}
+     val correct=prefs.getString("skillCorrect","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}
+     val report=JSONObject().put("format","LinguaFreeStudyReport").put("version",1)
+      .put("generatedAt",java.time.OffsetDateTime.now().toString())
+      .put("student",prefs.getString("learnerName","").orEmpty().trim().ifBlank{"Ученик"})
+      .put("completedLessons",completedLessons.size)
+      .put("totalLessons",lessons.size)
+      .put("xp",prefs.getInt("xp",0))
+      .put("studyDaysTotal",dates.size)
+      .put("studyDaysLast7",dates.count{runCatching{LocalDate.parse(it)}.getOrNull()?.let{day->!day.isBefore(today.minusDays(6))&&!day.isAfter(today)}==true})
+      .put("studyDaysLast30",dates.count{runCatching{LocalDate.parse(it)}.getOrNull()?.let{day->!day.isBefore(today.minusDays(29))&&!day.isAfter(today)}==true})
+      .put("lastStudyDate",dates.lastOrNull()?:"")
+      .put("dailyGoal",prefs.getInt("dailyGoal",10))
+      .put("todayCompleted",if(prefs.getString("goalDate","")==today.toString())prefs.getInt("goalCount",0) else 0)
+      .put("mistakesPending",prefs.getString("mistakes","").orEmpty().split(",").count{it.toIntOrNull()!=null})
+      .put("skills",JSONArray((0..3).map{i->JSONObject().put("name",listOf("Чтение и перевод","Аудирование","Письмо","Говорение")[i]).put("attempts",totals.getOrElse(i){0}).put("correct",correct.getOrElse(i){0})}))
+      .put("studyDatesLast30",JSONArray(dates.filter{runCatching{LocalDate.parse(it)}.getOrNull()?.let{day->!day.isBefore(today.minusDays(29))&&!day.isAfter(today)}==true}))
+     val stream=contentResolver.openOutputStream(uri)?:error("Не удалось сохранить отчёт")
+     stream.use{it.write(report.toString(2).toByteArray(Charsets.UTF_8))}
+     reportStatus="Отчёт сохранён. Теперь отправьте этот файл преподавателю через выбранный вами мессенджер."
+    }catch(e:Exception){reportStatus="Ошибка сохранения отчёта: ${e.message}"}
+   }
    val exportProgress=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")){uri->
     if(uri!=null)try{
      val data=JSONObject().put("format","LinguaFreeProgress").put("version",1)
@@ -769,6 +797,20 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { OutlinedButton(onClick={screen="stats"},modifier=Modifier.fillMaxWidth()){Text("📊 Статистика и ошибки")} }
       } else if(screen=="stats") {
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
+       item {
+        Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
+         Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(9.dp)){
+          Text("📋 Отчёт для преподавателя или родителя",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)
+          val today=LocalDate.now()
+          val recentDays=studiedDates.count{runCatching{LocalDate.parse(it)}.getOrNull()?.let{day->!day.isBefore(today.minusDays(6))&&!day.isAfter(today)}==true}
+          Text("Занятий за последние 7 дней: $recentDays дней · Уроков: ${completed.size}/${lessons.size} · XP: $xp",color=ink)
+          Text("Отчёт содержит имя, даты занятий, количество уроков, XP, ошибки и статистику навыков. Он НЕ содержит резервную копию настроек и не позволяет удалённо управлять телефоном.",fontSize=12.sp,color=ink)
+          Button(onClick={shareStudyReport.launch("LinguaFree-study-report.json")},modifier=Modifier.fillMaxWidth()){Text("Сохранить отчёт для отправки")}
+          if(reportStatus.isNotBlank())Text(reportStatus,color=green,fontSize=13.sp)
+         }
+        }
+       }
+
        item { OutlinedTextField(value=learnerName,onValueChange={saveLearnerName(it)},label={Text("Имя ученика")},singleLine=true,modifier=Modifier.fillMaxWidth(),supportingText={Text("Используется в заданиях и поздравлениях. Хранится локально.")}) }
        item { Text("📊 Статистика навыков",fontSize=22.sp,fontWeight=FontWeight.Black,color=ink) }
        listOf("📖 Чтение и перевод","🎧 Аудирование","✍️ Письмо","🎙️ Говорение").forEachIndexed{i,name->
