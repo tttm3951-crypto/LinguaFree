@@ -2,6 +2,11 @@ package org.linguafree.app
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Build
+import android.Manifest
+import androidx.activity.result.contract.ActivityResultContracts
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import android.os.Handler
 import android.os.Looper
 import android.media.AudioAttributes
@@ -49,6 +54,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
  private var reactionNumber=0
  private val uiHandler=Handler(Looper.getMainLooper())
  private var introPlayed=false
+ private val askNotifications=registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
  private fun playWelcomeMelody(){
   if(introPlayed)return
   introPlayed=true
@@ -121,6 +127,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   }
   val lessons=(0 until 300).map { n -> val original=baseLessons[n%baseLessons.size]; original.copy(title=if(n<baseLessons.size)original.title else "${original.title} · этап ${n/baseLessons.size+1}") }
   val prefs=getSharedPreferences("linguafree_progress",Activity.MODE_PRIVATE)
+  ReminderReceiver.schedule(this)
   setContent {
    var current by remember { mutableIntStateOf(prefs.getInt("lesson",0).coerceIn(0,lessons.lastIndex)) }
    var index by remember { mutableIntStateOf(0) }
@@ -133,7 +140,17 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var onboardStep by remember { mutableIntStateOf(0) }
    var level by remember { mutableStateOf("Начинающий") }
    var dailyGoal by remember { mutableIntStateOf(10) }
-   var streak by remember { mutableIntStateOf(0) }
+   var streak by remember { mutableIntStateOf(prefs.getInt("dailyStreak",0)) }
+   var reminderCount by remember { mutableIntStateOf(prefs.getInt("reminders",3)) }
+   var studiedDates by remember { mutableStateOf(prefs.getString("studiedDates","")!!.split(",").filter{it.isNotBlank()}.toSet()) }
+   fun markStudyDay(){
+    val today=LocalDate.now();val key=today.toString()
+    if(key !in studiedDates){
+     streak=if(today.minusDays(1).toString() in studiedDates)streak+1 else 1
+     studiedDates=studiedDates+key
+     prefs.edit().putInt("dailyStreak",streak).putString("studiedDates",studiedDates.joinToString(",")).apply()
+    }
+   }
    var bankWords by remember { mutableStateOf(listOf<String>()) }
    var showTranslation by remember { mutableStateOf(false) }
    var placementScore by remember { mutableIntStateOf(0) }
@@ -203,6 +220,33 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        Image(painter=painterResource(R.drawable.fox_original),contentDescription="Весёлая лисичка LinguaFree",modifier=Modifier.size(92.dp).offset(y=bounce.dp))
       } }
       
+      if(screen=="home") item {
+       Card(colors=CardDefaults.cardColors(containerColor=panel),shape=RoundedCornerShape(22.dp)) {
+        Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+         Text("🔥 $streak дней подряд",fontSize=24.sp,fontWeight=FontWeight.Black,color=Color(0xFFFFAC35))
+         Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){
+          val today=LocalDate.now()
+          (6 downTo 0).forEach { offset ->
+           val day=today.minusDays(offset.toLong())
+           val active=day.toString() in studiedDates
+           Column(horizontalAlignment=Alignment.CenterHorizontally) {
+            Text(listOf("Вс","Пн","Вт","Ср","Чт","Пт","Сб")[day.dayOfWeek.value%7],fontSize=13.sp,color=ink)
+            Text(if(active)"🟠" else "⚪",fontSize=22.sp)
+           }
+          }
+         }
+         Text("🔔 Напоминания: $reminderCount раза в день",fontSize=16.sp,color=ink)
+         Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+          listOf(0,2,3).forEach { n ->
+           Button(onClick={
+            reminderCount=n;prefs.edit().putInt("reminders",n).apply();ReminderReceiver.schedule(this@MainActivity)
+            if(n>0 && Build.VERSION.SDK_INT>=33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED)askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+           },colors=ButtonDefaults.buttonColors(containerColor=if(reminderCount==n)green else Color(0xFF40565D)),contentPadding=PaddingValues(horizontal=12.dp)) {Text(if(n==0)"Выкл." else "$n раза",color=dark)}
+          }
+         }
+        }
+       }
+      }
       if(screen=="home") item { Card(shape=RoundedCornerShape(26.dp),modifier=Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=purple)) { Column(Modifier.padding(21.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
        Text("⭐ $xp XP       💎 $gems",fontSize=24.sp,fontWeight=FontWeight.Black,color=Color.White)
        Text("🏆 Пройдено уроков: ${completed.size}/${lessons.size}",fontSize=18.sp,fontWeight=FontWeight.Bold,color=Color.White)
@@ -349,7 +393,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         if(screen=="placement" && selected==q.answer)placementScore++
         selected=null;bankWords=emptyList();showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
         if(screen=="placement") {if(index==2){current=if(placementScore>=2)8 else if(placementScore==1)3 else 0;index=0;screen="home";save()}else index++}
-        else if(index==lessons[current].questions.lastIndex){completed=completed+current;screen="review"}else index++
+        else if(index==lessons[current].questions.lastIndex){completed=completed+current;markStudyDay();screen="review"}else index++
         save()
        }
       },modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=32.dp).height(54.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
