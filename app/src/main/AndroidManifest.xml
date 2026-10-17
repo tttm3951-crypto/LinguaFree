@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-<application android:label="LinguaFree" android:icon="@drawable/fox_original" android:roundIcon="@drawable/fox_original" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:allowBackup="false">
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/><uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/><application android:label="LinguaFree" android:icon="@drawable/fox_original" android:roundIcon="@drawable/fox_original" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:allowBackup="false">
 <activity android:name=".MainActivity" android:exported="true">
 <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
 </activity>
-</application>
+<receiver android:name=".ReminderReceiver" android:exported="false"/><receiver android:name=".ReminderReceiver" android:exported="true"><intent-filter><action android:name="android.intent.action.BOOT_COMPLETED"/></intent-filter></receiver></application>
 </manifest>
