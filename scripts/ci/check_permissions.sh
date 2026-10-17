@@ -4,7 +4,7 @@ set -euo pipefail
 APK="$1"
 AAPT2=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)aapt2
 ALLOWED='android.permission.VIBRATE|android.permission.POST_NOTIFICATIONS|android.permission.RECORD_AUDIO|android.permission.RECEIVE_BOOT_COMPLETED|.*\.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
-perms=$("$AAPT2" dump permissions "$APK" | sed -n "s/.*permission: \([^ ]*\).*/\1/p" | sort -u)
+perms=$("$AAPT2" dump permissions "$APK" | grep -E '^(uses-permission|permission)' | sed -n "s/.*name='\([^']*\)'.*/\1/p" | sort -u)
 echo "Permissions in $APK:"; echo "$perms"
 bad=$(echo "$perms" | grep -vE "^($ALLOWED)$" || true)
 if [ -n "$bad" ]; then
