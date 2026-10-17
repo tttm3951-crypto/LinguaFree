@@ -448,8 +448,11 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        val l=lessons[current];val q=activeQuestion();val key=current*1000+index
        val mastery=reviewStages[key]?:0
        val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ") && mastery<2
-       val missingMode=screen=="lesson" && index%7==6 && q.prompt.startsWith("Как по-английски") && q.choices[q.answer].length>2
-       val typedMode=screen=="lesson" && q.prompt.startsWith("Как по-английски") && (missingMode || mastery>=2 || index%7==4 || index%7==5)
+       // Lessons 1-50 teach recognition; spelling is introduced gradually later.
+       // A mastered word alone must never force typing in a beginner lesson.
+       val englishPrompt=q.prompt.startsWith("Как по-английски")
+       val missingMode=screen=="lesson" && current>=50 && index%7==6 && englishPrompt && q.choices[q.answer].length>2
+       val typedMode=screen=="lesson" && englishPrompt && (missingMode || (current>=100 && mastery>=2 && (index%7==4 || index%7==5)))
        val correctWord=q.choices[q.answer]
        val missingIndex=correctWord.indexOfFirst{it.lowercaseChar() in "aeiou"}.let{if(it>0)it else 1}
        val audioMode=screen=="lesson" && index%7==1 && mastery>=1 && !q.prompt.startsWith("Как по-английски")
