@@ -223,6 +223,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var correctCount by remember { mutableIntStateOf(0) }
    var foxMessage by remember { mutableStateOf("Давай попробуем!") }
    var foxExcited by remember { mutableStateOf(false) }
+   var celebration by remember { mutableStateOf(false) }
    var reviewLeft by remember { mutableStateOf<String?>(null) }
    var reviewRight by remember { mutableStateOf<String?>(null) }
    var reviewMatched by remember { mutableStateOf(setOf<String>()) }
@@ -245,7 +246,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    fun save(){prefs.edit().putString("repeatQueue",repeatQueue.joinToString(",")).putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
    fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();typedAnswer="";showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
    LaunchedEffect(screen) { if(screen=="review"){reviewMatched=emptySet();reviewLeft=null;reviewRight=null;sayEnglish("Match the words!")} }
-   LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true; sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false } }
+   LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true;celebration=true;playMilestoneSound();sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false;celebration=false } }
    LaunchedEffect(screen,current,index) {
     if(screen=="lesson" || screen=="placement") {
      kotlinx.coroutines.delay(380)
@@ -268,6 +269,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val foxTransparent=remember { val source=BitmapFactory.decodeResource(resources,R.drawable.fox_original); val bitmap=source.copy(Bitmap.Config.ARGB_8888,true); val pixels=IntArray(bitmap.width*bitmap.height);bitmap.getPixels(pixels,0,bitmap.width,0,0,bitmap.width,bitmap.height); for(i in pixels.indices){val c=pixels[i];val rr=android.graphics.Color.red(c);val gg=android.graphics.Color.green(c);val bb=android.graphics.Color.blue(c);if(rr>235 && gg>235 && bb>235){pixels[i]=c and 0x00FFFFFF}else if(rr>215 && gg>215 && bb>215 && kotlin.math.abs(rr-gg)<15 && kotlin.math.abs(gg-bb)<15){pixels[i]=(c and 0x00FFFFFF) or ((255-(minOf(rr,gg,bb)-215)*6).coerceIn(0,255) shl 24)}};bitmap.setPixels(pixels,0,bitmap.width,0,0,bitmap.width,bitmap.height);bitmap.asImageBitmap() }
    val floating=rememberInfiniteTransition(label="mascot")
    val bounce by floating.animateFloat(initialValue=0f,targetValue=-8f,animationSpec=infiniteRepeatable(tween(1300),RepeatMode.Reverse),label="bounce")
+   val foxTilt by animateFloatAsState(targetValue=if(foxExcited)12f else 0f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy),label="foxTilt")
+   val foxWiggle by floating.animateFloat(initialValue=-2f,targetValue=2f,animationSpec=infiniteRepeatable(tween(750),RepeatMode.Reverse),label="foxWiggle")
    MaterialTheme(colorScheme=darkColorScheme(primary=purple,secondary=pink,background=dark,surface=panel,onSurface=ink)) {
     Surface(Modifier.fillMaxSize(),color=dark) {
      Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
@@ -364,16 +367,16 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        } }
        if(reviewMatched.size==reviewPairs.size) item {
         Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally) {
-         Image(bitmap=foxTransparent,contentDescription="Лисичка радуется",modifier=Modifier.size(110.dp).offset(y=bounce.dp).graphicsLayer{scaleX=foxScale;scaleY=foxScale})
+         Image(bitmap=foxTransparent,contentDescription="Лисичка радуется",modifier=Modifier.size(110.dp).offset(y=bounce.dp).graphicsLayer{scaleX=foxScale;scaleY=foxScale;rotationZ=foxTilt+foxWiggle})
          Text("🎊 ТАДА-А-АМ! Все пары найдены!",fontSize=21.sp,fontWeight=FontWeight.Black,color=green)
          Text("Ты отлично закрепил слова! ⭐",fontSize=17.sp,color=ink)
         }
        }
       } else if(screen=="done") {
        item { Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.fillMaxWidth()) {
-        Image(bitmap=foxTransparent,contentDescription="Лисичка празднует победу",modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f; scaleX=foxScale;scaleY=foxScale })
+        Image(bitmap=foxTransparent,contentDescription="Лисичка празднует победу",modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f+foxTilt; scaleX=foxScale;scaleY=foxScale })
         Text("🎉 УРА! УРОК ПРОЙДЕН!",fontSize=30.sp,fontWeight=FontWeight.Black,color=pink)
-        Text("🦊 Hooray! Fantastic! 🌟",fontSize=23.sp,fontWeight=FontWeight.Black,color=green)
+        Text(if(celebration)"🎊 ✨ 🌟 🎉 ✨ 🎊" else "🦊 Hooray! Fantastic! 🌟",fontSize=23.sp,fontWeight=FontWeight.Black,color=green)
        } }
        item { Text("Верных ответов: $correctCount из ${lessons[current].questions.size}") }
        item { Button(onClick={start((current+1).coerceAtMost(lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("Следующий урок")} }
@@ -393,7 +396,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
 
        item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFF3B2A45))) { Column(Modifier.padding(12.dp)) {
         Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(9.dp)) {
-         Image(bitmap=foxTransparent,contentDescription=null,modifier=Modifier.size(24.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale })
+         Image(bitmap=foxTransparent,contentDescription=null,modifier=Modifier.size(24.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale;rotationZ=foxTilt+foxWiggle })
          Text(foxMessage,fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
         }
         Spacer(Modifier.height(4.dp))
