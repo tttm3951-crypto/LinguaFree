@@ -387,7 +387,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        val l=lessons[current];val q=activeQuestion();val key=current*1000+index
        val mastery=reviewStages[key]?:0
        val wordBank=screen=="lesson" && index%7==2 && q.choices[q.answer].contains(" ") && mastery<2
-       val typedMode=screen=="lesson" && q.prompt.startsWith("Как по-английски") && (mastery>=2 || index%7==4 || index%7==5 || index%7==6)
+       val missingMode=screen=="lesson" && index%7==6 && q.prompt.startsWith("Как по-английски") && q.choices[q.answer].length>2
+       val typedMode=screen=="lesson" && q.prompt.startsWith("Как по-английски") && (missingMode || mastery>=2 || index%7==4 || index%7==5)
+       val correctWord=q.choices[q.answer]
+       val missingIndex=correctWord.indexOfFirst{it.lowercaseChar() in "aeiou"}.let{if(it>0)it else 1}
        val audioMode=screen=="lesson" && index%7==1 && mastery>=1 && !q.prompt.startsWith("Как по-английски")
        val pictureMode=screen=="lesson" && index%7==0 && q.choices.all { it.lowercase(Locale.ROOT) in setOf("tea","coffee","milk","apple","cat","dog","water","book","house","hello") }
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
@@ -409,11 +412,11 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        if(selected!=null && showTranslation) item { Text(q.explanation,fontSize=14.sp,color=ink) }
        if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Button(onClick={sayEnglish(q.speech)},modifier=Modifier.fillMaxWidth().height(43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=15.sp,fontWeight=FontWeight.Black)} }
        if(typedMode) item {
-        Text(if(index%7==6)"🔤 Восстанови слово по памяти" else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
+        Text(if(missingMode)"🔤 Впиши пропущенную букву: "+correctWord.replaceRange(missingIndex,missingIndex+1,"_") else "✍️ Напиши английский ответ",fontSize=17.sp,fontWeight=FontWeight.Bold,color=ink)
         OutlinedTextField(value=typedAnswer,onValueChange={typedAnswer=it},label={Text("Твой ответ")},singleLine=true,modifier=Modifier.fillMaxWidth(),enabled=selected==null)
         if(selected==null) TextButton(onClick={hintShown=true}){Text(if(hintShown)"Подсказка: первая буква — ${q.choices[q.answer].firstOrNull()?:'?'}" else "💡 Нужна подсказка?")}
         Button(onClick={
-         val right=typedAnswer.trim().equals(q.choices[q.answer],ignoreCase=true)
+         val right=typedAnswer.trim().equals(if(missingMode)correctWord[missingIndex].toString() else correctWord,ignoreCase=true)
          selected=if(right)q.answer else (q.answer+1)%q.choices.size
          foxExcited=right;foxMessage=if(right)when(answerCombo+1){3->"🔥 Три подряд!";5->"🌟 Пять подряд!";10->"🏆 Десять подряд!";else->"Отлично! 🌟"} else "Попробуй ещё! 💪"
          sayEnglish(q.speech);sayReaction(right)
