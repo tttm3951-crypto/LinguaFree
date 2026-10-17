@@ -234,6 +234,14 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var speedCorrect by remember { mutableIntStateOf(0) }
    var speedFinished by remember { mutableStateOf(false) }
    var speedStartedAt by remember { mutableLongStateOf(0L) }
+   var speedBest by remember { mutableIntStateOf(prefs.getInt("speedBest",0)) }
+   var skillCorrect by remember { mutableStateOf(prefs.getString("skillCorrect","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}.let{if(it.size==4)it else listOf(0,0,0,0)}) }
+   var skillTotal by remember { mutableStateOf(prefs.getString("skillTotal","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}.let{if(it.size==4)it else listOf(0,0,0,0)}) }
+   fun trackSkill(skill:Int,correct:Boolean){
+    skillTotal=skillTotal.mapIndexed{i,n->if(i==skill)n+1 else n}
+    if(correct)skillCorrect=skillCorrect.mapIndexed{i,n->if(i==skill)n+1 else n}
+    prefs.edit().putString("skillCorrect",skillCorrect.joinToString(",")).putString("skillTotal",skillTotal.joinToString(",")).apply()
+   }
    var level by remember { mutableStateOf("Начинающий") }
    var dailyGoal by remember { mutableIntStateOf(10) }
    var streak by remember { mutableIntStateOf(prefs.getInt("dailyStreak",0)) }
@@ -396,6 +404,15 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
       if(screen=="home") item {
        Card(colors=CardDefaults.cardColors(containerColor=panel),shape=RoundedCornerShape(20.dp)){
+        Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
+         Text("⚡ Игра на скорость",fontSize=22.sp,fontWeight=FontWeight.Black,color=ink)
+         Text("10 вопросов за 60 секунд. Рекорд: $speedBest",color=ink)
+         Button(onClick={speedRound=0;speedCorrect=0;speedFinished=false;speedStartedAt=System.currentTimeMillis();screen="speed"},modifier=Modifier.fillMaxWidth()){Text("Начать скоростную игру")}
+        }
+       }
+      }
+      if(screen=="home") item {
+       Card(colors=CardDefaults.cardColors(containerColor=panel),shape=RoundedCornerShape(20.dp)){
         Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(7.dp)){
          Text("🎯 Задания на сегодня",fontSize=22.sp,fontWeight=FontWeight.Black,color=purple)
          val practiced=LocalDate.now().toString() in studiedDates
@@ -403,6 +420,29 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
          Text(if(completed.isNotEmpty())"✅ Пройти первый урок" else "⬜ Пройти первый урок",color=ink)
          Text(if(streak>=3)"✅ Заниматься 3 дня подряд" else "⬜ Заниматься 3 дня подряд",color=ink)
         }
+       }
+      }
+      if(screen=="speed"){
+       val elapsed=(System.currentTimeMillis()-speedStartedAt)/1000L
+       val q=lessons[(speedRound*7+current)%lessons.size].questions[speedRound%7]
+       item { Text("‹  ⚡ Игра на скорость",modifier=Modifier.clickable{screen="home"},fontSize=23.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Text("Вопрос ${speedRound.coerceAtMost(10)}/10 · Верно: $speedCorrect · Время: ${(60-elapsed).coerceAtLeast(0)} с",fontSize=18.sp,color=ink) }
+       if(speedFinished || elapsed>=60 || speedRound>=10){
+        item { Text("🏆 Результат: $speedCorrect из 10",fontSize=27.sp,fontWeight=FontWeight.Black,color=green) }
+        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
+       }else{
+        item { Text(q.prompt,fontSize=25.sp,fontWeight=FontWeight.Black,color=ink) }
+        q.choices.forEachIndexed{idx,choice->item { OutlinedButton(onClick={
+         val correct=idx==q.answer
+         if(correct)speedCorrect++
+         trackSkill(0,correct);sayReaction(correct)
+         speedRound++
+         if(speedRound>=10 || System.currentTimeMillis()-speedStartedAt>=60000L){
+          speedFinished=true
+          if(speedCorrect>speedBest){speedBest=speedCorrect;prefs.edit().putInt("speedBest",speedBest).apply()}
+          markStudyDay()
+         }
+        },modifier=Modifier.fillMaxWidth()){Text(choice,color=ink)} }}
        }
       }
       if(screen=="storyLibrary"){
@@ -509,6 +549,14 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { OutlinedButton(onClick={screen="stats"},modifier=Modifier.fillMaxWidth()){Text("📊 Статистика и ошибки")} }
       } else if(screen=="stats") {
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Text("📊 Статистика навыков",fontSize=22.sp,fontWeight=FontWeight.Black,color=ink) }
+       listOf("📖 Чтение и перевод","🎧 Аудирование","✍️ Письмо","🎙️ Говорение").forEachIndexed{i,name->
+        item { Column(verticalArrangement=Arrangement.spacedBy(4.dp)){
+         Text("$name: ${skillCorrect[i]}/${skillTotal[i]} (${if(skillTotal[i]>0)skillCorrect[i]*100/skillTotal[i] else 0}%)",color=ink)
+         LinearProgressIndicator(progress={if(skillTotal[i]>0)skillCorrect[i].toFloat()/skillTotal[i] else 0f},modifier=Modifier.fillMaxWidth(),color=green)
+        } }
+       }
+       item { Text("⚡ Лучший результат в игре: $speedBest/10",color=ink) }
        item { Text("🗣️ Голос: ${selectedVoiceName?:"Системный английский голос"}",fontSize=13.sp,color=ink) }
        item { Text("Скорость английского",fontSize=16.sp,color=ink) }
        item { Row(horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf(0.80f,0.93f,1.08f).forEach{speed->OutlinedButton(onClick={voiceSpeed=speed;prefs.edit().putFloat("voiceSpeed",speed).apply();sayEnglish("Hello! Welcome to LinguaFree!")},colors=ButtonDefaults.outlinedButtonColors(containerColor=if(voiceSpeed==speed)green else panel)){Text(when(speed){0.80f->"Медленно";0.93f->"Обычно";else->"Быстро"},fontSize=12.sp,color=if(voiceSpeed==speed)dark else ink)}}} }
