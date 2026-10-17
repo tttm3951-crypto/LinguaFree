@@ -127,6 +127,17 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    }catch(_:Exception){}
   }.start()
  }
+ private fun playMilestoneSound(){
+  Thread {
+   try {
+    val rate=22050;val notes=doubleArrayOf(659.25,783.99,987.77,1174.66)
+    val duration=110;val samples=ShortArray(notes.size*duration*rate/1000)
+    for(n in notes.indices){val count=duration*rate/1000;for(i in 0 until count){val fade=minOf(1.0,i/180.0,(count-i)/450.0).coerceAtLeast(0.0);samples[n*count+i]=(sin(2*Math.PI*notes[n]*i/rate)*fade*6500).toInt().toShort()}}
+    val track=AudioTrack.Builder().setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()).setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(rate).setChannelMask(AudioFormat.CHANNEL_OUT_MONO).build()).setBufferSizeInBytes(samples.size*2).setTransferMode(AudioTrack.MODE_STATIC).build()
+    track.write(samples,0,samples.size);track.play();Thread.sleep((notes.size*duration+80).toLong());track.stop();track.release()
+   }catch(_:Exception){}
+  }.start()
+ }
  private fun sayReaction(correct:Boolean){
   if(correct)playCorrectFeedback()
   if(!speechReady)return
@@ -176,6 +187,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var gems by remember { mutableIntStateOf(prefs.getInt("gems",0)) }
    var completed by remember { mutableStateOf(prefs.getString("completed","")!!.split(",").mapNotNull{it.toIntOrNull()}.toSet()) }
    var mistakes by remember { mutableStateOf(prefs.getString("mistakes","")!!.split(",").mapNotNull{it.toIntOrNull()}.toSet()) }
+   var repeatQueue by remember { mutableStateOf(prefs.getString("repeatQueue","")!!.split(",").mapNotNull{it.toIntOrNull()}.toSet()) }
    var selected by remember { mutableStateOf<Int?>(null) }
    var screen by remember { mutableStateOf(if(prefs.getBoolean("onboarded",false))"home" else "onboarding") }
    var onboardStep by remember { mutableIntStateOf(0) }
@@ -218,7 +230,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     }
    }
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
-   fun save(){prefs.edit().putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
+   fun save(){prefs.edit().putString("repeatQueue",repeatQueue.joinToString(",")).putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
    fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
    LaunchedEffect(screen) { if(screen=="review"){reviewMatched=emptySet();reviewLeft=null;reviewRight=null;sayEnglish("Match the words!")} }
    LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true; sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false } }
@@ -316,7 +328,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       } else if(screen=="stats") {
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
        item { Text("Опыт: $xp XP · Алмазы: $gems · Уроков: ${completed.size} · Ошибок: ${mistakes.size}") }
-       item { Text("Для повторения ошибок открой соответствующий урок и пройди его снова.") }
+       item { Text("Слов для повторения: ${repeatQueue.size}. Ошибки сохраняются, чтобы можно было вернуться к сложным заданиям.") }
+       if(repeatQueue.isNotEmpty()) item { Button(onClick={start((repeatQueue.first()/1000).coerceIn(0,lessons.lastIndex))},modifier=Modifier.fillMaxWidth()){Text("🧠 Повторить сложные слова")} }
        item { Button(onClick={screen="home"},modifier=Modifier.fillMaxWidth()){Text("К урокам")} }
       } else if(screen=="review") {
        item { Text("🧠 Закрепляем слова",fontSize=29.sp,fontWeight=FontWeight.Black,color=purple) }
@@ -403,6 +416,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         }
        } }
        if(selected!=null) {
+        if(selected==q.answer && (answerCombo+1)==5) item { Text("🔥 Пять ответов подряд! Бонус после продолжения",fontSize=15.sp,fontWeight=FontWeight.Black,color=green) }
         item { Text(q.explanation,fontSize=14.sp,fontWeight=FontWeight.Bold,color=ink,maxLines=2) }
         /* fixed bottom action handles advancing */
        /* item { Button(onClick={
