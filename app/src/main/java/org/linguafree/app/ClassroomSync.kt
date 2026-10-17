@@ -16,7 +16,7 @@ import java.time.OffsetDateTime
  */
 object ClassroomSync {
     // Replace after deploying the accompanying Cloudflare Worker.
-    const val ENDPOINT = ""
+    val ENDPOINT: String = BuildConfig.CLASSROOM_ENDPOINT
     val configured: Boolean get() = ENDPOINT.startsWith("https://") && ENDPOINT.length > 15
 
     private fun request(path: String, method: String, payload: JSONObject? = null, token: String? = null): JSONObject {
