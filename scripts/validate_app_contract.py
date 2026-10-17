@@ -25,6 +25,8 @@ checks={
     "offline speech preference": "EXTRA_PREFER_OFFLINE" in src,
     "fox animation": "rememberInfiniteTransition" in fox and 'mood=="celebrate"' in fox,
     "daily goals": '"goalDate"' in src and '"dailyGoal"' in src,
+    "voluntary progress report": '"LinguaFreeStudyReport"' in src and 'shareStudyReport.launch' in src,
+    "report includes activity": '"studyDaysLast7"' in src and '"studyDaysLast30"' in src,
     "learner name stored locally": '"learnerName"' in src and 'saveLearnerName' in src,
     "learner name shown in exercises": 'твоё задание' in src and '$displayName' in src,
     "learner name editable": 'label={Text("Имя ученика")}' in src,
