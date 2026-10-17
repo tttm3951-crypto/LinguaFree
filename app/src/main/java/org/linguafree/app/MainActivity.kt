@@ -138,8 +138,24 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    }catch(_:Exception){}
   }.start()
  }
+ private fun playWrongFeedback(){
+  try {
+   val vibrator=getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+   if(Build.VERSION.SDK_INT>=26)vibrator?.vibrate(VibrationEffect.createOneShot(35,70))
+   else @Suppress("DEPRECATION") vibrator?.vibrate(35)
+  }catch(_:Exception){}
+  Thread {
+   try {
+    val rate=22050;val notes=doubleArrayOf(330.0,277.18);val duration=105
+    val samples=ShortArray(notes.size*duration*rate/1000)
+    for(n in notes.indices){val count=duration*rate/1000;for(i in 0 until count){val fade=minOf(1.0,i/180.0,(count-i)/450.0).coerceAtLeast(0.0);samples[n*count+i]=(sin(2*Math.PI*notes[n]*i/rate)*fade*2600).toInt().toShort()}}
+    val track=AudioTrack.Builder().setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()).setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(rate).setChannelMask(AudioFormat.CHANNEL_OUT_MONO).build()).setBufferSizeInBytes(samples.size*2).setTransferMode(AudioTrack.MODE_STATIC).build()
+    track.write(samples,0,samples.size);track.play();Thread.sleep((notes.size*duration+80).toLong());track.stop();track.release()
+   }catch(_:Exception){}
+  }.start()
+ }
  private fun sayReaction(correct:Boolean){
-  if(correct)playCorrectFeedback()
+  if(correct)playCorrectFeedback() else playWrongFeedback()
   if(!speechReady)return
   val phrases=if(correct) listOf("Great!","Well done!","Excellent!","Fantastic!","Amazing!","You did it!")
    else listOf("Try again!","Keep going!","You can do it!","Nice try!")
@@ -238,9 +254,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     if(left!=null && right!=null){
      if(reviewPairs.any{it.first==left && it.second==right}){
       reviewMatched=reviewMatched+left
+      playCorrectFeedback()
       sayEnglish(left)
       if(reviewMatched.size==reviewPairs.size){foxExcited=true;playMilestoneSound();sayEnglish("Ta-da! Amazing! You did it!",false)}
-     }else{sayEnglish("Try again!")}
+     }else{playWrongFeedback();sayEnglish("Try again!")}
      reviewLeft=null;reviewRight=null
     }
    }
