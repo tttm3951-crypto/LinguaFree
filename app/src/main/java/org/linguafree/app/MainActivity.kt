@@ -209,6 +209,35 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
   setContent {
    var backupStatus by remember { mutableStateOf("") }
    var reportStatus by remember { mutableStateOf("") }
+   val teacherPrefs=getSharedPreferences("linguafree_teacher",Activity.MODE_PRIVATE)
+   var teacherReports by remember {
+    mutableStateOf(runCatching{
+     val raw=JSONArray(teacherPrefs.getString("reports","[]"))
+     (0 until raw.length()).map{raw.getJSONObject(it).toString()}
+    }.getOrDefault(emptyList<String>()))
+   }
+   var teacherStatus by remember { mutableStateOf("") }
+   val importTeacherReport=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->
+    if(uri!=null)try{
+     val text=contentResolver.openInputStream(uri)?.bufferedReader()?.use{
+      val content=it.readText();require(content.length<=100_000){"Слишком большой файл отчёта"};content
+     }?:error("Не удалось открыть отчёт")
+     val report=JSONObject(text)
+     require(report.optString("format")=="LinguaFreeStudyReport" && report.optInt("version")==1){"Это не отчёт ученика LinguaFree"}
+     val name=report.optString("student").trim()
+     require(name.isNotBlank() && name.length<=80){"Некорректное имя ученика"}
+     require(report.optInt("completedLessons",-1) in 0..300 && report.optInt("xp",-1) in 0..10_000_000){"Некорректные показатели"}
+     val generated=java.time.OffsetDateTime.parse(report.getString("generatedAt"))
+     require(!generated.isAfter(java.time.OffsetDateTime.now().plusDays(1))){"Некорректная дата отчёта"}
+     val same=teacherReports.any{runCatching{JSONObject(it).optString("student")==name && JSONObject(it).optString("generatedAt")==report.getString("generatedAt")}.getOrDefault(false)}
+     if(same)teacherStatus="Этот отчёт уже загружен."
+     else {
+      teacherReports=(teacherReports+report.toString()).takeLast(250)
+      teacherPrefs.edit().putString("reports",JSONArray(teacherReports.map{JSONObject(it)}).toString()).apply()
+      teacherStatus="Отчёт ученика «$name» добавлен. Данные хранятся только на этом телефоне."
+     }
+    }catch(e:Exception){teacherStatus="Ошибка импорта: ${e.message}"}
+   }
    val shareStudyReport=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")){uri->
     if(uri!=null)try{
      val dates=prefs.getString("studiedDates","").orEmpty().split(",").filter{it.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))}.sorted()
@@ -764,6 +793,48 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        LinearProgressIndicator(progress={completed.size.toFloat()/lessons.size},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=Color(0xFFFFC74A),trackColor=Color.White.copy(alpha=.3f))
        Text("🎁 Без рекламы и подписок!",fontSize=13.sp,fontWeight=FontWeight.Bold,color=Color.White)
       } } }
+      if(screen=="teacher"){
+       item { Text("‹  Кабинет преподавателя",modifier=Modifier.clickable{screen="home"},fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { Text("Отчёты добавляются вручную с разрешения ученика. Никакого скрытого отслеживания и сервера нет.",fontSize=14.sp,color=ink) }
+       item { Button(onClick={importTeacherReport.launch(arrayOf("application/json"))},modifier=Modifier.fillMaxWidth()){Text("📂 Загрузить отчёт ученика")} }
+       if(teacherStatus.isNotBlank())item { Text(teacherStatus,color=ink) }
+       val reports=teacherReports.mapNotNull{runCatching{JSONObject(it)}.getOrNull()}
+       val names=reports.map{it.optString("student")}.distinct().sorted()
+       item { Text("Учеников: ${names.size} · Отчётов: ${reports.size}",fontSize=18.sp,fontWeight=FontWeight.Bold,color=ink) }
+       if(names.isEmpty())item { Text("Пока нет учеников. Попросите ученика открыть «Мои достижения», сохранить отчёт и отправить вам JSON-файл.",color=ink) }
+       items(names){name->
+        val history=reports.filter{it.optString("student")==name}.sortedBy{it.optString("generatedAt")}
+        val latest=history.last()
+        val previous=history.dropLast(1).lastOrNull()
+        val lessonsDone=latest.optInt("completedLessons")
+        val xpNow=latest.optInt("xp")
+        val xpDelta=if(previous!=null)xpNow-previous.optInt("xp") else null
+        val lessonDelta=if(previous!=null)lessonsDone-previous.optInt("completedLessons") else null
+        Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
+         Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
+          Text("👤 $name",fontSize=21.sp,fontWeight=FontWeight.Black,color=ink)
+          Text("Уроки: $lessonsDone/${latest.optInt("totalLessons",300)} · XP: $xpNow",color=ink)
+          LinearProgressIndicator(progress=(lessonsDone.toFloat()/latest.optInt("totalLessons",300).coerceAtLeast(1)).coerceIn(0f,1f),modifier=Modifier.fillMaxWidth(),color=green)
+          Text("Активных дней: за 7 дней — ${latest.optInt("studyDaysLast7")}, за 30 дней — ${latest.optInt("studyDaysLast30")}",color=ink)
+          Text("Последнее занятие: ${latest.optString("lastStudyDate").ifBlank{"Нет данных"}}",color=ink)
+          Text("Ошибок к повторению: ${latest.optInt("mistakesPending")}",color=ink)
+          if(xpDelta!=null && lessonDelta!=null)Text("Изменение с предыдущего отчёта: XP ${if(xpDelta>=0)"+" else ""}$xpDelta · уроки ${if(lessonDelta>=0)"+" else ""}$lessonDelta",color=green)
+          else Text("Для сравнения нужен второй отчёт этого ученика.",fontSize=12.sp,color=ink)
+          val skills=latest.optJSONArray("skills")
+          if(skills!=null)for(i in 0 until skills.length()){
+           val skill=skills.optJSONObject(i)?:continue
+           Text("${skill.optString("name")}: ${skill.optInt("correct")}/${skill.optInt("attempts")} верных",fontSize=13.sp,color=ink)
+          }
+          Text("Обновлено: ${latest.optString("generatedAt").take(16).replace("T"," ")} · отчётов: ${history.size}",fontSize=12.sp,color=ink)
+          OutlinedButton(onClick={
+           teacherReports=teacherReports.filterNot{runCatching{JSONObject(it).optString("student")==name}.getOrDefault(false)}
+           teacherPrefs.edit().putString("reports",JSONArray(teacherReports.map{JSONObject(it)}).toString()).apply()
+           teacherStatus="Данные ученика «$name» удалены с этого телефона."
+          },modifier=Modifier.fillMaxWidth()){Text("Удалить отчёты ученика")}
+         }
+        }
+       }
+      }
       if(screen=="home") {
        item {
         Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
@@ -796,6 +867,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        }
        item { OutlinedButton(onClick={screen="stats"},modifier=Modifier.fillMaxWidth()){Text("📊 Статистика и ошибки")} }
       } else if(screen=="stats") {
+       item { OutlinedButton(onClick={screen="teacher"},modifier=Modifier.fillMaxWidth()){Text("👩‍🏫 Кабинет преподавателя")} }
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
        item {
         Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
