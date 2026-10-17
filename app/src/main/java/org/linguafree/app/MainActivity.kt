@@ -204,8 +204,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    val bounce by floating.animateFloat(initialValue=0f,targetValue=-8f,animationSpec=infiniteRepeatable(tween(1300),RepeatMode.Reverse),label="bounce")
    MaterialTheme(colorScheme=darkColorScheme(primary=purple,secondary=pink,background=dark,surface=panel,onSurface=ink)) {
     Surface(Modifier.fillMaxSize(),color=dark) {
-     Column(Modifier.fillMaxSize()) {
-     LazyColumn(modifier=Modifier.weight(1f),contentPadding=PaddingValues(start=14.dp,end=14.dp,top=8.dp,bottom=12.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson") 7.dp else 12.dp)) {
+     Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+     LazyColumn(modifier=Modifier.weight(1f),contentPadding=PaddingValues(start=14.dp,end=14.dp,top=27.dp,bottom=12.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson") 7.dp else 12.dp)) {
       if(screen=="onboarding") {
        item { LinearProgressIndicator(progress={(onboardStep+1)/3f},modifier=Modifier.fillMaxWidth().height(10.dp),color=green) }
        item { Row(verticalAlignment=Alignment.CenterVertically) { Image(painter=painterResource(R.drawable.fox_original),contentDescription="Лисичка",modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько минут будем играть каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
@@ -361,10 +361,6 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         }
        } }
        if(selected!=null) {
-        item { AnimatedVisibility(visible=true,enter=fadeIn()+expandVertically()) { Row(verticalAlignment=Alignment.CenterVertically) {
-         Image(painter=painterResource(R.drawable.fox_original),contentDescription=null,modifier=Modifier.size(36.dp).offset(y=if(selected==q.answer)bounce.dp else 0.dp))
-         Text(if(selected==q.answer) "🎉 СУПЕР! ПРАВИЛЬНО!" else "💡 Попробуем запомнить!",fontSize=17.sp,fontWeight=FontWeight.Black,color=if(selected==q.answer)green else pink)
-        } } }
         item { Text(q.explanation,fontSize=14.sp,fontWeight=FontWeight.Bold,color=ink,maxLines=2) }
         /* fixed bottom action handles advancing */
        /* item { Button(onClick={
@@ -380,7 +376,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       }
      }
      if(screen=="review" && reviewMatched.size==reviewPairs.size) {
-      Button(onClick={screen="done";foxExcited=true},modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=32.dp).height(54.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark),shape=RoundedCornerShape(17.dp)) {Text("ЗАБРАТЬ ОПЫТ ⭐",fontSize=21.sp,fontWeight=FontWeight.Black)}
+      Button(onClick={screen="done";foxExcited=true},modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=51.dp).height(54.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark),shape=RoundedCornerShape(17.dp)) {Text("ЗАБРАТЬ ОПЫТ ⭐",fontSize=21.sp,fontWeight=FontWeight.Black)}
      }
      if(screen=="onboarding" || ((screen=="lesson" || screen=="placement") && selected!=null)) {
       Button(onClick={
@@ -396,7 +392,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         else if(index==lessons[current].questions.lastIndex){completed=completed+current;markStudyDay();screen="review"}else index++
         save()
        }
-      },modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=32.dp).height(54.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
+      },modifier=Modifier.fillMaxWidth().padding(start=16.dp,end=16.dp,top=6.dp,bottom=51.dp).height(54.dp),shape=RoundedCornerShape(17.dp),colors=ButtonDefaults.buttonColors(containerColor=green,contentColor=dark)) {
        Text(if(screen=="onboarding")if(onboardStep==2)"ПОЕХАЛИ! 🚀" else "ПРОДОЛЖИТЬ" else "ПРОДОЛЖИТЬ 🚀",fontSize=21.sp,fontWeight=FontWeight.Black)
       }
      }
