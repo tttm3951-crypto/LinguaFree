@@ -60,6 +60,7 @@ private data class Lesson(val title:String,val questions:List<Quiz>)
 class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
  private var tts:TextToSpeech?=null
  private var speechReady=false
+ private var selectedVoiceName:String?=null
  private var reactionNumber=0
  private val uiHandler=Handler(Looper.getMainLooper())
  private var introPlayed=false
@@ -92,8 +93,11 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    }catch(_:Exception){}
   }.start()
  }
- private fun sayEnglish(value:String,flush:Boolean=true){
+ private fun sayEnglish(value:String,flush:Boolean=true,slow:Boolean=false){
   if(!speechReady)return
+  val voicePrefs=getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE)
+  tts?.setSpeechRate(if(slow)0.68f else voicePrefs.getFloat("voiceSpeed",0.93f))
+  tts?.setPitch(if(slow)1.0f else 1.05f)
   tts?.speak(value,if(flush)TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD,null,"english-"+System.nanoTime())
  }
  private fun playCorrectFeedback(){
@@ -176,9 +180,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    name.contains("female")||name.contains("woman")||name.contains("feminine")||
    name.contains("en-us-x-sfg")||name.contains("en-us-x-tpf")
   }
-  val preferred=female.firstOrNull{it.locale.country=="US"}?:female.firstOrNull()
-  if(preferred!=null)engine.voice=preferred
-  engine.setSpeechRate(0.85f)
+  val preferred=female.filter{it.locale.country=="US"}.maxByOrNull{it.quality}?:englishVoices.filter{it.locale.country=="US"}.maxByOrNull{it.quality}?:female.maxByOrNull{it.quality}?:englishVoices.maxByOrNull{it.quality}
+  if(preferred!=null){engine.voice=preferred;selectedVoiceName=preferred.name}
+  engine.setSpeechRate(getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE).getFloat("voiceSpeed",0.93f))
+  engine.setPitch(1.05f)
   speechReady=true
  }
  override fun onDestroy(){tts?.stop();tts?.shutdown();super.onDestroy()}
@@ -214,6 +219,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var answerCombo by remember { mutableIntStateOf(0) }
    var reminderCount by remember { mutableIntStateOf(prefs.getInt("reminders",3)) }
    var effectsEnabled by remember { mutableStateOf(prefs.getBoolean("effectsEnabled",true)) }
+   var voiceSpeed by remember { mutableFloatStateOf(prefs.getFloat("voiceSpeed",0.93f)) }
    var studiedDates by remember { mutableStateOf(prefs.getString("studiedDates","")!!.split(",").filter{it.isNotBlank()}.toSet()) }
    fun markStudyDay(){
     val today=LocalDate.now();val key=today.toString()
