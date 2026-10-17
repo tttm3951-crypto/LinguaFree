@@ -151,7 +151,7 @@ private fun Playing(state: LessonUiState, vm: LessonViewModel) {
                 }
             }
             // «5 подряд!» banner with the clapping fox.
-            AnimatedVisibility(
+            androidx.compose.animation.AnimatedVisibility(
                 visible = state.comboBanner != null,
                 enter = scaleIn() + fadeIn(),
                 exit = fadeOut(),
@@ -176,7 +176,7 @@ private fun Playing(state: LessonUiState, vm: LessonViewModel) {
                     LfButton("Проверить", onClick = vm::check, enabled = state.answer != null, modifier = Modifier.fillMaxWidth().testTag("check"))
                 }
             }
-            AnimatedVisibility(visible = fb != null, enter = slideInVertically { it }, exit = slideOutVertically { it }) {
+            androidx.compose.animation.AnimatedVisibility(visible = fb != null, enter = slideInVertically { it }, exit = slideOutVertically { it }) {
                 if (fb != null) FeedbackPanel(fb, state.fox, onContinue = vm::continueNext)
             }
         }
