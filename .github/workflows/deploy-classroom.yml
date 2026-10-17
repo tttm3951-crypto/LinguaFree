@@ -1,0 +1,33 @@
+name: Deploy Classroom Server
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify required Cloudflare settings
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLASSROOM_KV_ID: ${{ vars.CLASSROOM_KV_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::Missing CLOUDFLARE_API_TOKEN secret"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::Missing CLOUDFLARE_ACCOUNT_ID secret"; exit 1; }
+          test -n "$CLASSROOM_KV_ID" || { echo "::error::Missing CLASSROOM_KV_ID variable"; exit 1; }
+          [[ "$CLASSROOM_KV_ID" =~ ^[a-f0-9]{32}$ ]] || { echo "::error::Invalid KV namespace ID"; exit 1; }
+      - name: Deploy Cloudflare Worker
+        working-directory: backend/cloudflare-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLASSROOM_KV_ID: ${{ vars.CLASSROOM_KV_ID }}
+        run: |
+          sed -i "s/REPLACE_WITH_KV_NAMESPACE_ID/$CLASSROOM_KV_ID/" wrangler.toml
+          npx --yes wrangler@4 deploy
