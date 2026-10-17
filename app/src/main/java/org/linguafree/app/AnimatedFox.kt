@@ -20,12 +20,14 @@ import kotlin.math.min
  * Transparent background. No third-party characters or image assets.
  */
 @Composable
-fun AnimatedFox(modifier:Modifier=Modifier.size(120.dp),happy:Boolean=false){
+fun AnimatedFox(modifier:Modifier=Modifier.size(120.dp),mood:String="curious"){
  val animation=rememberInfiniteTransition(label="foxBody")
  val blink by animation.animateFloat(1f,0.10f,infiniteRepeatable(tween(120,delayMillis=2900),RepeatMode.Reverse),label="foxBlink")
  val paws by animation.animateFloat(-5f,5f,infiniteRepeatable(tween(420),RepeatMode.Reverse),label="foxPaws")
  val ears by animation.animateFloat(-3f,3f,infiniteRepeatable(tween(750),RepeatMode.Reverse),label="foxEars")
+ val happy=mood=="happy"||mood=="celebrate"
  val mouth by animateFloatAsState(if(happy)1f else 0f,label="foxSmile")
+ val dance by animation.animateFloat(-3f,3f,infiniteRepeatable(tween(310),RepeatMode.Reverse),label="foxDance")
  Canvas(modifier){
   val u=min(size.width,size.height)/100f
   fun oval(color:Color,x:Float,y:Float,w:Float,h:Float){
@@ -45,16 +47,28 @@ fun AnimatedFox(modifier:Modifier=Modifier.size(120.dp),happy:Boolean=false){
   oval(Color(0xFFFFEAD6),18f,52f,33f,28f)
   oval(Color(0xFFFFEAD6),49f,52f,33f,28f)
   oval(Color(0xFFFFD19C),29f,32f,42f,25f)
-  oval(Color(0xFF202F37),32f,44f,7f,12f*blink)
-  oval(Color(0xFF202F37),61f,44f,7f,12f*blink)
+  if(mood=="surprised"){
+   oval(Color(0xFF202F37),31f,43f,9f,14f)
+   oval(Color(0xFF202F37),60f,43f,9f,14f)
+  }else if(mood=="support"){
+   oval(Color(0xFF202F37),32f,48f,8f,8f*blink)
+   oval(Color(0xFF202F37),60f,48f,8f,8f*blink)
+  }else{
+   oval(Color(0xFF202F37),32f,44f,7f,12f*blink)
+   oval(Color(0xFF202F37),61f,44f,7f,12f*blink)
+  }
   oval(Color.White,34f,45f,2f,2f*blink)
   oval(Color.White,63f,45f,2f,2f*blink)
   tri(Color(0xFF32242A),45f,60f,55f,60f,50f,67f)
-  oval(Color(0xFFAF5A56),45f,70f,10f,if(happy)7f else 2f+mouth*4f)
+  oval(Color(0xFFAF5A56),45f,70f,10f,if(mood=="surprised")12f else if(happy)7f else 2f+mouth*4f)
+  if(mood=="support"){
+   oval(Color(0xFFFFB5A4),23f,61f,12f,5f)
+   oval(Color(0xFFFFB5A4),65f,61f,12f,5f)
+  }
   // Paws move independently in opposite directions.
-  oval(Color(0xFFD96825),17f,80f+paws,25f,15f)
-  oval(Color(0xFFD96825),58f,80f-paws,25f,15f)
-  oval(Color(0xFFFFD3A4),21f,85f+paws,17f,7f)
-  oval(Color(0xFFFFD3A4),62f,85f-paws,17f,7f)
+  oval(Color(0xFFD96825),17f,80f+paws+(if(mood=="celebrate")dance else 0f),25f,15f)
+  oval(Color(0xFFD96825),58f,80f-paws-(if(mood=="celebrate")dance else 0f),25f,15f)
+  oval(Color(0xFFFFD3A4),21f,85f+paws+(if(mood=="celebrate")dance else 0f),17f,7f)
+  oval(Color(0xFFFFD3A4),62f,85f-paws-(if(mood=="celebrate")dance else 0f),17f,7f)
  }
 }
