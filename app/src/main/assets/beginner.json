@@ -1426,5 +1426,209 @@
         "explanation": "Верный вариант: yesterday. Сначала сравниваем время на понятной линии: вчера — сейчас — завтра. Для начала: was/were — был/были; played — играл; will + глагол — простое сообщение о будущем. Все сложные времена остаются в следующих уровнях, а не в первом маршруте."
       }
     ]
+  },
+  {
+    "id": "start-22",
+    "title": "Цвет, размер и сравнение",
+    "level": "A1",
+    "group": "words",
+    "rule": "Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better.",
+    "examples": [
+      "This is a small bag. — Это маленькая сумка.",
+      "My bag is bigger than yours. — Моя сумка больше твоей."
+    ],
+    "questions": [
+      {
+        "prompt": "Красная сумка",
+        "choices": [
+          "a red bag",
+          "a bag red",
+          "an red bag"
+        ],
+        "answer": 0,
+        "speech": "This is a red bag.",
+        "explanation": "Верный вариант: a red bag. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      },
+      {
+        "prompt": "Две красные сумки",
+        "choices": [
+          "two reds bags",
+          "two red bag",
+          "two red bags"
+        ],
+        "answer": 2,
+        "speech": "I have two red bags.",
+        "explanation": "Верный вариант: two red bags. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      },
+      {
+        "prompt": "Эта кошка меньше той",
+        "choices": [
+          "This cat is smallest than that cat.",
+          "This cat is smaller than that cat.",
+          "This cat is small than that cat."
+        ],
+        "answer": 1,
+        "speech": "This cat is smaller than that cat.",
+        "explanation": "Верный вариант: This cat is smaller than that cat.. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      },
+      {
+        "prompt": "Этот день лучше",
+        "choices": [
+          "This day is better.",
+          "This day is gooder.",
+          "This day is more good."
+        ],
+        "answer": 0,
+        "speech": "This day is better.",
+        "explanation": "Верный вариант: This day is better.. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      },
+      {
+        "prompt": "Какое слово описывает размер?",
+        "choices": [
+          "tomorrow",
+          "under",
+          "small"
+        ],
+        "answer": 2,
+        "speech": "This is a small room.",
+        "explanation": "Верный вариант: small. Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better."
+      }
+    ]
+  },
+  {
+    "id": "start-23",
+    "title": "Дни и время на часах",
+    "level": "A1",
+    "group": "time",
+    "rule": "Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами.",
+    "examples": [
+      "The lesson is on Monday. — Урок в понедельник.",
+      "We start at two o'clock. — Мы начинаем в два часа."
+    ],
+    "questions": [
+      {
+        "prompt": "В понедельник",
+        "choices": [
+          "in Monday",
+          "at Monday",
+          "on Monday"
+        ],
+        "answer": 2,
+        "speech": "The lesson is on Monday.",
+        "explanation": "Верный вариант: on Monday. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      },
+      {
+        "prompt": "В два часа",
+        "choices": [
+          "in two o'clock",
+          "at two o'clock",
+          "on two o'clock"
+        ],
+        "answer": 1,
+        "speech": "We start at two o'clock.",
+        "explanation": "Верный вариант: at two o'clock. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      },
+      {
+        "prompt": "Утром",
+        "choices": [
+          "in the morning",
+          "on the morning",
+          "at the morning"
+        ],
+        "answer": 0,
+        "speech": "I read in the morning.",
+        "explanation": "Верный вариант: in the morning. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      },
+      {
+        "prompt": "Выбери правильное написание дня",
+        "choices": [
+          "friday",
+          "FRIday",
+          "Friday"
+        ],
+        "answer": 2,
+        "speech": "We meet on Friday.",
+        "explanation": "Верный вариант: Friday. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      },
+      {
+        "prompt": "Спроси, который час",
+        "choices": [
+          "Who is the time?",
+          "What time is it?",
+          "Where time is it?"
+        ],
+        "answer": 1,
+        "speech": "What time is it?",
+        "explanation": "Верный вариант: What time is it?. Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами."
+      }
+    ]
+  },
+  {
+    "id": "start-24",
+    "title": "Вежливая просьба и маленький диалог",
+    "level": "A1",
+    "group": "sentences",
+    "rule": "Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме.",
+    "examples": [
+      "Can I have some water, please? — Можно мне немного воды, пожалуйста?",
+      "Here you are. Thank you! — Вот, пожалуйста. Спасибо!"
+    ],
+    "questions": [
+      {
+        "prompt": "Вежливо попроси воды",
+        "choices": [
+          "Water is a colour.",
+          "Can I have some water, please?",
+          "Where is your water yesterday?"
+        ],
+        "answer": 1,
+        "speech": "Can I have some water, please?",
+        "explanation": "Верный вариант: Can I have some water, please?. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      },
+      {
+        "prompt": "Тебе дали книгу. Поблагодари",
+        "choices": [
+          "Thank you!",
+          "Who is the book?",
+          "Good night, book!"
+        ],
+        "answer": 0,
+        "speech": "Thank you!",
+        "explanation": "Верный вариант: Thank you!. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      },
+      {
+        "prompt": "Ответь на благодарность",
+        "choices": [
+          "I am tomorrow.",
+          "It is a chair.",
+          "You are welcome."
+        ],
+        "answer": 2,
+        "speech": "You are welcome.",
+        "explanation": "Верный вариант: You are welcome.. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      },
+      {
+        "prompt": "Попроси открыть окно",
+        "choices": [
+          "Where open you?",
+          "Please open the window.",
+          "The window is yesterday."
+        ],
+        "answer": 1,
+        "speech": "Please open the window.",
+        "explanation": "Верный вариант: Please open the window.. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      },
+      {
+        "prompt": "Ответь на Can you help me?",
+        "choices": [
+          "Yes, I can help you.",
+          "I am a table.",
+          "The park is green."
+        ],
+        "answer": 0,
+        "speech": "Yes, I can help you.",
+        "explanation": "Верный вариант: Yes, I can help you.. Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме."
+      }
+    ]
   }
 ]

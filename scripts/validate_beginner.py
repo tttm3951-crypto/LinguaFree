@@ -6,9 +6,9 @@ from build_beginner import build
 root=Path(__file__).resolve().parents[1]
 data=json.loads((root/'app/src/main/assets/beginner.json').read_text(encoding='utf-8'))
 assert data==build(), 'Run build_beginner.py after editing course sources'
-assert len(data)==21 and sum(len(t['questions']) for t in data)==105
+assert len(data)==24 and sum(len(t['questions']) for t in data)==120
 assert len({t['id'] for t in data})==len(data)
-assert data[0]['group']=='reading' and data[-1]['group']=='time'
+assert data[0]['group']=='reading' and data[-1]['group']=='sentences'
 for topic in data:
     assert topic['level'] in ('Pre-A1','A1')
     assert topic['rule'] and len(topic['examples'])>=2
@@ -27,4 +27,4 @@ for name in ['lessons.json','grammar.json','beginner.json']:
             value=q.get('speech','').strip().casefold().strip('.!?')
             if re.fullmatch(r"[a-z]+(?:['’-][a-z]+)*",value): targets[value]+=1
 assert max(targets.values(),default=0)<=5
-print('PASS: 21 original beginner topics / 105 questions; progression, reproducibility and standalone-word cap')
+print('PASS: 24 original beginner topics / 120 questions; progression, reproducibility and standalone-word cap')

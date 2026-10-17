@@ -132,6 +132,28 @@ UNITS = [
 ("Какое слово означает «вчера»?", "yesterday", "tomorrow", "today", "I was here yesterday.")]),
 ]
 
+# Append stable IDs rather than renumbering existing topics on future updates.
+UNITS += [
+("Цвет, размер и сравнение", "A1", "words", "Признак обычно стоит перед предметом: a red bag. В сравнении коротких прилагательных часто добавляем -er, а перед вторым предметом ставим than. Не меняем прилагательное по числу: two red bags. Особые формы изучаем отдельно: good–better.", ["This is a small bag. — Это маленькая сумка.", "My bag is bigger than yours. — Моя сумка больше твоей."], [
+("Красная сумка", "a red bag", "a bag red", "an red bag", "This is a red bag."),
+("Две красные сумки", "two red bags", "two reds bags", "two red bag", "I have two red bags."),
+("Эта кошка меньше той", "This cat is smaller than that cat.", "This cat is small than that cat.", "This cat is smallest than that cat.", "This cat is smaller than that cat."),
+("Этот день лучше", "This day is better.", "This day is gooder.", "This day is more good.", "This day is better."),
+("Какое слово описывает размер?", "small", "tomorrow", "under", "This is a small room.")]),
+("Дни и время на часах", "A1", "time", "Дни недели пишем с заглавной буквы. Для дня используем on Monday, для точного времени — at two o'clock, для части дня — in the morning. Сначала учимся назначать время простыми целыми часами.", ["The lesson is on Monday. — Урок в понедельник.", "We start at two o'clock. — Мы начинаем в два часа."], [
+("В понедельник", "on Monday", "in Monday", "at Monday", "The lesson is on Monday."),
+("В два часа", "at two o'clock", "on two o'clock", "in two o'clock", "We start at two o'clock."),
+("Утром", "in the morning", "on the morning", "at the morning", "I read in the morning."),
+("Выбери правильное написание дня", "Friday", "friday", "FRIday", "We meet on Friday."),
+("Спроси, который час", "What time is it?", "Where time is it?", "Who is the time?", "What time is it?")]),
+("Вежливая просьба и маленький диалог", "A1", "sentences", "Соединяем знания в ситуации: поздоровайся, попроси, поблагодари. Please смягчает просьбу. В коротком диалоге отвечай по смыслу, а не повторяй вопрос. Можно ошибаться и возвращаться к любой теме.", ["Can I have some water, please? — Можно мне немного воды, пожалуйста?", "Here you are. Thank you! — Вот, пожалуйста. Спасибо!"], [
+("Вежливо попроси воды", "Can I have some water, please?", "Where is your water yesterday?", "Water is a colour.", "Can I have some water, please?"),
+("Тебе дали книгу. Поблагодари", "Thank you!", "Who is the book?", "Good night, book!", "Thank you!"),
+("Ответь на благодарность", "You are welcome.", "I am tomorrow.", "It is a chair.", "You are welcome."),
+("Попроси открыть окно", "Please open the window.", "The window is yesterday.", "Where open you?", "Please open the window."),
+("Ответь на Can you help me?", "Yes, I can help you.", "I am a table.", "The park is green.", "Yes, I can help you.")]),
+]
+
 def build():
     result=[]
     for n,(title,level,group,rule,examples,questions) in enumerate(UNITS):

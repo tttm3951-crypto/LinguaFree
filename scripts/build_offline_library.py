@@ -10,7 +10,8 @@ TOTAL = 150_000
 EXCLUDE = re.compile(r'\b(fuck\w*|shit\w*|bitch\w*|porn\w*|sex\w*|rape\w*|suicid\w*|kill\w*|murder\w*|naked|nude|cocaine|heroin|vodka|beer|wine|drunk|gun\w*|bomb\w*|terror\w*)\b|\b(секс\w*|порн\w*|уби\w*|убь\w*|убей\w*|самоуб\w*|наркот\w*|изнасил\w*|пистолет\w*|бомб\w*|водк\w*|пив\w*|пьян\w*|голый|голая)\b', re.I)
 
 def build(archive, output):
-    raw = Path(archive).read_bytes() if archive else urllib.request.urlopen(URL, timeout=120).read()
+    request=urllib.request.Request(URL,headers={'User-Agent':'Mozilla/5.0 LinguaFree-offline-build/0.9','Accept':'application/zip,*/*'})
+    raw = Path(archive).read_bytes() if archive else urllib.request.urlopen(request, timeout=120).read()
     assert hashlib.sha256(raw).hexdigest() == SHA256, 'Source changed: review before updating pinned checksum'
     core = json.loads((ROOT/'app/src/main/assets/dictionary.json').read_text(encoding='utf-8'))
     rows = []; seen = set()
