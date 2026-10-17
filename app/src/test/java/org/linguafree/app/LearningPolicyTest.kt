@@ -7,6 +7,12 @@ import java.time.LocalDate
 class LearningPolicyTest {
     private val today=LocalDate.of(2026,10,17)
 
+    @Test fun equalNamesDoNotMergeIdentifiedLearners(){
+        assertNotEquals(LearningPolicy.reportKey("11111111-1111-1111-1111-111111111111","Саша"),LearningPolicy.reportKey("22222222-2222-2222-2222-222222222222","Саша"))
+        assertEquals(LearningPolicy.reportKey("11111111-1111-1111-1111-111111111111","Саша"),LearningPolicy.reportKey("11111111-1111-1111-1111-111111111111","Новое имя"))
+        assertNotEquals(LearningPolicy.reportKey("","Саша"),LearningPolicy.reportKey("11111111-1111-1111-1111-111111111111","Саша"))
+    }
+
     @Test fun twoRemindersSkipTheAfternoonSlot(){
         assertEquals(listOf(9,19),LearningPolicy.reminderHours(2))
         assertFalse(LearningPolicy.shouldRemind(2,1,today,"",0,5))

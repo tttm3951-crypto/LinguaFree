@@ -35,6 +35,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.expandVertically
@@ -240,7 +241,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      require(report.optInt("completedLessons",-1) in 0..300 && report.optInt("xp",-1) in 0..10_000_000){"Некорректные показатели"}
      val generated=java.time.OffsetDateTime.parse(report.getString("generatedAt"))
      require(!generated.isAfter(java.time.OffsetDateTime.now().plusDays(1))){"Некорректная дата отчёта"}
-     val same=teacherReports.any{runCatching{JSONObject(it).optString("student")==name && JSONObject(it).optString("generatedAt")==report.getString("generatedAt")}.getOrDefault(false)}
+     val incomingKey=LearningPolicy.reportKey(report.optString("learnerId"),name)
+     val same=teacherReports.any{runCatching{val old=JSONObject(it);LearningPolicy.reportKey(old.optString("learnerId"),old.optString("student"))==incomingKey && old.optString("generatedAt")==report.getString("generatedAt")}.getOrDefault(false)}
      if(same)teacherStatus="Этот отчёт уже загружен."
      else {
       teacherReports=(teacherReports+report.toString()).takeLast(250)
@@ -257,6 +259,8 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      val totals=prefs.getString("skillTotal","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}
      val correct=prefs.getString("skillCorrect","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}
      val report=JSONObject().put("format","LinguaFreeStudyReport").put("version",1)
+      .put("learnerId",ClassroomSync.learnerId(this@MainActivity))
+      .put("grammarTopicsCompleted",prefs.getStringSet("grammarMastered",emptySet())?.size?:0)
       .put("generatedAt",java.time.OffsetDateTime.now().toString())
       .put("student",prefs.getString("learnerName","").orEmpty().trim().ifBlank{"Ученик"})
       .put("completedLessons",completedLessons.size)
@@ -421,6 +425,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      studiedDates=studiedDates+key
      prefs.edit().putInt("dailyStreak",streak).putString("studiedDates",studiedDates.joinToString(",")).apply()
     }
+    ClassroomSync.queue(this@MainActivity)
    }
    var bankWords by remember { mutableStateOf(listOf<String>()) }
    var typedAnswer by remember { mutableStateOf("") }
@@ -506,7 +511,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
     }
    }
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
-   fun save(){prefs.edit().putString("repeatQueue",repeatQueue.joinToString(",")).putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
+   fun save(){prefs.edit().putString("repeatQueue",repeatQueue.joinToString(",")).putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply();ClassroomSync.queue(this@MainActivity)}
    fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();typedAnswer="";hintShown=false;showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
    LaunchedEffect(screen,speedStartedAt) {
     if(screen=="speed" && !speedFinished) {
@@ -564,7 +569,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    MaterialTheme(colorScheme=darkColorScheme(primary=purple,secondary=pink,background=dark,surface=panel,onSurface=ink)) {
     Surface(Modifier.fillMaxSize(),color=dark) {
      Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().imePadding()) {
-     LazyColumn(modifier=Modifier.weight(1f),userScrollEnabled=screen!="lesson" && screen!="placement",contentPadding=PaddingValues(start=14.dp,end=14.dp,top=if(screen=="lesson" || screen=="placement") 4.dp else 16.dp,bottom=if(screen=="lesson" || screen=="placement") 0.dp else 8.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson" || screen=="placement") 4.dp else 12.dp)) {
+     LazyColumn(modifier=Modifier.weight(1f).testTag("main-content"),userScrollEnabled=screen!="lesson" && screen!="placement",contentPadding=PaddingValues(start=14.dp,end=14.dp,top=if(screen=="lesson" || screen=="placement") 4.dp else 16.dp,bottom=if(screen=="lesson" || screen=="placement") 0.dp else 8.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson" || screen=="placement") 4.dp else 12.dp)) {
       if(screen=="avatar") {
        item { FoxAvatarPicker(foxTransparent,foxAvatar,onSelect={foxAvatar=it;prefs.edit().putInt("foxAvatar",it).apply()},onBack={screen="home"}) }
       }
@@ -824,16 +829,17 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="teacher"){
        item { TeacherSyncPanel(this@MainActivity) }
        item { Text("‹  Кабинет преподавателя",modifier=Modifier.clickable{screen="home"},fontSize=25.sp,fontWeight=FontWeight.Black,color=purple) }
-       item { Text("Отчёты добавляются вручную с разрешения ученика. Никакого скрытого отслеживания и сервера нет.",fontSize=14.sp,color=ink) }
+       item { Text("Ниже — отчёты, импортированные вручную с разрешения ученика. Облачные подключения показаны отдельно выше.",fontSize=14.sp,color=ink) }
        item { Button(onClick={importTeacherReport.launch(arrayOf("application/json"))},modifier=Modifier.fillMaxWidth()){Text("📂 Загрузить отчёт ученика")} }
        if(teacherStatus.isNotBlank())item { Text(teacherStatus,color=ink) }
        val reports=teacherReports.mapNotNull{runCatching{JSONObject(it)}.getOrNull()}
-       val names=reports.map{it.optString("student")}.distinct().sorted()
+       val names=reports.map{LearningPolicy.reportKey(it.optString("learnerId"),it.optString("student"))}.distinct().sorted()
        item { Text("Учеников: ${names.size} · Отчётов: ${reports.size}",fontSize=18.sp,fontWeight=FontWeight.Bold,color=ink) }
        if(names.isEmpty())item { Text("Пока нет учеников. Попросите ученика открыть «Мои достижения», сохранить отчёт и отправить вам JSON-файл.",color=ink) }
-       items(names){name->
-        val history=reports.filter{it.optString("student")==name}.sortedBy{it.optString("generatedAt")}
+       items(names){studentKey->
+        val history=reports.filter{LearningPolicy.reportKey(it.optString("learnerId"),it.optString("student"))==studentKey}.sortedBy{it.optString("generatedAt")}
         val latest=history.last()
+        val name=latest.optString("student")
         val previous=history.dropLast(1).lastOrNull()
         val lessonsDone=latest.optInt("completedLessons")
         val xpNow=latest.optInt("xp")
@@ -842,6 +848,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Card(colors=CardDefaults.cardColors(containerColor=panel),modifier=Modifier.fillMaxWidth()){
          Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
           Text("👤 $name",fontSize=21.sp,fontWeight=FontWeight.Black,color=ink)
+          if(studentKey.startsWith("legacy:"))Text("Старый отчёт без ID: одноимённых учеников отличить нельзя. Запросите новый отчёт.",fontSize=12.sp,color=pink)
           Text("Уроки: $lessonsDone/${latest.optInt("totalLessons",300)} · XP: $xpNow",color=ink)
           LinearProgressIndicator(progress=(lessonsDone.toFloat()/latest.optInt("totalLessons",300).coerceAtLeast(1)).coerceIn(0f,1f),modifier=Modifier.fillMaxWidth(),color=green)
           Text("Активных дней: за 7 дней — ${latest.optInt("studyDaysLast7")}, за 30 дней — ${latest.optInt("studyDaysLast30")}",color=ink)
@@ -856,7 +863,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
           }
           Text("Обновлено: ${latest.optString("generatedAt").take(16).replace("T"," ")} · отчётов: ${history.size}",fontSize=12.sp,color=ink)
           OutlinedButton(onClick={
-           teacherReports=teacherReports.filterNot{runCatching{JSONObject(it).optString("student")==name}.getOrDefault(false)}
+           teacherReports=teacherReports.filterNot{runCatching{val r=JSONObject(it);LearningPolicy.reportKey(r.optString("learnerId"),r.optString("student"))==studentKey}.getOrDefault(false)}
            teacherPrefs.edit().putString("reports",JSONArray(teacherReports.map{JSONObject(it)}).toString()).apply()
            teacherStatus="Данные ученика «$name» удалены с этого телефона."
           },modifier=Modifier.fillMaxWidth()){Text("Удалить отчёты ученика")}

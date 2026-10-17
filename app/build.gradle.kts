@@ -14,7 +14,10 @@ android {
         versionCode = 8
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val classroomUrl = System.getenv("LINGUAFREE_CLASSROOM_URL").orEmpty().trimEnd('/')
-        require(classroomUrl.isEmpty() || classroomUrl.startsWith("https://")) { "Classroom server must use HTTPS" }
+        if (classroomUrl.isNotEmpty()) {
+            val endpoint = java.net.URI(classroomUrl)
+            require(endpoint.scheme == "https" && endpoint.host != null && endpoint.rawUserInfo == null && endpoint.rawQuery == null && endpoint.rawFragment == null) { "Classroom server must be a plain HTTPS endpoint" }
+        }
         buildConfigField("String", "CLASSROOM_ENDPOINT", "\""+classroomUrl+"\"")
     }
     signingConfigs {
@@ -55,6 +58,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.ui:ui")
 }
