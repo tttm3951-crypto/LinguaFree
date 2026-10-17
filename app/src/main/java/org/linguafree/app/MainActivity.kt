@@ -141,6 +141,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var level by remember { mutableStateOf("Начинающий") }
    var dailyGoal by remember { mutableIntStateOf(10) }
    var streak by remember { mutableIntStateOf(prefs.getInt("dailyStreak",0)) }
+   var answerCombo by remember { mutableIntStateOf(0) }
    var reminderCount by remember { mutableIntStateOf(prefs.getInt("reminders",3)) }
    var studiedDates by remember { mutableStateOf(prefs.getString("studiedDates","")!!.split(",").filter{it.isNotBlank()}.toSet()) }
    fun markStudyDay(){
@@ -178,7 +179,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    }
    val foxScale by animateFloatAsState(targetValue=if(foxExcited)1.14f else 1f,animationSpec=spring(dampingRatio=Spring.DampingRatioMediumBouncy,stiffness=Spring.StiffnessLow),label="foxReaction")
    fun save(){prefs.edit().putInt("xp",xp).putInt("gems",gems).putInt("lesson",current).putString("completed",completed.joinToString(",")).putString("mistakes",mistakes.joinToString(",")).apply()}
-   fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();showTranslation=false;correctCount=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
+   fun start(n:Int){current=n;index=0;selected=null;bankWords=emptyList();showTranslation=false;correctCount=0;answerCombo=0;foxMessage="Давай попробуем!";foxExcited=false;screen="lesson";save()}
    LaunchedEffect(screen) { if(screen=="review"){reviewMatched=emptySet();reviewLeft=null;reviewRight=null;sayEnglish("Match the words!")} }
    LaunchedEffect(screen) { if(screen=="done"){ foxExcited=true; sayEnglish("Hooray! Fantastic! You did it!"); kotlinx.coroutines.delay(1800); foxExcited=false } }
    LaunchedEffect(screen,current,index) {
@@ -223,7 +224,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       if(screen=="home") item {
        Card(colors=CardDefaults.cardColors(containerColor=panel),shape=RoundedCornerShape(22.dp)) {
         Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-         Text("🔥 $streak дней подряд",fontSize=24.sp,fontWeight=FontWeight.Black,color=Color(0xFFFFAC35))
+         Text("🔥 ${if(studiedDates.contains(LocalDate.now().toString()) || studiedDates.contains(LocalDate.now().minusDays(1).toString()))streak else 0} дней подряд",fontSize=24.sp,fontWeight=FontWeight.Black,color=Color(0xFFFFAC35))
          Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){
           val today=LocalDate.now()
           (6 downTo 0).forEach { offset ->
@@ -317,7 +318,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        val pictureMode=screen=="lesson" && index%3==0
        item { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween) {
         Text("🎯 "+l.title,fontSize=19.sp,fontWeight=FontWeight.Black,color=purple,modifier=Modifier.weight(1f),maxLines=1)
-        Text("🔥 $streak  ⭐ ${index+1}/${l.questions.size}",fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
+        Text("⚡ $answerCombo  ⭐ ${index+1}/${l.questions.size}",fontSize=15.sp,fontWeight=FontWeight.Black,color=pink)
        } }
        item { LinearProgressIndicator(progress={(index+1).toFloat()/l.questions.size},modifier=Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(9.dp)),color=green,trackColor=Color(0xFFE7DDF9)) }
 
@@ -385,11 +386,11 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      if(screen=="onboarding" || ((screen=="lesson" || screen=="placement") && selected!=null)) {
       Button(onClick={
        if(screen=="onboarding") {
-        if(onboardStep<2)onboardStep++ else {prefs.edit().putBoolean("onboarded",true).putString("level",level).putInt("dailyGoal",dailyGoal).apply();if(level=="Начинающий")screen="home" else {current=0;index=0;screen="placement"}}
+        if(onboardStep<2)onboardStep++ else {prefs.edit().putBoolean("onboarded",true).putString("level",level).putInt("dailyGoal",dailyGoal).apply();if(Build.VERSION.SDK_INT>=33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED)askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS);if(level=="Начинающий")screen="home" else {current=0;index=0;screen="placement"}}
        } else {
         val q=lessons[current].questions[index]
         val key=current*1000+index
-        if(selected==q.answer){xp+=10;gems+=2;correctCount++;streak++;mistakes=mistakes-key}else{streak=0;mistakes=mistakes+key}
+        if(selected==q.answer){xp+=10;gems+=2;correctCount++;answerCombo++;mistakes=mistakes-key}else{answerCombo=0;mistakes=mistakes+key}
         if(screen=="placement" && selected==q.answer)placementScore++
         selected=null;bankWords=emptyList();showTranslation=false;foxMessage="Давай попробуем!";foxExcited=false
         if(screen=="placement") {if(index==2){current=if(placementScore>=2)8 else if(placementScore==1)3 else 0;index=0;screen="home";save()}else index++}
