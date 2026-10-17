@@ -219,6 +219,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var storyIndex by remember { mutableIntStateOf(0) }
    var storyStep by remember { mutableIntStateOf(0) }
    var storyFeedback by remember { mutableStateOf("") }
+   var rewardedStories by remember { mutableStateOf(prefs.getString("rewardedStories","").orEmpty().split(",").mapNotNull{it.toIntOrNull()}.toSet()) }
    var speechTarget by remember { mutableStateOf("Hello") }
    var speechResult by remember { mutableStateOf("") }
    val stories=listOf(
@@ -406,12 +407,17 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Button(onClick={sayEnglish(phrase.first)},modifier=Modifier.fillMaxWidth()){Text("🔊 Послушать диалог")} }
        item { OutlinedButton(onClick={sayEnglish(phrase.first,slow=true)},modifier=Modifier.fillMaxWidth()){Text("🐢 Медленно")} }
        item { Text("Как перевести фразу?",fontSize=20.sp,fontWeight=FontWeight.Bold,color=ink) }
-       item { Button(onClick={storyFeedback="Правильно! "+phrase.second;sayReaction(true)},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=panel)){Text(phrase.second,color=ink)} }
-       item { OutlinedButton(onClick={storyFeedback="Попробуй ещё раз!";sayReaction(false)},modifier=Modifier.fillMaxWidth()){Text("Я не знаю",color=ink)} }
+       val alternatives=listOf(phrase.second,"Я не понимаю.","До свидания, друг!")
+       val ordered=if(storyStep%2==0)listOf(alternatives[1],alternatives[0],alternatives[2]) else listOf(alternatives[2],alternatives[1],alternatives[0])
+       ordered.forEach{answer->item { OutlinedButton(onClick={
+        if(answer==phrase.second){storyFeedback="Правильно! "+phrase.second;sayReaction(true)}
+        else{storyFeedback="Не совсем. Послушай фразу ещё раз.";sayReaction(false)}
+       },modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.outlinedButtonColors(containerColor=panel)){Text(answer,color=ink)} }}
+
        if(storyFeedback.isNotBlank()) item { Text(storyFeedback,fontSize=18.sp,fontWeight=FontWeight.Bold,color=green) }
        if(storyFeedback.startsWith("Правильно")) item { Button(onClick={
         if(storyStep==stories[storyIndex].lastIndex){
-         xp+=30;gems+=5;markStudyDay();save();playMilestoneSound()
+         if(storyIndex !in rewardedStories){xp+=30;gems+=5;rewardedStories=rewardedStories+storyIndex;prefs.edit().putString("rewardedStories",rewardedStories.joinToString(",")).apply()};markStudyDay();save();playMilestoneSound()
          if(storyIndex==stories.lastIndex)screen="home" else {storyIndex++;storyStep=0}
         }else storyStep++
         storyFeedback=""
