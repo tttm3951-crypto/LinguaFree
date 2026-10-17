@@ -193,7 +193,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
  }
  override fun onDestroy(){tts?.stop();tts?.shutdown();super.onDestroy()}
  override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState)
-  playWelcomeMelody()
+  if(getSharedPreferences("linguafree_progress",Context.MODE_PRIVATE).getBoolean("effectsEnabled",true))playWelcomeMelody()
   tts=TextToSpeech(this,this)
   val raw=JSONArray(assets.open("lessons.json").bufferedReader().use{it.readText()})
   val baseLessons=(0 until raw.length()).map{n->
@@ -263,6 +263,12 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
    var selected by remember { mutableStateOf<Int?>(null) }
    var screen by remember { mutableStateOf(if(prefs.getBoolean("onboarded",false))"home" else "onboarding") }
    var onboardStep by remember { mutableIntStateOf(0) }
+   var learnerName by remember { mutableStateOf(prefs.getString("learnerName","")?:"") }
+   fun saveLearnerName(value:String){
+    learnerName=value.take(24).replace(Regex("[\\r\\n\\t]")," ").trimStart()
+    prefs.edit().putString("learnerName",learnerName.trim()).apply()
+   }
+   val displayName=learnerName.trim().ifBlank{"Друг"}
    var showHomeGreeting by remember { mutableStateOf(true) }
    var storyIndex by remember { mutableIntStateOf(0) }
    var storyStep by remember { mutableIntStateOf(0) }
@@ -490,10 +496,13 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      LazyColumn(modifier=Modifier.weight(1f),userScrollEnabled=screen!="lesson" && screen!="placement",contentPadding=PaddingValues(start=14.dp,end=14.dp,top=if(screen=="lesson" || screen=="placement") 4.dp else 16.dp,bottom=if(screen=="lesson" || screen=="placement") 0.dp else 8.dp),verticalArrangement=Arrangement.spacedBy(if(screen=="lesson" || screen=="placement") 4.dp else 12.dp)) {
       if(screen=="onboarding") {
        item { LinearProgressIndicator(progress={(onboardStep+1)/3f},modifier=Modifier.fillMaxWidth().height(10.dp),color=green) }
-       item { Row(verticalAlignment=Alignment.CenterVertically) { Image(bitmap=foxTransparent,contentDescription="Лисичка",modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько минут будем играть каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
-       if(onboardStep==0) item { Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=23.sp,fontWeight=FontWeight.Bold,color=pink) }
+       item { Row(verticalAlignment=Alignment.CenterVertically) { Image(bitmap=foxTransparent,contentDescription="Лисичка",modifier=Modifier.size(95.dp)); Text(when(onboardStep){0->"Привет! Я твоя лисичка! 🦊";1->"Как хорошо ты знаешь английский?";else->"Сколько занятий будем проходить каждый день?"},fontSize=22.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=28.sp) } }
+       if(onboardStep==0) {
+        item { Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=23.sp,fontWeight=FontWeight.Bold,color=pink) }
+        item { OutlinedTextField(value=learnerName,onValueChange={saveLearnerName(it)},label={Text("Как тебя называть?")},singleLine=true,modifier=Modifier.fillMaxWidth(),supportingText={Text("До 24 символов. Имя хранится только на этом устройстве; можно изменить позже.")}) }
+       }
        if(onboardStep==1) { item { Text("Выбери свой уровень",fontSize=21.sp,fontWeight=FontWeight.Black,color=ink) }; listOf("Начинающий","Знаю несколько слов","Могу говорить").forEach { option -> item { OutlinedButton(onClick={level=option},modifier=Modifier.fillMaxWidth().height(70.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(level==option)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(level==option)green else Color(0xFF3B5057))) {Text(option,fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
-       if(onboardStep==2) { listOf(3,10,15,30).forEach { minutes -> item { OutlinedButton(onClick={dailyGoal=minutes},modifier=Modifier.fillMaxWidth().height(65.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(dailyGoal==minutes)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(dailyGoal==minutes)green else Color(0xFF3B5057))) {Text("$minutes минут в день",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
+       if(onboardStep==2) { listOf(5,10,15,20).forEach { minutes -> item { OutlinedButton(onClick={dailyGoal=minutes},modifier=Modifier.fillMaxWidth().height(65.dp),colors=ButtonDefaults.outlinedButtonColors(containerColor=if(dailyGoal==minutes)Color(0xFF365B4D) else panel),border=BorderStroke(2.dp,if(dailyGoal==minutes)green else Color(0xFF3B5057))) {Text("$minutes занятий в день",fontSize=19.sp,fontWeight=FontWeight.Bold,color=ink)} } } }
       }
 
       if(screen=="home" && showHomeGreeting) item {
@@ -501,7 +510,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
         Row(Modifier.padding(14.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
          AnimatedFox(modifier=Modifier.size(82.dp).offset(y=bounce.dp),mood=foxMood)
          Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)) {
-          Text("Привет! Я твоя лисичка! 🦊",fontSize=19.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=23.sp)
+          Text("Привет, $displayName! Я твоя лисичка! 🦊",fontSize=19.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=23.sp)
           Text("Учимся весело, бесплатно и без рекламы! 🌈",fontSize=14.sp,color=pink,lineHeight=18.sp)
          }
          Text("×",modifier=Modifier.clickable{showHomeGreeting=false}.padding(4.dp),fontSize=25.sp,color=ink)
@@ -759,6 +768,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { OutlinedButton(onClick={screen="stats"},modifier=Modifier.fillMaxWidth()){Text("📊 Статистика и ошибки")} }
       } else if(screen=="stats") {
        item { Text("🏆 Мои достижения",fontSize=30.sp,fontWeight=FontWeight.Black,color=purple) }
+       item { OutlinedTextField(value=learnerName,onValueChange={saveLearnerName(it)},label={Text("Имя ученика")},singleLine=true,modifier=Modifier.fillMaxWidth(),supportingText={Text("Используется в заданиях и поздравлениях. Хранится локально.")}) }
        item { Text("📊 Статистика навыков",fontSize=22.sp,fontWeight=FontWeight.Black,color=ink) }
        listOf("📖 Чтение и перевод","🎧 Аудирование","✍️ Письмо","🎙️ Говорение").forEachIndexed{i,name->
         item { Column(verticalArrangement=Arrangement.spacedBy(4.dp)){
@@ -817,7 +827,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
       } else if(screen=="done") {
        item { Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.fillMaxWidth()) {
         Image(bitmap=foxTransparent,contentDescription="Лисичка празднует победу",modifier=Modifier.size(138.dp).offset(y=bounce.dp).graphicsLayer { rotationZ=bounce*2.5f+foxTilt; scaleX=foxScale;scaleY=foxScale })
-        Text("🎉 УРА! УРОК ПРОЙДЕН!",fontSize=30.sp,fontWeight=FontWeight.Black,color=pink)
+        Text("🎉 $displayName, УРОК ПРОЙДЕН!",fontSize=27.sp,fontWeight=FontWeight.Black,color=pink)
         Text(if(celebration)"🎊 ✨ 🌟 🎉 ✨ 🎊" else "🦊 Hooray! Fantastic! 🌟",fontSize=23.sp,fontWeight=FontWeight.Black,color=green)
        } }
        item { Text("Верных ответов: $correctCount из ${lessons[current].questions.size}") }
@@ -848,10 +858,10 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
        item { Card(shape=RoundedCornerShape(18.dp),colors=CardDefaults.cardColors(containerColor=Color(0xFF3B2A45))) { Column(Modifier.padding(if(compact)9.dp else 12.dp)) {
         Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(7.dp)) {
          Image(bitmap=foxTransparent,contentDescription=null,modifier=Modifier.size(if(compact)20.dp else 24.dp).offset(y=bounce.dp).graphicsLayer { scaleX=foxScale;scaleY=foxScale;rotationZ=foxTilt+foxWiggle })
-         Text(foxMessage,fontSize=if(compact)13.sp else 15.sp,fontWeight=FontWeight.Black,color=pink)
+         Text("$displayName, $foxMessage",fontSize=if(compact)13.sp else 15.sp,fontWeight=FontWeight.Black,color=pink)
         }
         Spacer(Modifier.height(2.dp))
-        Text(if(audioMode)"🎧 Прослушай слово и выбери перевод" else q.prompt,fontSize=if(compact)19.sp else 23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=if(compact)23.sp else 28.sp)
+        Text(if(audioMode)"🎧 $displayName, прослушай слово и выбери перевод" else "$displayName, твоё задание: ${q.prompt}",fontSize=if(compact)19.sp else 23.sp,fontWeight=FontWeight.Black,color=ink,lineHeight=if(compact)23.sp else 28.sp)
        } } }
        if(selected!=null || !q.prompt.startsWith("Как по-английски")) item { Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(6.dp)){Button(onClick={sayEnglish(q.speech)},modifier=Modifier.weight(1f).height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp),colors=ButtonDefaults.buttonColors(containerColor=teal)){Text("🔊 СЛУШАТЬ",fontSize=if(compact)12.sp else 15.sp,fontWeight=FontWeight.Black)};OutlinedButton(onClick={sayEnglish(q.speech,slow=true)},modifier=Modifier.weight(1f).height(if(compact)37.dp else 43.dp),shape=RoundedCornerShape(14.dp)){Text("🐢 МЕДЛЕННО",fontSize=if(compact)12.sp else 15.sp,fontWeight=FontWeight.Black)}} }
        if(typedMode) item {
@@ -917,7 +927,7 @@ class MainActivity:ComponentActivity(),TextToSpeech.OnInitListener {
      if(screen=="onboarding" || ((screen=="lesson" || screen=="placement") && selected!=null)) {
       Button(onClick={
        if(screen=="onboarding") {
-        if(onboardStep<2)onboardStep++ else {prefs.edit().putBoolean("onboarded",true).putString("level",level).putInt("dailyGoal",dailyGoal).apply();if(Build.VERSION.SDK_INT>=33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED)askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS);if(level=="Начинающий")screen="home" else {current=0;index=0;placementScore=0;screen="placement"}}
+        if(onboardStep<2)onboardStep++ else {prefs.edit().putBoolean("onboarded",true).putString("level",level).putInt("dailyGoal",dailyGoal).putString("learnerName",learnerName.trim()).apply();if(Build.VERSION.SDK_INT>=33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=android.content.pm.PackageManager.PERMISSION_GRANTED)askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS);if(level=="Начинающий")screen="home" else {current=0;index=0;placementScore=0;screen="placement"}}
        } else {
         val q=activeQuestion()
         val key=current*1000+index
